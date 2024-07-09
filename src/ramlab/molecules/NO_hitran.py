@@ -20,12 +20,20 @@ class NO_Hitran(LineListMolecule):
         #       NO "global" quanta are of class 1b. "local" quanta are of group 7.
         # Upper global quanta
         df2 = df2[df2["isotope_no"] == 1].copy()
-        df2["upper_quanta"] = df2["upper_quanta_global"] + df2["upper_quanta_local"]
+        df2["final_quanta"] = df2["final_quanta_global"] + df2["final_quanta_local"]
 
-        for state in ["upper", "lower"]:
+        for state in ["initial", "final"]:
             # Global quanta
             df2[f"{state}_X"] = df2[f"{state}_quanta_global"].str[6:8]
-            df2[f"{state}_Omega"] = df2[f"{state}_quanta_global"].str[8:11]
+            df2[f"{state}_Omega"] = df2[f"{state}_quanta_global"].str[
+                8:11
+            ]  # Is either 3/2 or 1/2
+
+            # Convert state_Omega to a numeric value, stored in state_O
+            df2[f"{state}_O"] = np.nan
+            df2.loc[df2[f"{state}_Omega"] == "3/2", f"{state}_O"] = 3 / 2
+            df2.loc[df2[f"{state}_Omega"] == "1/2", f"{state}_O"] = 1 / 2
+
             df2[f"{state}_v1"] = pd.to_numeric(
                 df2[f"{state}_quanta_global"].str[13:15],
                 errors="coerce",
