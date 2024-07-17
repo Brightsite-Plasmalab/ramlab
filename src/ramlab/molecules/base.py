@@ -1,7 +1,7 @@
 from ramlab.molecules.state import State
 from ramlab.molecules.transitions import Transitions
 import numpy as np
-from scipy.constants import k, h, c
+from scipy.constants import k, h, c, epsilon_0, pi
 
 
 # TODO: Communicate units clearly
@@ -49,7 +49,7 @@ class Molecule:
         raise NotImplementedError()
 
     @classmethod
-    def crosssection(cls, transitions: Transitions, lambda_laser: float) -> float:
+    def crosssection(cls, transitions: Transitions, lambda_laser: float, polarisation: str) -> float:
         """Returns the cross section of a transition between two states.
 
         Args:
@@ -76,7 +76,7 @@ class Molecule:
         raise NotImplementedError()
 
     @classmethod
-    def get_all_transitions(cls, laser_wavelength: float = None) -> Transitions:
+    def get_all_transitions(cls, laser_wavelength: float = None, polarisation: str = "= + T") -> Transitions:
         """Returns all possible transitions for the molecule.
 
         Returns:
@@ -100,7 +100,7 @@ class Molecule:
             raise ValueError(
                 f"Only one temperature is allowed for the base molecule. Fitting of Tr=/=Tv is not yet implemented for {cls.__name__}."
             )
-
+        
         T = temperatures["T"]
         g = state_initial.degeneracy
         E = state_initial.E
@@ -111,7 +111,7 @@ class Molecule:
 
     @classmethod
     def get_intensity_constant(
-        cls, transitions: Transitions, laser_wavelength: float
+        cls, transitions: Transitions, laser_wavelength: float , polarisation: str 
     ) -> float:
         """Returns the constant part of the intensity calculation. These involve physical constants and cross-sections, but not the populations.
 
@@ -122,7 +122,11 @@ class Molecule:
         Returns:
             float: The intensity constant of the transition.
         """
-        return cls.crosssection(transitions, laser_wavelength)
+        laser_wavelength = 532e-9
+        Crosssection = cls.crosssection(transitions, laser_wavelength, polarisation)
+        wavelength_intensity = ((1/laser_wavelength) - transitions.vacuum_wavenumber * 100)**4 #Laser wavelength and Raman shift wavelength^4 correction to intensity
+        constants = 1/(16 * (c**4) * (pi**2) * (epsilon_0**2) )
+        return Crosssection * wavelength_intensity
 
     @classmethod
     def get_intensity_variable(cls, transitions: Transitions, **temperatures) -> float:
@@ -135,11 +139,12 @@ class Molecule:
         Returns:
             float: The intensity variable of the transition.
         """
+        
         raise NotImplementedError()
 
     @classmethod
     def get_intensity(
-        cls, transitions: Transitions, laser_wavelength=None, **temperatures
+        cls, transitions: Transitions, laser_wavelength=None, polarisation = "= + T", **temperatures
     ) -> float:
         """Returns the intensity of a transition.
 
@@ -149,6 +154,6 @@ class Molecule:
         Returns:
             float: The intensity of the transition.
         """
-        I_c = cls.get_intensity_constant(transitions, laser_wavelength)
+        I_c = cls.get_intensity_constant(transitions, laser_wavelength, polarisation)
         I_v = cls.get_intensity_variable(transitions, **temperatures)
         return I_c * I_v
