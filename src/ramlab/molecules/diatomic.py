@@ -273,3 +273,4 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         df["crosssection"] = df["einstein_A_coefficient"].values
 
         return df
+

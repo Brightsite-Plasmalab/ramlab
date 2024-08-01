@@ -5,10 +5,10 @@ from ramlab.molecules.state import State
 from ramlab.molecules.transitions import Transitions
 
 
-class H2(SimpleDiatomicMolecule):
+class N2(SimpleDiatomicMolecule):
     # Molecule properties
     molecule_number = 45
-    molecule_name = "H2"
+    molecule_name = "N2"
     isotope_number = 1
 
     # Degeneracy constants

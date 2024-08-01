@@ -14,11 +14,11 @@ class State:
         return self.state.keys()
 
     def __getattr__(self, name: str) -> Any:
-        # if name == "state":
-        #     return super().__getattribute__(name)
-        if name in self.__dict__["state"].keys():
+        if name in self.__dict__.get("state", {}):
             return self.__dict__["state"][name]
-        else:
+        try:
+            return super().__getattribute__(name)
+        except AttributeError:
             raise AttributeError(
                 f"No attribute '{name}' in {str(self)}.\nDid you add all necessary quantum numbers?"
             )
@@ -28,10 +28,6 @@ class State:
             super().__setattr__(name, value)
         else:
             self.state[name] = value
-        # try:
-        #     super().__setattr__(name, value)
-        # except:
-        #     self.state[name] = value
 
     def __getitem__(self, key):
         if (

@@ -326,11 +326,23 @@ class NO(AbInitioMolecule):
         )
 
     @classmethod
-    def E_vib(cls, state: State) -> float:
-        raise NotImplementedError(
-            "Vibrational energy calculation not implemented: we used fitted HITRAN data for total energy only."
-        )
+    def E(cls, state: State) -> float:
+        # TODO: Implement the energy of the NO molecule.
+        # You can use expressions like state.v and state.J to access the vibrational and rotational quantum numbers.
+        raise NotImplementedError()
 
+    @classmethod
+    def E_vib(
+        cls, state: State
+    ) -> float:  # Needs to be implemented, 0 set as placeholder
+        # E_v = 0
+        # return E_v
+        v = state.v
+        # See Derek A. Long, eq. 5.9.3
+        E_v = (v + 1 / 2) * cls.w_e - cls.w_ex_e * (v + 1 / 2) ** 2
+        return E_v
+
+    # State calculations
     @classmethod
     def _get_all_transition_states(cls) -> tuple[State, State]:
         # Quantum numbers definitions - see Zare - Angular Momentum, P29
@@ -401,7 +413,9 @@ class NO(AbInitioMolecule):
 
     @classmethod
     def _format_quanta_local(cls, state: State):
-        return np.char.mod("%2d", state.J)
+        # TODO: Implement the formatting of the local quanta.
+        # You can use expressions like np.char.mod("%2d", state.J) to format the rotational quantum number.
+        raise NotImplementedError()
 
     @classmethod
     def process_hitran_data(cls, df: pd.DataFrame) -> pd.DataFrame:

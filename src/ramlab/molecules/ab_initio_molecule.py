@@ -59,30 +59,30 @@ class AbInitioMolecule(LineListMolecule):
                 f.write(line + "\n")
 
     @abstractproperty
-    def molecule_number(cls) -> int:
-        """The molecule number according to the HITRAN database."""
-        raise NotImplementedError()
+    def molecule_number(subclass) -> int:
+        return subclass.molecule_number
 
     @abstractproperty
-    def molecule_name(cls) -> str:
-        """The molecule name according to the HITRAN database."""
-        raise NotImplementedError()
+    def molecule_name(subclass) -> str:
+        return subclass.molecule_name
 
     @abstractproperty
     def isotope_number(cls) -> int:
         """The isotope number according to the HITRAN database."""
-        raise NotImplementedError()
+        return 1  # placeholder - probably correct anyway
 
     @classmethod
     def _make_transitions(
         cls, laser_wavelength: float, state_initial: State, state_final: State
     ) -> Transitions:
-
+        # print (state_initial, state_final)
         for state in [state_initial, state_final]:
             state.degeneracy = cls._calc_degeneracy(state)
             state.quanta_global = cls._format_quanta_global(state)
             state.quanta_local = cls._format_quanta_local(state)
             state.quanta = np.char.add(state.quanta_global, state.quanta_local)
+            # state.Er = cls.Er(state)
+            # state.Ev = cls.Ev(state)
             state.E = cls.E(state)
 
         transitions = Transitions()
@@ -108,10 +108,10 @@ class AbInitioMolecule(LineListMolecule):
 
         transitions.vacuum_wavenumber = state_final.E - state_initial.E
         transitions.crosssection = cls._calc_crosssection(transitions)
-        transitions.depolarization_ratio = cls._calc_depolarization_ratio(transitions)
+        #  transitions.depolarization_ratio = cls._calc_depolarization_ratio(transitions)
         transitions.molecule_number = cls.molecule_number
         transitions.isotope_number = cls.isotope_number
-
+        print(transitions)
         return transitions
 
     @classmethod
