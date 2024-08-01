@@ -1,7 +1,7 @@
+import numpy as np
 from ramlab.molecules.diatomic import SimpleDiatomicMolecule
 from ramlab.molecules.state import State
 from ramlab.molecules.transitions import Transitions
-import numpy as np
 
 
 class H2(SimpleDiatomicMolecule):
@@ -26,36 +26,8 @@ class H2(SimpleDiatomicMolecule):
     D3_e = 0
     alpha3_e_1 = 0
 
-    @classmethod
-    def _get_all_transition_states(cls) -> tuple[State, State]:
-        state_initial, state_final = super()._get_all_transition_states()
+    # Polarizability constants - Need to be implemented for H2
+    alpha_p_sq = 3.79e-60 #Isotropy invariant squared - C^4m^2 / J^2, Taken from Lucht, Ch 7, P42
+    gamma_p_sq = 5.15e-60 #Anisotropy invariant squared - C^4m^2 / J^2, Taken from Lucht, Ch 7, P42
 
-        dv = state_final.v - state_initial.v
-        dJ = state_final.J - state_initial.J
-
-        # Filter out transitions that are not allowed
-        mask = (
-            (state_initial.J >= 0)
-            & (state_final.J >= 0)
-            & (state_initial.v >= 0)
-            & (state_final.v >= 0)
-            & np.isin(dv, [-1, 0, 1])
-            & np.isin(dJ, [-2, 0, 2])
-            & ~((dv == 0) & (dJ == 0))
-        )
-
-        return state_initial[mask], state_final[mask]
-
-    @classmethod
-    def _calc_degeneracy(cls, state: State):
-        degeneracy_nuclear = (state.J % 2) * cls.g_o + ((state.J + 1) % 2) * cls.g_e
-        degeneracy = (2 * state.J + 1) * degeneracy_nuclear
-        return degeneracy
-
-    @classmethod
-    def _calc_crosssection(cls, transitions: Transitions):
-        return 1
-
-    @classmethod
-    def _calc_depolarization_ratio(cls, transitions: Transitions):
-        return 1
+    #Herman-Wallis factor need to be added 

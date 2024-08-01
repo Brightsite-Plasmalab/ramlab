@@ -13,7 +13,7 @@ class LineListMolecule(Molecule):
         return cls.get_linelist_file(laser_wavelength).exists()
 
     @classmethod
-    def get_linelist_file(cls, laser_wavelength: float = None) -> str:
+    def get_linelist_file(cls, laser_wavelength: float = None, polarisation: str = "= + T") -> str:
         """Returns the path to the line list file.
 
         Returns:
@@ -30,18 +30,11 @@ class LineListMolecule(Molecule):
     ) -> Transitions:
         raise NotImplementedError()
 
-    @classmethod
-    def get_linelist_file(cls, laser_wavelength: float = None) -> str:
-        """Returns the path to the line list file.
 
-        Returns:
-            str: The path to the line list file.
-        """
-        raise NotImplementedError()
 
     @classmethod
     def get_all_transitions(
-        cls, laser_wavelength: float = None, force_recalculate: bool = False
+        cls, laser_wavelength: float = None, force_recalculate: bool = False, polarisation: str = "= + T"
     ) -> Transitions:
         """Returns all possible transitions for the molecule.
 
@@ -51,14 +44,14 @@ class LineListMolecule(Molecule):
 
         if cls._has_linelist_file(laser_wavelength) and not force_recalculate:
             df: pd.DataFrame = parse_hitran_data(
-                cls.get_linelist_file(laser_wavelength=laser_wavelength)
+                cls.get_linelist_file(laser_wavelength=laser_wavelength, polarisation = polarisation)
             )
             df = cls.process_hitran_data(df)
 
             return Transitions(df)
         else:
             print("Generating linelist file...")
-            return cls._make_linelist_file(laser_wavelength)
+            return cls._make_linelist_file(laser_wavelength, polarisation = polarisation)
 
     @classmethod
     def process_hitran_data(cls, df: pd.DataFrame) -> pd.DataFrame:
@@ -85,7 +78,7 @@ class LineListMolecule(Molecule):
         return state.degeneracy
 
     @classmethod
-    def crosssection(cls, transitions: Transitions, lambda_laser: float) -> float:
+    def crosssection(cls, transitions: Transitions, lambda_laser: float, polarisation:str) -> float:
         return transitions.crosssection
 
     @classmethod

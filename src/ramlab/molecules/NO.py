@@ -105,7 +105,7 @@ class NO(AbInitioMolecule):
         rc = cls._rc
         intensities = []
         aq_0 = cls.a_q0
-        aq_2 = 0  # np.sqrt(cls.a_q2_to_aq0  * cls.a_q0**2)
+        aq_2 = cls.a_q2_to_aq0 * cls.a_q0
         a_j = []
         b_j = []
         J_list = []
@@ -150,7 +150,22 @@ class NO(AbInitioMolecule):
                                     * rc(*rc_f, "b")
                                     * wigner_3j(J_l, J_u, 2, 3 / 2, -3 / 2, 0)
                                 )
-                            )  #   + aq_2 * ((-1)**(J_l - 0.5)) * (-(rc(*rc_i,'a')*rc(*rc_f,'b')* wigner_3j(J_l, J_u, 2, -1/2, -3/2, 2)) + (rc(*rc_i,'b')*rc(*rc_f,'a') * wigner_3j(J_l, J_u, 2, -3/2, -1/2, 2)))\
+                            )
+                            + (S_l * 2)
+                            * aq_2
+                            * ((-1) ** (J_l - 0.5))
+                            * (
+                                -(
+                                    rc(*rc_i, "a")
+                                    * rc(*rc_f, "b")
+                                    * wigner_3j(J_l, J_u, 2, -1 / 2, -3 / 2, 2)
+                                )
+                                + (
+                                    rc(*rc_i, "b")
+                                    * rc(*rc_f, "a")
+                                    * wigner_3j(J_l, J_u, 2, -3 / 2, -1 / 2, 2)
+                                )
+                            )
                         )
                         ** 2
                     )
@@ -176,7 +191,22 @@ class NO(AbInitioMolecule):
                                     * rc(*rc_f, "d")
                                     * wigner_3j(J_l, J_u, 2, 3 / 2, -3 / 2, 0)
                                 )
-                            )  #   + aq_2 * ((-1)**(J_l - 0.5)) * (-(rc(*rc_i,'c')*rc(*rc_f,'d')* wigner_3j(J_l, J_u, 2, -1/2, -3/2, 2)) + (rc(*rc_i,'d')*rc(*rc_f,'c') * wigner_3j(J_l, J_u, 2, -3/2, -1/2, 2))) \
+                            )
+                            + (S_l * 2)
+                            * aq_2
+                            * ((-1) ** (J_l - 0.5))
+                            * (
+                                -(
+                                    rc(*rc_i, "c")
+                                    * rc(*rc_f, "d")
+                                    * wigner_3j(J_l, J_u, 2, -1 / 2, -3 / 2, 2)
+                                )
+                                + (
+                                    rc(*rc_i, "d")
+                                    * rc(*rc_f, "c")
+                                    * wigner_3j(J_l, J_u, 2, -3 / 2, -1 / 2, 2)
+                                )
+                            )
                         )
                         ** 2
                     )
@@ -202,12 +232,30 @@ class NO(AbInitioMolecule):
                                     * rc(*rc_f, "d")
                                     * wigner_3j(J_l, J_u, 2, 3 / 2, -3 / 2, 0)
                                 )
-                            )  # + aq_2 * ((-1)**(J_l - 0.5)) * (-(rc(*rc_i,'a')*rc(*rc_f,'d')* wigner_3j(J_l, J_u, 2, -1/2, -3/2, 2)) + (rc(*rc_i,'b')*rc(*rc_f,'c') * wigner_3j(J_l, J_u, 2, -3/2, -1/2, 2)))\
+                            )
+                            + (S_l * 2)
+                            * aq_2
+                            * ((-1) ** (J_l - 0.5))
+                            * (
+                                -(
+                                    rc(*rc_i, "a")
+                                    * rc(*rc_f, "d")
+                                    * wigner_3j(J_l, J_u, 2, -1 / 2, -3 / 2, 2)
+                                )
+                                + (
+                                    rc(*rc_i, "b")
+                                    * rc(*rc_f, "c")
+                                    * wigner_3j(J_l, J_u, 2, -3 / 2, -1 / 2, 2)
+                                )
+                            )
                         )
                         ** 2
                     )
                 )
             else:
+                print(
+                    f"No valid transition for: Omega_lower = {O_l} and delta_Omega = {dO}. Intensity = {intensity}"
+                )
                 intensity = 0
                 print(
                     f"No valid transition for: Omega_lower = {O_l} and delta_Omega = {dO}. Intensity = {intensity}"
@@ -361,51 +409,110 @@ class NO(AbInitioMolecule):
         dR = np.array([-3, -2, -1, 0, 1, 2, 3])
         dL = np.array([-2, 0, 2])
         dS = np.array([-1, 0, 1])
-        dp = np.array([-2, 2])
 
-        vi, Ri, Si, Li, pi, dv, dR, dL, dS, dp = make_quantum_numbers(
-            vi, Ri, Si, Li, pi, dv, dR, dL, dS, dp
+        # Calculate the total number of transitions
+        total_transitions = len(dv) * len(dR) * len(dS) * len(dL)
+
+        # Generate initial states
+        initial_states = np.array(list(product(vi, Ri, Si, Li)))
+        i_states_all = np.repeat(initial_states, total_transitions, axis=0)
+        VI, RI, SI, LI = (
+            i_states_all[:, 0],
+            i_states_all[:, 1],
+            i_states_all[:, 2],
+            i_states_all[:, 3],
         )
 
-        vf = vi + dv
-        Rf = Ri + dR
-        Sf = Si + dS
-        Lf = Li + dL
-        pf = pi + dp
+        # Generate transitions for each quantum number and tile them appropriately
+        dv_full = np.tile(dv, len(initial_states) * len(dR) * len(dS) * len(dL))
+        dR_full = np.tile(
+            np.repeat(dR, len(dv)), len(initial_states) * len(dS) * len(dL)
+        )
+        dS_full = np.tile(
+            np.repeat(dS, len(dv) * len(dR)), len(initial_states) * len(dL)
+        )
+        dL_full = np.tile(
+            np.repeat(dL, len(dv) * len(dR) * len(dS)), len(initial_states)
+        )
 
-        states_initial = State(v=vi, v1=vi, R=Ri, S=Si, L=Li, p=pi)
-        states_final = State(v=vf, v1=vf, R=Rf, S=Sf, L=Lf, p=pf)
+        # Apply transitions
+        VF = i_states_all[:, 0] + dv_full
+        RF = i_states_all[:, 1] + dR_full
+        SF = i_states_all[:, 2] + dS_full
+        LF = i_states_all[:, 3] + dL_full
 
-        for states in [states_initial, states_final]:
-            states.J = states.R + states.S + states.L
-            states.O = states.L + states.S
-            states.N = states.R + states.L
+        # Calculate the final state
+        OI = LI + SI
+        OF = LF + SF
+        NI = RI + LI
+        NF = RF + LF
+        JI = RI + SI + LI
+        JF = RF + SF + LF
+        PI = (-1) ** (
+            JI + SI
+        )  # e states have (-1)^J-1/2, f states have (-1)^J+1/2. Brown and Carrington P 251.
+        PF = (-1) ** (
+            JF + SF
+        )  # e states have (-1)^J-1/2, f states have (-1)^J+1/2. Brown and Carrington P 251.
+
+        # # Flatten the arrays to create a list of final states
+        # vi, ri, ji, si, li, oi, ni, pi = VI.flatten(), RI.flatten(), JI.flatten(), SI.flatten(), LI.flatten(), OI.flatten(), NI.flatten(), PI.flatten()
+        # vf, rf, jf, sf, lf, of, nf, pf = VF.flatten(), RF.flatten(), JF.flatten(), SF.flatten(), LF.flatten(), OF.flatten(), NF.flatten(), PF.flatten()
+
+        # print ("Unique states:")
+        # for i in [vf, jf, sf, lf, of, nf]:
+        #     print(np.unique(i))
+        # print ("Unique transitions: [v,j,s,l,o,n]")
+        # for i in [vf-vi, jf-ji, sf-si, lf-li, of-oi, nf - ni]:
+        #     print(np.unique(i))
 
         # Apply validity conditions
-        legal = vf >= 0  # Final v and J states are positive
-
-        # J must be at least 1/2
-        legal &= (states_initial.J >= 0.5) & (states_final.J >= 0.5)
-
-        # Omega is between -3/2 and +3/2
-        # legal &= (-1.5 <= states_initial.O) & (states_initial.O <= 1.5)
-        legal &= (-1.5 <= states_final.O) & (states_final.O <= 1.5)
-        legal &= np.isin(Sf, [-1 / 2, 1 / 2])  # S is either -1/2 or +1/2
-        legal &= np.isin(Lf, [-1, 1])  # L is either -1 or +1
-        legal &= np.abs(states_final.J - states_initial.J) <= 2  # dJ <= 2
-        # legal &= (OF > 0) & (OI > 0)  # Omega is positive
-        legal &= np.abs(pf) == 1
-
-        # legal = legal & (np.abs(NF - NI) <=3)            # Delta N is less than 3
+        legal = VF >= 0  # Final v and J states are positive
+        legal = legal & (JF >= 0.5) & (JI >= 0.5)  # J must be at least 1/2
+        legal = legal & (-1.5 <= OF) & (OF <= 1.5)  # Omega is between -3/2 and +3/2
+        legal = legal & np.isin(SF, [-1 / 2, 1 / 2])  # S is either -1/2 or +1/2
+        legal = legal & np.isin(LF, [-1, 1])  # L is either -1 or +1
+        legal = legal & (np.abs(NF - NI) <= 3)  # Delta N is less than 3
         # legal = legal & (pi == pf)                      # Parity must be conserved, i.e. + -> + or - -> -
-
-        rayleigh = states_initial.J == states_final.J
-        for x in states_initial.keys():
-            rayleigh &= states_initial[x] == states_final[x]
-
+        rayleigh = (
+            (VI == VF)
+            & (RI == RF)
+            & (JI == JF)
+            & (SI == SF)
+            & (LI == LF)
+            & (OI == OF)
+            & (NI == NF)
+        )
         legal &= ~rayleigh  # Remove states where final state == initial state
+        # print(len(vf[legal]))
+        # print ("Unique legal states:")
+        # for i in [vf[legal],jf[legal],sf[legal],lf[legal],of[legal]]:
+        #     print(np.unique(i))
+        # print ("Unique legal transitions: [v,j,s,l,o,n]")
+        # for i in [vf[legal]-vi[legal], jf[legal]-ji[legal], sf[legal]-si[legal], lf[legal]-li[legal], of[legal]-oi[legal]]:
+        #     print(np.unique(i))
+        states_inital = State(
+            v=VI[legal],
+            R=RI[legal],
+            S=SI[legal],
+            L=LI[legal],
+            J=JI[legal],
+            O=OI[legal],
+            N=NI[legal],
+            p=PI[legal],
+        )
+        states_final = State(
+            v=VF[legal],
+            R=RF[legal],
+            S=SF[legal],
+            L=LF[legal],
+            J=JF[legal],
+            O=OF[legal],
+            N=NF[legal],
+            p=PF[legal],
+        )
 
-        return states_initial[legal], states_final[legal]
+        return states_inital, states_final
 
     @classmethod
     def _format_quanta_global(cls, state: State):

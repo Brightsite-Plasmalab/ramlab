@@ -38,12 +38,13 @@ class AbInitioMolecule(LineListMolecule):
         laser_wavelength: float,
         state_initial: State = None,
         state_final: State = None,
+        polarisation: str = "= + T",
     ) -> Transitions:
         if state_initial is None or state_final is None:
             state_initial, state_final = cls._get_all_transition_states()
 
         transitions = cls._make_transitions(
-            laser_wavelength, state_initial, state_final
+            laser_wavelength, state_initial, state_final, polarisation
         )
         cls._save_hitran_linelist(transitions, cls.get_linelist_file(laser_wavelength))
 
@@ -73,7 +74,11 @@ class AbInitioMolecule(LineListMolecule):
 
     @classmethod
     def _make_transitions(
-        cls, laser_wavelength: float, state_initial: State, state_final: State
+        cls,
+        laser_wavelength: float,
+        state_initial: State,
+        state_final: State,
+        polarisation: str = "= + T",
     ) -> Transitions:
         # print (state_initial, state_final)
         for state in [state_initial, state_final]:
@@ -97,17 +102,31 @@ class AbInitioMolecule(LineListMolecule):
         transitions.dv = state_final.v1 - state_initial.v1
         transitions.dJ = state_final.J - state_initial.J
         transitions.dE = state_final.E - state_initial.E
+
         if "O" in state_initial.state.keys():
             print("Assigning other quantum states")
+            # Sum of spin and electronic orbital angular momentum
             transitions.dO = state_final.O - state_initial.O
+
+            # Electronic orbital angular momentum
             transitions.dL = state_final.L - state_initial.L
+
+            # Rotational angular momentum
             transitions.dR = state_final.R - state_initial.R
+
+            # Sum of rotational and electronic angular momentum
             transitions.dN = state_final.N - state_initial.N
+
+            # Electron spin
             transitions.dS = state_final.S - state_initial.S
+
+            # Parity, either +1 or -1
             transitions.dp = state_final.p - state_initial.p
 
         transitions.vacuum_wavenumber = state_final.E - state_initial.E
-        transitions.crosssection = cls._calc_crosssection(transitions)
+        transitions.crosssection = cls._calc_crosssection(
+            transitions, laser_wavelength, polarisation
+        )
         transitions.depolarization_ratio = cls._calc_depolarization_ratio(transitions)
         transitions.molecule_number = cls.molecule_number
         transitions.isotope_number = cls.isotope_number
