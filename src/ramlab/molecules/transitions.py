@@ -8,10 +8,13 @@ from ramlab.molecules.state import State
 class Transitions:
     linelist: pd.DataFrame
 
-    def __init__(self, linelist=None):
+    def __init__(self, linelist=None, **kwargs):
         if linelist is None:
             linelist = pd.DataFrame()
         self.linelist = linelist
+
+        for k, v in kwargs.items():
+            self[k] = v
 
     @property
     def state_initial(self):
@@ -29,7 +32,7 @@ class Transitions:
             **{
                 k.replace("final_", ""): self.linelist[k].values
                 for k in self.linelist.columns
-                if k.startswith("upper_")
+                if k.startswith("final_")
             }
         )
 
@@ -46,7 +49,7 @@ class Transitions:
         if name == "linelist":
             super().__setattr__(name, value)
         else:
-            self.linelist[name] = value
+            self.linelist.loc[:, name] = value
 
     def __setitem__(self, name: str, value: Any) -> None:
         self.linelist[name] = value
@@ -66,7 +69,7 @@ class Transitions:
             )
 
     def __len__(self):
-        return self.linelist.size
+        return len(self.linelist)
 
     def __repr__(self):
         return f"Transitions[{len(self)}]({', '.join([f'{k}' for k in self.linelist.columns])})"

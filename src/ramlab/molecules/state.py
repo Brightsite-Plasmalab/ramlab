@@ -1,8 +1,10 @@
 from typing import Any, Dict
 import numpy as np
+import pandas as pd
 
 
 class State:
+    # TODO: Probably best to use pandas here too, see implementation of Transitions
     state: Dict[str, Any]
 
     def __init__(self, **state):
@@ -39,6 +41,8 @@ class State:
         ):
             # Get the start, stop, and step from the slice
             return State(**{k: self.state[k][key] for k in list(self.state.keys())})
+        elif isinstance(key, str):
+            return self.state[key]
         else:
             raise TypeError(
                 f"Invalid argument type `{type(key)}`. Use a slice or an integer."
@@ -48,9 +52,32 @@ class State:
         return np.size(list(self.state.values())[0])
 
     def __repr__(self):
+        if len(self) == 1:
+            return f"State(\n\t{',\n\t'.join([f'{k}({str(type(v))})={v}' for k, v in self.state.items()])}\n)"
         return f"State({', '.join([f'{k}' for k in self.state.keys()])}) with length {len(self)}"
 
     def __add__(self, other):
         return State(
             **{k: np.concatenate([self.state[k], other.state[k]]) for k in self.state}
         )
+
+    def unique(self, return_index=False):
+        df = pd.DataFrame.from_dict(self.state, orient="index").reset_index()
+        # df = pd.DataFrame.from_dict(self.state).reset_index()
+
+        # Drop duplicate rows and keep the first occurrence
+        df_unique = df.drop_duplicates(keep="first")
+
+        # Get the indices of the unique rows
+        idx = df_unique.index.tolist()
+
+        # # Convert the dictionary values to a 2D numpy array
+        # matrix = np.array(list(self.state.values()), dtype=np.float32)
+
+        # # Find the unique rows and their indices
+        # _, idx = np.unique(matrix, axis=1, return_index=True)
+
+        if return_index:
+            return self[np.ndarray(idx, dtype=int)], idx
+        else:
+            return self[idx]
