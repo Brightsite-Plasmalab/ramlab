@@ -104,9 +104,13 @@ class Molecule:
         T = temperatures["T"]
         g = state_initial.degeneracy
         E = state_initial.E
-        weights = g * np.exp(-100 * h * c * E / (k * T))
-        sumofstates = np.sum(weights)
-        n = weights / sumofstates
+        _, idx_unique = state_initial.unique(return_index=True)
+        weights = g * np.exp(
+            -h * c * (100 * E) / (k * T)
+        )  # 100*E converts E from cm^-1 to m^-1
+        # partition_sum = np.nansum(weights)
+        partition_sum = np.nansum(weights[idx_unique])
+        n = weights / partition_sum
         return n
 
     @classmethod

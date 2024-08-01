@@ -4,10 +4,6 @@ import sys
 import os
 import matplotlib.pyplot as plt
 from itertools import product
-
-# # Add the src directory to the PYTHONPATH
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-from ramlab.math import make_quantum_numbers
 from ramlab.molecules.state import State
 from ramlab.molecules.transitions import Transitions
 from ramlab.molecules.ab_initio_molecule import AbInitioMolecule
@@ -61,9 +57,13 @@ class NO(AbInitioMolecule):
 
     # Intensity and population calculations
     @classmethod
-    def _calc_degeneracy(cls, state: State):  # Determine rotational degeneracy
+    def _calc_degeneracy(
+        cls, transitions: Transitions
+    ):  # Determine rotational degeneracy
         """Rotational degenarcy - validated in Satija and Lucht"""
-        return 2 * (state.J + 1)
+        J = transitions.J
+        g = 2 * (J + 1)
+        return g
 
     @classmethod
     def _calc_crosssection(cls, transitions: Transitions):
@@ -208,10 +208,10 @@ class NO(AbInitioMolecule):
                     )
                 )
             else:
-                intensity = 0
                 print(
                     f"No valid transition for: Omega_lower = {O_l} and delta_Omega = {dO}. Intensity = {intensity}"
                 )
+                intensity = 0
             a_j.append(rc(*rc_i, "a"))
             b_j.append(rc(*rc_i, "b"))
             J_list.append(J_l)
@@ -331,6 +331,82 @@ class NO(AbInitioMolecule):
             "Vibrational energy calculation not implemented: we used fitted HITRAN data for total energy only."
         )
 
+    # #State calculations
+    # @classmethod
+    # def _get_all_transition_states(cls) -> tuple[State, State]:
+    # # Quantum numbers definitions - see Zare - Angular Momentum, P297
+    #     vi = np.arange(0, 1)  # Vibrational
+    #     Ri = np.arange(0, 40, 1)  # Nuclear rotational angular momentum
+    #     Si = np.array([0.5, -0.5])    # Electronic spin angular momentum
+    #     Li = np.array([1, -1])   #  Electronic orbital angular momentum
+
+    #     # Generate all possible combinations of these quantum numbers
+    #     V, R, S, L = np.meshgrid(vi, Ri, Si, Li, indexing='ij')
+    #     V, R, S, L = V.flatten(), R.flatten(), S.flatten(), L.flatten()
+    #     # Calculate other Quantum numbers
+    #     O = L + S  # Calculate Omega for each state
+    #     J = R + S + L # Total angular momentum
+    #     N = J - S  # Determine quantum number N
+
+    #     # Define allowed changes (dv, dJ, dO)
+    #     dv = np.array([ 0])  # Allowed change in vibrational quantum number
+    #     dJ = np.array([-2, -1, 0, 1, 2])  # Allowed change in total angular momentum
+    #     dL = np.array([-2, 0, 2])  # Allowed change in electronic orbital angular momentum
+    #     dS = np.array([-1,0,1])  # Allowed change in electronic spin angular momentum
+
+    #     # Calculate transitions - first remake list of inital states, having the same length as the final states list
+    #     shape = (len(V), len(dv), len(dJ), len(dS))
+    #     VI = np.broadcast_to(V[:, None, None, None], shape)
+    #     RI = np.broadcast_to(R[:, None, None, None], shape)
+    #     SI = np.broadcast_to(S[:, None, None, None], shape)
+    #     LI = np.broadcast_to(L[:, None, None, None], shape)
+    #     JI = RI + SI + LI # Total angular momentum
+    #     OI = LI + SI  # Calculate Omega for each state: +3/2, +1/2, -1/2, -3/2
+    #     NI = JI - SI # Determine quantum number N
+    #     PI = cls.parity(JI, SI) #Calculate parity
+
+    #     VF = VI + dv[:, None, None]
+    #     JF = JI + dJ[:, None]
+    #     SF = SI + dS
+    #     LF = LI + dL
+    #     OF = LF + SF
+    #     NF = JF - SF
+    #     RF = NF - LF
+    #     PF = cls.parity(JF, SF)
+
+    #     # Flatten the arrays to create a list of final states
+    #     vi, ri, ji, si, li, oi, ni, pi = VI.flatten(), RI.flatten(), JI.flatten(), SI.flatten(), LI.flatten(), OI.flatten(), NI.flatten(), PI.flatten()
+    #     vf, rf, jf, sf, lf, of, nf, pf = VF.flatten(), RF.flatten(), JF.flatten(), SF.flatten(), LF.flatten(), OF.flatten(), NF.flatten(), PF.flatten()
+
+    #     print ("Unique states:")
+    #     for i in [vf, jf, sf, lf, of]:
+    #         print(np.unique(i))
+    #     print ("Unique transitions: [v,j,s,l,o]")
+    #     for i in [vf-vi, jf-ji, sf-si, lf-li, of-oi]:
+    #         print(np.unique(i))
+
+    #     # Apply validity conditions
+    #     legal = (vf >= 0)                 #Final v and J states are positive
+    #     legal = legal & (jf >= 0.5) & (ji >= 0.5)      # J must be at least 1/2
+    #   #  legal = legal & (-1.5 <= of) & (of <= 1.5 )     # Omega is between -3/2 and +3/2
+    #     legal = legal &  np.isin(sf, [-1/2, 1/2])      # S is either -1/2 or +1/20
+    #     legal = legal &  np.isin(lf, [-1, 1])       # L is either -1 or +1
+    #     #legal = legal & (np.abs(nf-ni) <=2)            # Delta N is 1 or 0
+    #     #legal = legal & (pi == pf)                      # Parity must be conserved, i.e. + -> + or - -> -
+    #     #rayleigh = (vi == vf) & (ri == rf) & (ji == jf) & (si == sf) & (li == lf) & (oi == of) & (ni == nf)
+    #    # legal &= ~rayleigh # Remove identical states
+    #     print ("Unique legal states:")
+    #     for i in [vf[legal],jf[legal],sf[legal],lf[legal],of[legal]]:
+    #         print(np.unique(i))
+    #     print ("Unique legal transitions: [v,j,s,l,o]")
+    #     for i in [vf[legal]-vi[legal], jf[legal]-ji[legal], sf[legal]-si[legal], lf[legal]-li[legal], of[legal]-oi[legal]]:
+    #         print(np.unique(i))
+    #     states_inital= State(v=vi[legal], R=ri[legal], S=si[legal], L=li[legal], J=ji[legal], O=oi[legal], N=ni[legal], p = pi[legal])
+    #     states_final = State(v=vf[legal], R=rf[legal], S=sf[legal], L=lf[legal], J=jf[legal], O=of[legal], N=nf[legal], p = pf[legal])
+
+    #     return states_inital, states_final
+
+    # State calculations
     @classmethod
     def _get_all_transition_states(cls) -> tuple[State, State]:
         # Quantum numbers definitions - see Zare - Angular Momentum, P29
@@ -340,60 +416,115 @@ class NO(AbInitioMolecule):
         Ri = np.arange(0, 40)  # Rotational quantum number
         Si = np.array([0.5, -0.5])  # Spin quantum number
         Li = np.array([1, -1])  # Orbital quantum number
-        pi = np.array(
-            [1, -1]
-        )  # Parity quantum number? Added by Martijn, representing the +- in Satija Eq. 1
 
         # Define transitions for each quantum number
         dv = np.array([0])
-        dR = np.array([-3, -2, -1, 0, 1, 2, 3])
+        dR = np.array([-2, -1, 0, 1, 2])
         dL = np.array([-2, 0, 2])
         dS = np.array([-1, 0, 1])
-        dp = np.array([-2, 2])
 
-        vi, Ri, Si, Li, pi, dv, dR, dL, dS, dp = make_quantum_numbers(
-            vi, Ri, Si, Li, pi, dv, dR, dL, dS, dp
+        # Calculate the total number of transitions
+        total_transitions = len(dv) * len(dR) * len(dS) * len(dL)
+
+        # Generate initial states
+        initial_states = np.array(list(product(vi, Ri, Si, Li)))
+        i_states_all = np.repeat(initial_states, total_transitions, axis=0)
+        VI, RI, SI, LI = (
+            i_states_all[:, 0],
+            i_states_all[:, 1],
+            i_states_all[:, 2],
+            i_states_all[:, 3],
         )
 
-        vf = vi + dv
-        Rf = Ri + dR
-        Sf = Si + dS
-        Lf = Li + dL
-        pf = pi + dp
+        # Generate transitions for each quantum number and tile them appropriately
+        dv_full = np.tile(dv, len(initial_states) * len(dR) * len(dS) * len(dL))
+        dR_full = np.tile(
+            np.repeat(dR, len(dv)), len(initial_states) * len(dS) * len(dL)
+        )
+        dS_full = np.tile(
+            np.repeat(dS, len(dv) * len(dR)), len(initial_states) * len(dL)
+        )
+        dL_full = np.tile(
+            np.repeat(dL, len(dv) * len(dR) * len(dS)), len(initial_states)
+        )
 
-        states_initial = State(v=vi, v1=vi, R=Ri, S=Si, L=Li, p=pi)
-        states_final = State(v=vf, v1=vf, R=Rf, S=Sf, L=Lf, p=pf)
+        # Apply transitions
+        VF = i_states_all[:, 0] + dv_full
+        RF = i_states_all[:, 1] + dR_full
+        SF = i_states_all[:, 2] + dS_full
+        LF = i_states_all[:, 3] + dL_full
 
-        for states in [states_initial, states_final]:
-            states.J = states.R + states.S + states.L
-            states.O = states.L + states.S
-            states.N = states.R + states.L
+        # Calculate the final states
+        # Calculate the final states
+        OI = LI + SI
+        OF = LF + SF
+        NI = RI + LI
+        NF = RF + LF
+        JI = RI + SI + LI
+        JF = RF + SF + LF
+        PI = (-1) ** (JI - SI)
+        PF = (-1) ** (JF - SF)
+
+        # # Flatten the arrays to create a list of final states
+        # vi, ri, ji, si, li, oi, ni, pi = VI.flatten(), RI.flatten(), JI.flatten(), SI.flatten(), LI.flatten(), OI.flatten(), NI.flatten(), PI.flatten()
+        # vf, rf, jf, sf, lf, of, nf, pf = VF.flatten(), RF.flatten(), JF.flatten(), SF.flatten(), LF.flatten(), OF.flatten(), NF.flatten(), PF.flatten()
+
+        # print ("Unique states:")
+        # for i in [vf, jf, sf, lf, of, nf]:
+        #     print(np.unique(i))
+        # print ("Unique transitions: [v,j,s,l,o,n]")
+        # for i in [vf-vi, jf-ji, sf-si, lf-li, of-oi, nf - ni]:
+        #     print(np.unique(i))
 
         # Apply validity conditions
-        legal = vf >= 0  # Final v and J states are positive
-
-        # J must be at least 1/2
-        legal &= (states_initial.J >= 0.5) & (states_final.J >= 0.5)
-
-        # Omega is between -3/2 and +3/2
-        # legal &= (-1.5 <= states_initial.O) & (states_initial.O <= 1.5)
-        legal &= (-1.5 <= states_final.O) & (states_final.O <= 1.5)
-        legal &= np.isin(Sf, [-1 / 2, 1 / 2])  # S is either -1/2 or +1/2
-        legal &= np.isin(Lf, [-1, 1])  # L is either -1 or +1
-        legal &= np.abs(states_final.J - states_initial.J) <= 2  # dJ <= 2
-        # legal &= (OF > 0) & (OI > 0)  # Omega is positive
-        legal &= np.abs(pf) == 1
-
+        legal = VF >= 0  # Final v and J states are positive
+        legal &= (JF >= 0.5) & (JI >= 0.5)  # J must be at least 1/2
+        legal &= (-1.5 <= OF) & (OF <= 1.5)  # Omega is between -3/2 and +3/2
+        legal &= np.isin(SF, [-1 / 2, 1 / 2])  # S is either -1/2 or +1/2
+        legal &= np.isin(LF, [-1, 1])  # L is either -1 or +1
         # legal = legal & (np.abs(NF - NI) <=3)            # Delta N is less than 3
         # legal = legal & (pi == pf)                      # Parity must be conserved, i.e. + -> + or - -> -
-
-        rayleigh = states_initial.J == states_final.J
-        for x in states_initial.keys():
-            rayleigh &= states_initial[x] == states_final[x]
-
+        rayleigh = (
+            (VI == VF)
+            & (RI == RF)
+            & (JI == JF)
+            & (SI == SF)
+            & (LI == LF)
+            & (OI == OF)
+            & (NI == NF)
+        )
         legal &= ~rayleigh  # Remove states where final state == initial state
+        # print(len(vf[legal]))
+        # print ("Unique legal states:")
+        # for i in [vf[legal],jf[legal],sf[legal],lf[legal],of[legal]]:
+        #     print(np.unique(i))
+        # print ("Unique legal transitions: [v,j,s,l,o,n]")
+        # for i in [vf[legal]-vi[legal], jf[legal]-ji[legal], sf[legal]-si[legal], lf[legal]-li[legal], of[legal]-oi[legal]]:
+        #     print(np.unique(i))
+        states_inital = State(
+            v=VI[legal],
+            v1=VI[legal],
+            R=RI[legal],
+            S=SI[legal],
+            L=LI[legal],
+            J=JI[legal],
+            O=OI[legal],
+            N=NI[legal],
+            p=PI[legal],
+        )
+        states_final = State(
+            v=VF[legal],
+            v1=VF[legal],
+            R=RF[legal],
+            S=SF[legal],
+            L=LF[legal],
+            J=JF[legal],
+            O=OF[legal],
+            N=NF[legal],
+            p=PF[legal],
+        )
 
-        return states_initial[legal], states_final[legal]
+        return states_inital, states_final
 
     @classmethod
     def _format_quanta_global(cls, state: State):

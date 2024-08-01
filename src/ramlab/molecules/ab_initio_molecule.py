@@ -94,10 +94,10 @@ class AbInitioMolecule(LineListMolecule):
             transitions["initial_" + col] = state_initial.state[col]
             transitions["final_" + col] = state_final.state[col]
 
-        transitions.dv = state_final.v - state_initial.v
+        transitions.dv = state_final.v1 - state_initial.v1
         transitions.dJ = state_final.J - state_initial.J
         transitions.dE = state_final.E - state_initial.E
-        if 'O' in state_initial.state.keys():
+        if "O" in state_initial.state.keys():
             print("Assigning other quantum states")
             transitions.dO = state_final.O - state_initial.O
             transitions.dL = state_final.L - state_initial.L

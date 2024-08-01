@@ -80,163 +80,44 @@ class NO(AbInitioMolecule):
 
     @classmethod
     def _rc(
-        cls, J, v, O, type
+        cls, state, type
     ):  # Rotational coeffecients, used in calculation of linestrengths for Satija and Lucht method, taken from Zare - Angular Momentum, P303
         # Has been validatad against Fig. 3 from Satija and Lucht
-        A = cls.A
-        # v = 0
-        Bv = cls.B_v(v, O)
-        # B_v = cls.B_v(v)
-        Y = A / Bv  # Ratio of spin-orbit coupling constant to rotational constant
-        X = (4 * (J - 0.5) * (J + 1.5) + (Y - 2) ** 2) ** 0.5
+        Bv = cls.B_v(state.v, np.where(state.F == 1, 1 / 2, 3 / 2))
+        Y = cls.A / Bv  # Ratio of spin-orbit coupling constant to rotational constant
+        X = (4 * (state.J - 0.5) * (state.J + 1.5) + (Y - 2) ** 2) ** 0.5
+
         if type in ["a", "d"]:
             return ((X + (Y - 2)) / (2 * X)) ** 0.5
-        elif type in ["b", "c"]:
-            coeff = ((X - (Y - 2)) / (2 * X)) ** 0.5
-            if type == "c":
-                coeff = -coeff
-            return coeff
+        elif type == "b":
+            return ((X - (Y - 2)) / (2 * X)) ** 0.5
+        elif type == "c":
+            return -(((X - (Y - 2)) / (2 * X)) ** 0.5)
         else:
             raise ValueError("Invalid type. Type must be one of ['a', 'b', 'c', 'd'].")
 
     @classmethod
     # Testing new method based on Satija and Lucht
     def linestrength(cls, transitions: Transitions):
-        rc = cls._rc
-        intensities = []
-        aq_0 = cls.a_q0
-        aq_2 = 0  # np.sqrt(cls.a_q2_to_aq0  * cls.a_q0**2)
-        a_j = []
-        b_j = []
-        J_list = []
-        tran_length = len(transitions.linelist)
-        print(f"Calculating linestrengths for {tran_length}...")
-        for index, row in transitions.linelist.iterrows():
-            O_l = row["initial_O"]
-            O_u = row["final_O"]
-            dO = row["dO"]
+        intensities = np.ones_like(transitions.initial_J) * np.nan
 
-            J_l = row["initial_J"]
-            J_u = row["final_J"]
-            v_l = row["initial_v"]
-            v_u = row["final_v"]
-            dS = row["dS"]
-            dN = row["dN"]
-            S_l = row["initial_S"]
-            S_u = row["final_S"]
-
-            rc_i = (J_l, v_l, O_l)
-            rc_f = (J_u, v_u, O_u)
-            # Definition of F1 and F2 states are not yet correctly defined.
-            # Attention also needs to be paid to the +/- term that preceeds the aq_2 term
-            if (np.abs(O_l) == 0.5) & (
-                np.abs(O_u) == 0.5
-            ):  # For F1 -> F1 pure rotational transitions - Eq. 40 from Satija and Lucht
-                intensity = (
-                    (2 * J_l + 1)
-                    * (2 * J_u + 1)
-                    / 10
-                    * (
-                        (
-                            aq_0
-                            * (
-                                (
-                                    rc(*rc_i, "a")
-                                    * rc(*rc_f, "a")
-                                    * wigner_3j(J_l, J_u, 2, 1 / 2, -1 / 2, 0)
-                                )
-                                - (
-                                    rc(*rc_i, "b")
-                                    * rc(*rc_f, "b")
-                                    * wigner_3j(J_l, J_u, 2, 3 / 2, -3 / 2, 0)
-                                )
-                            )  #   + aq_2 * ((-1)**(J_l - 0.5)) * (-(rc(*rc_i,'a')*rc(*rc_f,'b')* wigner_3j(J_l, J_u, 2, -1/2, -3/2, 2)) + (rc(*rc_i,'b')*rc(*rc_f,'a') * wigner_3j(J_l, J_u, 2, -3/2, -1/2, 2)))\
-                        )
-                        ** 2
-                    )
-                )
-            elif (np.abs(O_l) == 1.5) & (
-                np.abs(O_u) == 1.5
-            ):  # For F2 -> F2 pure rotational transitions - Eq. 41 from Satija and Lucht
-                intensity = (
-                    (2 * J_l + 1)
-                    * (2 * J_u + 1)
-                    / 10
-                    * (
-                        (
-                            aq_0
-                            * (
-                                (
-                                    rc(*rc_i, "c")
-                                    * rc(*rc_f, "c")
-                                    * wigner_3j(J_l, J_u, 2, 1 / 2, -1 / 2, 0)
-                                )
-                                - (
-                                    rc(*rc_i, "d")
-                                    * rc(*rc_f, "d")
-                                    * wigner_3j(J_l, J_u, 2, 3 / 2, -3 / 2, 0)
-                                )
-                            )  #   + aq_2 * ((-1)**(J_l - 0.5)) * (-(rc(*rc_i,'c')*rc(*rc_f,'d')* wigner_3j(J_l, J_u, 2, -1/2, -3/2, 2)) + (rc(*rc_i,'d')*rc(*rc_f,'c') * wigner_3j(J_l, J_u, 2, -3/2, -1/2, 2))) \
-                        )
-                        ** 2
-                    )
-                )
-            # For F1 -> F2 electronic-rotational transitions - Eq. 60 from Satija and Lucht
-            # elif (dO == 1) or (dO == -1): #Note place holder for F1 -> F2 transitions, equation is correctly implemented but rules need to be defined
-            elif (np.abs(O_l) == 0.5) & (np.abs(O_u) == 1.5):
-                intensity = (
-                    (2 * J_l + 1)
-                    * (2 * J_u + 1)
-                    / 5
-                    * (
-                        (
-                            aq_0
-                            * (
-                                (
-                                    rc(*rc_i, "a")
-                                    * rc(*rc_f, "c")
-                                    * wigner_3j(J_l, J_u, 2, 1 / 2, -1 / 2, 0)
-                                )
-                                - (
-                                    rc(*rc_i, "b")
-                                    * rc(*rc_f, "d")
-                                    * wigner_3j(J_l, J_u, 2, 3 / 2, -3 / 2, 0)
-                                )
-                            )  # + aq_2 * ((-1)**(J_l - 0.5)) * (-(rc(*rc_i,'a')*rc(*rc_f,'d')* wigner_3j(J_l, J_u, 2, -1/2, -3/2, 2)) + (rc(*rc_i,'b')*rc(*rc_f,'c') * wigner_3j(J_l, J_u, 2, -3/2, -1/2, 2)))\
-                        )
-                        ** 2
-                    )
-                )
-            else:
-                intensity = 0
-                print(
-                    f"No valid transition for: Omega_lower = {O_l} and delta_Omega = {dO}. Intensity = {intensity}"
-                )
-            a_j.append(rc(*rc_i, "a"))
-            b_j.append(rc(*rc_i, "b"))
-            J_list.append(J_l)
-            intensities.append(float(intensity / ((2 * J_l) + 1)))
-            # intensities.append(float(intensity / ((2*J_l)+1)))
-        plt.figure()
-        plt.scatter(J_list, a_j, label=r"$a_j$, $d_j$", marker=".")
-        plt.scatter(J_list, b_j, label=r"$b_j$, $-c_j$", marker=".")
-        plt.xlabel("J")
-        plt.legend()
-        plt.ylabel("Wavefunction Coeffecient")
-        plt.show()
         return intensities
 
     # Energy calculations
     @classmethod
-    def E(cls, state: State):  # Perhaps check if this is unessary duplication?
+    def E(cls, state: State):
         # E_r = cls.E_rot(state)
         # E_v = cls.E_vib(state)
         # E = E_r + E_v
         # state.E = {'value': E, 'units': 'cm⁻¹'}
         # print(E)
+
+        idF1 = state.F == 1
+        idF2 = state.F == 2
+
         E = np.zeros(len(state.J)) * np.nan
 
-        E_O_12 = (
+        E_F1 = (
             -9.488e02 * 1
             + 1.682e00
             * ((state.J - 1 / 2) * (state.J + 3 / 2)) ** 1
@@ -260,7 +141,7 @@ class NO(AbInitioMolecule):
             - 1.409e01 * (state.v1 + 1 / 2) ** 2
             + 8.161e-03 * (state.v1 + 1 / 2) ** 3
         )
-        E_O_32 = (
+        E_F2 = (
             -8.286e02 * 1
             + 1.728e00
             * ((state.J - 1 / 2) * (state.J + 3 / 2)) ** 1
@@ -285,10 +166,8 @@ class NO(AbInitioMolecule):
             + 1.097e-02 * (state.v1 + 1 / 2) ** 3
         )
 
-        id12 = np.abs(state.O) == 1 / 2
-        id32 = np.abs(state.O) == 3 / 2
-        E[id12] = E_O_12[id12]
-        E[id32] = E_O_32[id32]
+        E[idF1] = E_F1[idF1]
+        E[idF2] = E_F2[idF2]
 
         #  TODO: About time we start to enfore this
         assert np.all(~np.isnan(E))
@@ -335,63 +214,42 @@ class NO(AbInitioMolecule):
     def _get_all_transition_states(cls) -> tuple[State, State]:
         # Quantum numbers definitions - see Zare - Angular Momentum, P29
 
-        # Define initial quantum states
         vi = np.arange(0, 1)  # Vibrational quantum number
-        Ri = np.arange(0, 40)  # Rotational quantum number
-        Si = np.array([0.5, -0.5])  # Spin quantum number
-        Li = np.array([1, -1])  # Orbital quantum number
-        pi = np.array(
-            [1, -1]
-        )  # Parity quantum number? Added by Martijn, representing the +- in Satija Eq. 1
+        Ji = np.arange(1 / 2, 81 / 2)  # Rotational quantum number
+        Fi = np.array([1, 2])
+        pi = np.array([1, -1])
 
         # Define transitions for each quantum number
         dv = np.array([0])
-        dR = np.array([-3, -2, -1, 0, 1, 2, 3])
-        dL = np.array([-2, 0, 2])
-        dS = np.array([-1, 0, 1])
-        dp = np.array([-2, 2])
+        dJ = np.array([-2, -1, 0, 1, 2])
+        dF = np.array([-1, 0, 1])
+        dp = np.array([-2, 0, 2])
 
-        vi, Ri, Si, Li, pi, dv, dR, dL, dS, dp = make_quantum_numbers(
-            vi, Ri, Si, Li, pi, dv, dR, dL, dS, dp
-        )
+        vi, Ji, Fi, pi, dv, dJ, dF, dp = np.meshgrid(vi, Ji, Fi, pi, dv, dJ, dF, dp)
 
         vf = vi + dv
-        Rf = Ri + dR
-        Sf = Si + dS
-        Lf = Li + dL
         pf = pi + dp
+        Ff = Fi + dF
+        Jf = Ji + dJ
 
-        states_initial = State(v=vi, v1=vi, R=Ri, S=Si, L=Li, p=pi)
-        states_final = State(v=vf, v1=vf, R=Rf, S=Sf, L=Lf, p=pf)
-
-        for states in [states_initial, states_final]:
-            states.J = states.R + states.S + states.L
-            states.O = states.L + states.S
-            states.N = states.R + states.L
+        states_initial = State(v=vi, v1=vi, J=Ji, F=Fi, p=pi)
+        states_final = State(v=vf, v1=vf, J=Jf, F=Ff, p=pf)
 
         # Apply validity conditions
         legal = vf >= 0  # Final v and J states are positive
 
         # J must be at least 1/2
         legal &= (states_initial.J >= 0.5) & (states_final.J >= 0.5)
+        legal &= np.isin(Ff, [1, 2])  # F is either -1 or +1
+        legal &= np.abs(pf) == 1  # p is either -1 or +1
 
-        # Omega is between -3/2 and +3/2
-        # legal &= (-1.5 <= states_initial.O) & (states_initial.O <= 1.5)
-        legal &= (-1.5 <= states_final.O) & (states_final.O <= 1.5)
-        legal &= np.isin(Sf, [-1 / 2, 1 / 2])  # S is either -1/2 or +1/2
-        legal &= np.isin(Lf, [-1, 1])  # L is either -1 or +1
-        legal &= np.abs(states_final.J - states_initial.J) <= 2  # dJ <= 2
-        # legal &= (OF > 0) & (OI > 0)  # Omega is positive
-        legal &= np.abs(pf) == 1
+        # We'll allow everything else for now, but the transitions might still have 0 probability.
 
-        # legal = legal & (np.abs(NF - NI) <=3)            # Delta N is less than 3
-        # legal = legal & (pi == pf)                      # Parity must be conserved, i.e. + -> + or - -> -
-
+        # Remove states where final state == initial state
         rayleigh = states_initial.J == states_final.J
         for x in states_initial.keys():
             rayleigh &= states_initial[x] == states_final[x]
-
-        legal &= ~rayleigh  # Remove states where final state == initial state
+        legal &= ~rayleigh
 
         return states_initial[legal], states_final[legal]
 
