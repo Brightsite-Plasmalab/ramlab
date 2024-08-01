@@ -1,5 +1,5 @@
 from pathlib import Path
-from ramlab.hitran.formatter import format_transitions_initial_final
+from ramlab.hitran.lineformatter import format_transitions_initial_final
 from ramlab.molecules.hitran_linelist_molecule import LineListMolecule
 import pandas as pd
 import numpy as np
@@ -108,7 +108,7 @@ class AbInitioMolecule(LineListMolecule):
 
         transitions.vacuum_wavenumber = state_final.E - state_initial.E
         transitions.crosssection = cls._calc_crosssection(transitions)
-        #  transitions.depolarization_ratio = cls._calc_depolarization_ratio(transitions)
+        transitions.depolarization_ratio = cls._calc_depolarization_ratio(transitions)
         transitions.molecule_number = cls.molecule_number
         transitions.isotope_number = cls.isotope_number
         print(transitions)
