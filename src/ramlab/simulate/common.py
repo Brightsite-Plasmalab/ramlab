@@ -21,6 +21,6 @@ def project_to_axis(x, x_stick, I_stick):
 
     for i, xi in enumerate(x_stick):
         idx = np.argmin(np.abs(x - xi))
-        I_x[idx] = I_stick[i]
+        I_x[idx] += I_stick[i]
 
     return I_x
