@@ -19,7 +19,9 @@ class AbInitioMolecule(LineListMolecule):
     """
 
     @classmethod
-    def get_linelist_file(cls, laser_wavelength: float = None) -> str:
+    def get_linelist_file(
+        cls, laser_wavelength: float = None, polarisation: str = None
+    ) -> str:
         """Returns the path to the line list file.
 
         Returns:
@@ -99,9 +101,10 @@ class AbInitioMolecule(LineListMolecule):
             transitions["initial_" + col] = state_initial.state[col]
             transitions["final_" + col] = state_final.state[col]
 
-        transitions.dv = state_final.v1 - state_initial.v1
+        transitions.dv = state_final.v - state_initial.v
         transitions.dJ = state_final.J - state_initial.J
         transitions.dE = state_final.E - state_initial.E
+        transitions.vacuum_wavenumber = state_final.E - state_initial.E
 
         if "O" in state_initial.state.keys():
             print("Assigning other quantum states")
@@ -123,14 +126,19 @@ class AbInitioMolecule(LineListMolecule):
             # Parity, either +1 or -1
             transitions.dp = state_final.p - state_initial.p
 
-        transitions.vacuum_wavenumber = state_final.E - state_initial.E
+        # Discard invalid transitions
+        id_invalid = transitions.initial_E < 0
+        id_invalid &= transitions.final_E < 0
+        transitions = transitions[~id_invalid]
+        if id_invalid.sum() > 0:
+            print(f"Discarded {id_invalid.sum()} invalid transitions")
+
         transitions.crosssection = cls._calc_crosssection(
             transitions, laser_wavelength, polarisation
         )
         transitions.depolarization_ratio = cls._calc_depolarization_ratio(transitions)
         transitions.molecule_number = cls.molecule_number
         transitions.isotope_number = cls.isotope_number
-        print(transitions)
         return transitions
 
     @classmethod

@@ -27,7 +27,13 @@ class H2(SimpleDiatomicMolecule):
     alpha3_e_1 = 0
 
     # Polarizability constants - Need to be implemented for H2
-    alpha_p_sq = 3.79e-60 #Isotropy invariant squared - C^4m^2 / J^2, Taken from Lucht, Ch 7, P42
-    gamma_p_sq = 5.15e-60 #Anisotropy invariant squared - C^4m^2 / J^2, Taken from Lucht, Ch 7, P42
+    alpha_p_sq = 3.79e-60  # Isotropy invariant squared - C^4m^2 / J^2, Taken from Lucht, Ch 7, P42
+    gamma_p_sq = 5.15e-60  # Anisotropy invariant squared - C^4m^2 / J^2, Taken from Lucht, Ch 7, P42
 
-    #Herman-Wallis factor need to be added 
+    # Herman-Wallis factor need to be added
+
+    @classmethod
+    def _calc_crosssection(
+        cls, transitions: Transitions, laser_wavelength, polarisation="= + T"
+    ):
+        return np.ones_like(transitions.dE)

@@ -34,7 +34,7 @@ class NO_Hitran(LineListMolecule):
             df2.loc[df2[f"{state}_Omega"] == "3/2", f"{state}_O"] = 3 / 2
             df2.loc[df2[f"{state}_Omega"] == "1/2", f"{state}_O"] = 1 / 2
 
-            df2[f"{state}_v1"] = pd.to_numeric(
+            df2[f"{state}_v"] = pd.to_numeric(
                 df2[f"{state}_quanta_global"].str[13:15],
                 errors="coerce",
             )
