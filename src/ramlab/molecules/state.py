@@ -49,7 +49,8 @@ class State:
 
     def __repr__(self):
         if len(self) == 1:
-            return f"State(\n\t{',\n\t'.join([f'{k}({str(type(v))})={v}' for k, v in self.state.items()])}\n)"
+            nt = '\n\t'
+            return f"State({','.join([f'{nt}{k}({str(type(v))})={v}' for k, v in self.state.items()])}\n)"
         return f"State({', '.join([f'{k}' for k in self.state.keys()])}) with length {len(self)}"
 
     def __add__(self, other):
