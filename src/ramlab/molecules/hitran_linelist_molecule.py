@@ -42,7 +42,7 @@ class LineListMolecule(Molecule):
             Transitions: The transitions.
         """
 
-        if cls._has_linelist_file(laser_wavelength) and not force_recalculate:
+        if not force_recalculate and cls._has_linelist_file(laser_wavelength):
             df: pd.DataFrame = parse_hitran_data(
                 cls.get_linelist_file(laser_wavelength=laser_wavelength, polarisation = polarisation)
             )
