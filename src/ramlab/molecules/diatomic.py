@@ -534,7 +534,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
         rayleigh = (VI == VF) & (JI == JF)
         legal = VF >= 0
-        legal = legal & JF >= 0
+        legal &= JF >= 0
         legal &= ~rayleigh
         vi, Ji, vf, Jf = VI[legal], JI[legal], VF[legal], JF[legal]
         state_initial = State(v=vi, J=Ji)

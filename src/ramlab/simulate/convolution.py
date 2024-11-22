@@ -17,10 +17,10 @@ def simulate_convolution(x, x_stick, I_stick, sigma=1, gamma=0):
     assert len(x_stick) == len(
         I_stick
     ), "x_stick and I_stick must have the same length."
-    assert np.all(np.diff(x) > 0), "x must be sorted in ascending order."
+    diffs_x = np.diff(x)
+    assert np.all(diffs_x > 0), "x must be sorted in ascending order."
     assert np.all(~np.isnan(x)), "x must not contain NaNs."
-    print(np.nanstd(np.diff(x)))
-    assert np.nanstd(np.diff(x)) < np.nanmax(x) / 1e10, "x must be equally spaced."
+    assert (np.max(diffs_x) - np.min(diffs_x)) < np.min(diffs_x) / 1e10, "x must be equally spaced."
 
     dx = np.median(np.diff(x))
 
