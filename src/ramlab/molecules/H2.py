@@ -1,7 +1,9 @@
+from typing import override
 import numpy as np
-from ramlab.molecules.diatomic import SimpleDiatomicMolecule
+from ramlab.molecules.diatomic2 import SimpleDiatomicMolecule
 from ramlab.molecules.state import State
 from ramlab.molecules.transitions import Transitions
+import h2_rovib_me
 
 
 class H2(SimpleDiatomicMolecule):
@@ -26,14 +28,56 @@ class H2(SimpleDiatomicMolecule):
     D3_e = 0
     alpha3_e_1 = 0
 
-    # Polarizability constants - Need to be implemented for H2
-    alpha_p_sq = 3.79e-60  # Isotropy invariant squared - C^4m^2 / J^2, Taken from Lucht, Ch 7, P42
-    gamma_p_sq = 5.15e-60  # Anisotropy invariant squared - C^4m^2 / J^2, Taken from Lucht, Ch 7, P42
+    @classmethod
+    @override
+    def _get_all_transition_states(cls) -> tuple[State, State]:
+        state_initial, state_final = super()._get_all_transition_states()
 
-    # Herman-Wallis factor need to be added
+        # Filter for 0<=v<=4 and 0<=J<=15
+        idx_valid = (
+            (state_initial.v <= 4)
+            & (state_final.v <= 4)
+            & (state_initial.J <= 15)
+            & (state_final.J <= 15)
+            & (state_initial.v >= 0)
+            & (state_final.v >= 0)
+            & (state_initial.J >= 0)
+            & (state_final.J >= 0)
+        )
+
+        state_initial = state_initial[idx_valid]
+        state_final = state_final[idx_valid]
+
+        return state_initial, state_final
 
     @classmethod
-    def _calc_crosssection(
-        cls, transitions: Transitions, laser_wavelength, polarisation="= + T"
-    ):
-        return np.ones_like(transitions.dE)
+    @override
+    def polarisability_mean(cls, transitions: Transitions) -> np.ndarray:
+        return h2_rovib_me.compute_batch(
+            "H2",
+            transitions.initial_v,
+            transitions.initial_J,
+            transitions.final_v,
+            transitions.final_J,
+            532,
+            "nm",
+            "iso",
+        )
+
+    @classmethod
+    @override
+    def polarisability_anisotropy(cls, transitions):
+        return h2_rovib_me.compute_batch(
+            "H2",
+            transitions.initial_v,
+            transitions.initial_J,
+            transitions.final_v,
+            transitions.final_J,
+            532,
+            "nm",
+            "aniso",
+        )
+
+
+if __name__ == "__main__":
+    print(H2.get_all_transitions())

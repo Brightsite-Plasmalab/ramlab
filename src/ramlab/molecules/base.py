@@ -44,7 +44,7 @@ class Molecule:
             **state: The quantum numbers of the state.
 
         Returns:
-            int: The degeneracy of the state.
+            int: The degeneracy of the state [-].
         """
         raise NotImplementedError()
 
@@ -150,7 +150,7 @@ class Molecule:
             float: The intensity variable of the transition.
         """
 
-        raise NotImplementedError()
+        return cls.get_populations(transitions.state_initial, **temperatures)
 
     @classmethod
     def get_intensity(

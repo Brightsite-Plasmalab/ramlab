@@ -14,7 +14,13 @@ Molecule.crosssection_parallel(state_initial, state_final, lambda_laser)
 ```
 
 ## Saving format
-The line lists calculated with RamLab a modified [HITRAN2004](https://lweb.cfa.harvard.edu/HITRAN/formats.html) format:
+The line lists calculated with RamLab are in a modified [HITRAN2004](https://lweb.cfa.harvard.edu/HITRAN/formats.html) format as displayed below.
+
+Changes:
+- Change "Line intensity" to "cross-section"
+- Change "R^2" to "Depolarization ratio"
+- change (upper -> lower) to (initial -> final) to support anti-Stokes scattering.
+- remove parameters that are not appliccable to Raman scattering.
 
 
 |Symbol|Parameter|Field length|Data type|Comments or units|

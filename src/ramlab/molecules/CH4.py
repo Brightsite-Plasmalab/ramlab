@@ -10,6 +10,7 @@ from scipy.constants import k, h, c
 from ramlab.molecules.transitions import Transitions
 
 
+# TODO: Make a class for downloading and/or extracting data from the HITRAN database
 class CH4(LineListMolecule):
     # Molecule properties
     molecule_number = -1

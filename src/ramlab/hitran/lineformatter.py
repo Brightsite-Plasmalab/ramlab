@@ -26,13 +26,13 @@ from ramlab.molecules.transitions import Transitions
 # Changes: format initial,final as lower,upper
 
 
-def format_transitions_initial_final(transitions: Transitions) -> Transitions:
+def format_transitions_initial_final(transitions: Transitions) -> pd.Series:
     # Define row formatter according to the above format
     def format_row(row):
         return (
-            f"{row.molecule_number:02d}"
-            f"{row.isotope_number:1d}"
-            f"{row.vacuum_wavenumber:12.6f}"
+            f"{row.molecule_number:02.0f}"
+            f"{row.isotope_number:1.0f}"
+            f"{row.vacuum_wavenumber: 12.6f}"
             f"{row.crosssection:10.3e}"
             f"{row.depolarization_ratio:10.3e}"
             f"{0:5.2f}"  # gamma_air

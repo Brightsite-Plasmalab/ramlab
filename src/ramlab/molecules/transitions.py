@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 import numpy as np
 import pandas as pd
 
@@ -15,6 +15,14 @@ class Transitions:
 
         for k, v in kwargs.items():
             self[k] = v
+
+    @classmethod
+    def for_states(cls, state_initial: State, state_final: State) -> "Transitions":
+        assert list(state_initial.keys()) == list(state_final.keys())
+        return cls(
+            **{f"initial_{k}": state_initial[k] for k in state_initial.keys()},
+            **{f"final_{k}": state_final[k] for k in state_final.keys()},
+        )
 
     @property
     def state_initial(self):
@@ -35,6 +43,9 @@ class Transitions:
                 if k.startswith("final_")
             }
         )
+
+    def to_states(self) -> Tuple[State, State]:
+        return self.state_initial, self.state_final
 
     def sortby(self, column: str, **kwargs) -> "Transitions":
         return Transitions(self.linelist.sort_values(by=column, **kwargs))
@@ -63,6 +74,8 @@ class Transitions:
         ):
             # Get the start, stop, and step from the slice
             return Transitions(self.linelist.iloc[key])
+        elif isinstance(key, str):
+            return self.linelist[key]
         else:
             raise TypeError(
                 f"Invalid argument type `{type(key)}`. Use a slice or an integer."

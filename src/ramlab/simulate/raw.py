@@ -1,6 +1,14 @@
 import numpy as np
 
-from scipy.special import voigt_profile
+from ramlab.simulate.linespreadfunction.functions import (
+    gaussian,
+    voigt,
+    lorentzian,
+    rect,
+    martijnian,
+    slit,
+    custom,
+)
 
 
 def simulate_raw(x, x_stick, I_stick, sigma=1, gamma=0, N_bin=50):
@@ -11,7 +19,9 @@ def simulate_raw(x, x_stick, I_stick, sigma=1, gamma=0, N_bin=50):
     x2 = x + dx / N_bin * (np.arange(N_bin)[:, np.newaxis] - (N_bin - 1) / 2)
     x2 = x2.T.ravel()
 
-    Ii2 = I_stick * voigt_profile(x2 - x_stick, sigma, gamma)
+    # Ii2 = I_stick * gaussian(x2 - x_stick, sigma)
+    # Ii2 = I_stick * custom(x2 - x_stick, sigma, gamma)
+    Ii2 = I_stick * voigt(x2 - x_stick, sigma, gamma)
     I_x2 = np.sum(Ii2, axis=0)
 
     x3 = x2.reshape(-1, N_bin).mean(axis=1)
