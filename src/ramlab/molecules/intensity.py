@@ -1,4 +1,4 @@
-from typing import Union
+from typing_extensions import Union
 import numpy as np
 
 from ramlab.molecules.polarisation import Polarisation

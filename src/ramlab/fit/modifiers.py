@@ -1,4 +1,4 @@
-from typing import List, override
+from typing_extensions import List, override
 from lmfit import Parameters
 from toddler.data.spectrum import Spectrum
 import numpy as np

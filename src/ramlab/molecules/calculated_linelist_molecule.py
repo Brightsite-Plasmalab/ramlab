@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import override
+from typing_extensions import override
 import pandas as pd
 from ramlab.hitran.lineformatter import format_transitions_initial_final
 from ramlab.hitran.parser import parse_hitran_data
