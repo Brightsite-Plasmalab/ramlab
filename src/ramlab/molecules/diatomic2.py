@@ -390,10 +390,10 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
     @classmethod
     def process_hitran_data(cls, df: pd.DataFrame) -> pd.DataFrame:
-        df["initial_v"] = df["initial_quanta_global"].str[0:2].astype("Int64")
-        df["initial_J"] = df["initial_quanta_local"].str[0:2].astype("Int64")
-        df["final_v"] = df["final_quanta_global"].str[0:2].astype("Int64")
-        df["final_J"] = df["final_quanta_local"].str[0:2].astype("Int64")
+        df["initial_v"] = df["initial_quanta_global"].str[-3:].astype("Int64")
+        df["initial_J"] = df["initial_quanta_local"].str[6:9].astype("Int64")
+        df["final_v"] = df["final_quanta_global"].str[-3:].astype("Int64")
+        df["final_J"] = df["final_quanta_local"].str[6:9].astype("Int64")
 
         # Filter for the ground rotational state
         idx_ground_rotational_state = df["initial_J"] == 0
