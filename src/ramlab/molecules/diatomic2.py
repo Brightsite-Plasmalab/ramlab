@@ -49,12 +49,10 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
     def crosssection_polarised(
         cls,
         transitions: Transitions,
-        laser_wavelength=532e-9,
+        laser_wavelength=532.083e-9,
         polarisation=Polarisation.COMBINED,
     ):
         Polarisation.validate(polarisation)
-
-        print("Calculating cross-section")
 
         # Molecule specific constants
         mu_r = 1.169e-26  # Reduced mass of nitrogen in kg, see eq 7.9 in Lucht - needs to be set for each species
@@ -80,24 +78,19 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         pt = cls.placzekteller(transitions)
 
         # b_v_k from Long, eq. 5.7.8
-        constants = np.sqrt(h / (8 * pi**2 * c * np.abs(nu)))
-        constants = 1
-        # constants = hbar / (4 * (pi) * mu_r * c * np.abs(nu))
-        # constants = hbar / (8 * (pi**2) * mu_r * c * np.abs(nu))
+        # constants = np.sqrt(h / (8 * pi**2 * c * np.abs(nu)))
 
         alpha = id_Q * (  # Only Q-branches
             (id_rot * alpha0)  # Rot
-            + (id_vib_Stokes * alpha0 * np.sqrt((v + 1) * constants))  # Vib Stokes
-            + (id_vib_aStokes * alpha0 * np.sqrt(v * constants))  # Vib a-Stokes
+            + (id_vib_Stokes * alpha0)  # Vib Stokes
+            + (id_vib_aStokes * alpha0)  # Vib a-Stokes
         )
-        # alpha = 1  # alpha_0
 
         gamma = (  # All branches
             (gamma0 * id_rot)  # Rot
-            + (gamma0 * np.sqrt((v + 1) * constants) * id_vib_Stokes)  # Vib Stokes
-            + (gamma0 * np.sqrt(v * constants) * id_vib_aStokes)  # Vib a-Stokes
+            + (gamma0 * id_vib_Stokes)  # Vib Stokes
+            + (gamma0 * id_vib_aStokes)  # Vib a-Stokes
         )
-        # gamma = 1  # gamma_0
 
         return Intensity(alpha**2 + (4 / 45) * pt * gamma**2, (1 / 15) * pt * gamma**2)
 
@@ -117,10 +110,18 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
     @classmethod
     def polarisability_mean(cls, transitions: Transitions) -> float:
+        """
+        Calculate the polarisability isotropy of a diatomic molecule for given transitions.
+        NB: For vibrational transitions, this must include the factors (v+1) that are sometimes used in the expression of the polarisability. See Derek Long, eq. 6.6.51.
+        """
         raise NotImplementedError()
 
     @classmethod
     def polarisability_anisotropy(cls, transitions: Transitions) -> float:
+        """
+        Calculate the polarisability anisotropy of a diatomic molecule for given transitions.
+        NB: For vibrational transitions, this must include the factors (v+1) that are sometimes used in the expression of the polarisability. See Derek Long, eq. 6.6.51.
+        """
         raise NotImplementedError()
 
     # Energy calculations
