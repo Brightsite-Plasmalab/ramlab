@@ -374,11 +374,11 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
     @classmethod
     def _format_quanta_global(cls, state: State):
-        return np.char.mod("%2d", state.v)
+        return np.char.mod(" " * 13 + "%2d", state.v)
 
     @classmethod
     def _format_quanta_local(cls, state: State):
-        return np.char.mod("%2d", state.J)
+        return np.char.mod(" " * 6 + "%3d" + " " * 6, state.J)
 
     @classmethod
     @override
