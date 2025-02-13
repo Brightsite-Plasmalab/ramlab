@@ -1,18 +1,9 @@
+from typing_extensions import override
 from scipy.special import voigt_profile as voigt
 from scipy.special import erf
 from scipy.ndimage import convolve1d
 from scipy.signal import convolve2d
 import numpy as np
-
-
-def gaussian(x, sigma=1):
-    """Returns a normalized Gaussian with unit integral."""
-    return (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x) / sigma) ** 2)
-
-
-def lorentzian(x, gamma=1):
-    """Returns a normalized Lorentzian with unit integral."""
-    return (1 / (np.pi * gamma)) * (gamma**2 / ((x) ** 2 + gamma**2))
 
 
 def rect(x, width=1):
