@@ -26,12 +26,49 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
     """
 
+    @classmethod
+    @override
+    def get_populations(cls, state_initial, **temperatures) -> float:
+        """Returns the populations of a state.
+
+        Args:
+            state_initial: The initial state.
+
+        Returns:
+            float: The populations of the state.
+        """
+
+        if len(temperatures) <= 1:
+            # Assume populations are described by a Boltzmann distribution if only one temperature is given
+            return super().get_populations(state_initial, **temperatures)
+
+        # Implementation of vibrational-rotational non-equilibrium populations
+        T_vib = temperatures["T_vib"]
+        T_rot = temperatures["T_rot"]
+
+        E_vib = cls.E_vib(state_initial.v) * 100  # 100*E converts E from cm^-1 to m^-1
+        E_rot = cls.E_rot(state_initial.v, state_initial.J) * 100
+
+        g = state_initial.degeneracy
+        E = state_initial.E * 100
+        weights = (
+            g
+            * np.exp(-h * c * (E_vib) / (k * T_vib))
+            * np.exp(-h * c * (E_rot) / (k * T_rot))
+        )
+
+        # _, idx_unique = state_initial.unique(return_index=True)
+        # partition_sum = np.nansum(weights[idx_unique])
+        partition_sum = np.nansum(weights)
+        n = weights / partition_sum
+        return n
+
     @override
     @classmethod
     def transitions_metadata(
         cls,
         transitions: Transitions,
-        laser_wavelength: float = 532e-9,
+        laser_wavelength: float = 532.083e-9,
         polarisation: str = Polarisation.COMBINED,
     ) -> Transitions:
         transitions = super().transitions_metadata(
@@ -137,6 +174,19 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
             float: Energy in cm^-1
         """
         return cls.E_rot(state.v, state.J) + cls.E_vib(state.v)
+
+    @classmethod
+    def E_vib(cls, v) -> float:
+        """Calculate the vibrational energy of a diatomic molecule.
+
+        Args:
+            v (int): vibrational quantum number
+
+        Returns:
+            float: Vibrational energy in cm^-1"""
+
+        # See Derek A. Long, eq. 5.9.3
+        return (v + 1 / 2) * cls.w_e - cls.w_ex_e * (v + 1 / 2) ** 2
 
     @classmethod
     def E_rot(cls, v, J) -> float:
@@ -303,19 +353,6 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
             float: Third (1st-order) anharmonicity constant in cm^-1
         """
         raise NotImplementedError
-
-    @classmethod
-    def E_vib(cls, v) -> float:
-        """Calculate the vibrational energy of a diatomic molecule.
-
-        Args:
-            v (int): vibrational quantum number
-
-        Returns:
-            float: Vibrational energy in cm^-1"""
-
-        # See Derek A. Long, eq. 5.9.3
-        return (v + 1 / 2) * cls.w_e - cls.w_ex_e * (v + 1 / 2) ** 2
 
     @abstractproperty
     def w_e(cls) -> float:
