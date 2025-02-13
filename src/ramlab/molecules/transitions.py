@@ -82,6 +82,12 @@ class Transitions:
                 f"Invalid argument type `{type(key)}`. Use a slice or an integer."
             )
 
+    def filter(self, **kwargs):
+        mask = np.ones(len(self), dtype=bool)
+        for k, v in kwargs.items():
+            mask &= np.array(self[k] == v)
+        return self[mask]
+
     def __len__(self):
         return len(self.linelist)
 
