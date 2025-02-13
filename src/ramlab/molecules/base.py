@@ -130,13 +130,16 @@ class Molecule:
         Returns:
             float: The intensity constant of the transition.
         """
-        laser_wavelength = 532e-9
+        laser_wavelength = 532.083e-9
+        laser_wavenumber = 1 / laser_wavelength
+        transition_wavenumber = transitions.vacuum_wavenumber * 100
         Crosssection = cls.crosssection(transitions, laser_wavelength, polarisation)
-        wavelength_intensity = (
-            (1 / laser_wavelength) - transitions.vacuum_wavenumber * 100
-        ) ** 4  # Laser wavelength and Raman shift wavelength^4 correction to intensity
+
+        # Laser wavelength and Raman shift wavelength^4 correction to intensity
+        wavelength_intensity = (laser_wavenumber - transition_wavenumber) ** 4
+
         constants = 1 / (16 * (c**4) * (pi**2) * (epsilon_0**2))
-        return Crosssection * wavelength_intensity
+        return Crosssection * wavelength_intensity  # * constants
 
     @classmethod
     def get_intensity_variable(cls, transitions: Transitions, **temperatures) -> float:
