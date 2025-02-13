@@ -8,3 +8,5 @@ from ramlab.molecules.N2 import N2
 from ramlab.molecules.NO_hitran import NO_Hitran
 from ramlab.molecules.NO import NO
 from ramlab.molecules.CH4 import CH4
+
+from ramlab.molecules.calculated_linelist_molecule import CalculatedLinelistMolecule

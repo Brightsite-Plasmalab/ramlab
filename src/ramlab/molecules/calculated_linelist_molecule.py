@@ -29,6 +29,7 @@ class CalculatedLinelistMolecule(Molecule):
         self,
         laser_wavelength: float = None,
         force_recalculate: bool = False,
+        force_file: Path = None,
         polarisation: str = "= + T",
     ) -> Transitions:
         """Returns all possible transitions for the molecule.
@@ -37,12 +38,18 @@ class CalculatedLinelistMolecule(Molecule):
             Transitions: The transitions.
         """
 
-        linelist_file = self.get_linelist_file(
-            laser_wavelength=laser_wavelength, polarisation=polarisation
-        )
+        if force_file:
+            force_recalculate = False
+            linelist_file = force_file
+        else:
+            linelist_file = self.get_linelist_file(
+                laser_wavelength=laser_wavelength, polarisation=polarisation
+            )
 
-        if not force_recalculate and linelist_file.exists():
+        if (not force_recalculate and linelist_file.exists()) or force_file:
             # Load the cached HITRAN data
+            if force_file:
+                linelist_file = force_file
             df: pd.DataFrame = parse_hitran_data(linelist_file)
 
             transitions = Transitions(df)
@@ -89,6 +96,9 @@ class CalculatedLinelistMolecule(Molecule):
     @classmethod
     def dE(cls, transitions: Transitions) -> float:
         return transitions.dE
+
+    def get_populations(self, state_initial, **temperatures) -> float:
+        return self.M.get_populations(state_initial, **temperatures)
 
     @override
     @classmethod
