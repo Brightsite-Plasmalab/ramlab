@@ -66,9 +66,10 @@ class Transitions:
         self.linelist[name] = value
 
     def __getitem__(self, key):
+        if isinstance(key, int) or isinstance(key, np.int64):
+            key = np.array([key])
         if (
             isinstance(key, slice)
-            or isinstance(key, int)
             or isinstance(key, np.ndarray)
             or isinstance(key, pd.arrays.BooleanArray)
         ):
