@@ -10,17 +10,25 @@ def gaussian(x, sigma=1):
 
 
 class Gaussian(Lineshape):
+    w_g: float = 1
+    vary_g: bool = True
+
     @override
-    def prepare(self, parameters):
+    def prepare_fitparameters(self, parameters):
         parameters.add("w_g", value=1, min=0, vary=True)
 
-    @override
-    def y(self, x, parameters, **kwargs):
-        if "w_g" in parameters.keys():
-            w_g = parameters["w_g"]
-        elif "w_g" in kwargs.keys():
-            w_g = kwargs["w_g"]
-        else:
-            raise ValueError("Gaussian width `w_g` not found in parameters or kwargs")
+    def apply(self, parameters, **kwargs):
+        self.w_l = self._get_parameter(parameters, kwargs, "w_l")
+        if (
+            self._get_parameter(parameters, kwargs, "vary_l", allow_none=True)
+            is not None
+        ):
+            self.vary_l = self._get_parameter(parameters, kwargs, "vary_l")
 
-        return gaussian(x, w_g)
+    @override
+    def w_typical(self):
+        return self.w_g
+
+    @override
+    def y(self, x):
+        return gaussian(x, self.w_g)

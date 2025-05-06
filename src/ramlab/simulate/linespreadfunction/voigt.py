@@ -31,5 +31,9 @@ class Voigt(Lineshape):
             self.vary_l = self._get_parameter(parameters, kwargs, "vary_l")
 
     @override
+    def w_typical(self):
+        return self.w_g + self.w_l
+
+    @override
     def y(self, x):
         return voigt(x, self.w_g, self.w_l)

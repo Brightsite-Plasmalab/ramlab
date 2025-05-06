@@ -2,6 +2,7 @@ import numpy as np
 
 from ramlab.simulate.base import SimulationMethod
 from ramlab.simulate.linespreadfunction.base import Lineshape
+from ramlab.simulate.linespreadfunction.voigt import voigt
 
 from ttictoc import tic, toc
 
@@ -18,7 +19,11 @@ class RawBinnedSimulationMethod(SimulationMethod):
         self.N_bin = N_bin
 
     def simulate(self, x, x_stick, I_stick, lineshape: Lineshape):
-        return simulate_raw_binned_general(x, x_stick, I_stick, lineshape, self.N_bin)
+        # tic()
+        y = simulate_raw_binned_general(x, x_stick, I_stick, lineshape, self.N_bin)
+        # print(f"Execution time: {toc()*1e3:.0f}ms")
+
+        return y
 
 
 def simulate_raw_general(x, x_stick, I_stick, lineshape: Lineshape):

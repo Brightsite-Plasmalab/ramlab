@@ -10,17 +10,25 @@ def lorentzian(x, gamma=1):
 
 
 class Lorentzian(Lineshape):
+    w_l: float = 1
+    vary_l: bool = True
+
     @override
-    def prepare(self, parameters):
+    def prepare_fitparameters(self, parameters):
         parameters.add("w_l", value=1, min=0, vary=True)
 
-    @override
-    def y(self, x, parameters, **kwargs):
-        if "w_l" in parameters.keys():
-            w_l = parameters["w_l"]
-        elif "w_l" in kwargs.keys():
-            w_l = kwargs["w_l"]
-        else:
-            raise ValueError("Lorentzian width `w_l` not found in parameters or kwargs")
+    def apply(self, parameters, **kwargs):
+        self.w_l = self._get_parameter(parameters, kwargs, "w_l")
+        if (
+            self._get_parameter(parameters, kwargs, "vary_l", allow_none=True)
+            is not None
+        ):
+            self.vary_l = self._get_parameter(parameters, kwargs, "vary_l")
 
-        return lorentzian(x, w_l)
+    @override
+    def w_typical(self):
+        return self.w_g + self.w_l
+
+    @override
+    def y(self, x):
+        return lorentzian(x, self.w_l)

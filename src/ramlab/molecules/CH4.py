@@ -67,7 +67,7 @@ class CH4(LineListMolecule):
 
         # TODO: Contact maintainers of MeCaSDa to confirm the einstein coefficient is the cross-section.
         # The "room temperature intensity" divided by the boltzmann distribution and degeneracies results in a constant relation with the Einstein coefficient.
-        # So I suspect that the Einstein coefficient is the cross-section.
+        # So I suspect that the Einstein coefficient is indeed the cross-section.
         df2["crosssection"] = df2["einstein_A_coefficient"].values
         # df2["crosssection"] = df2["intensity"].values / np.exp(
         #     -100 * h * c * df2["initial_E"].values / (k * 296)

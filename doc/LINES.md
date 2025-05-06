@@ -23,26 +23,26 @@ Changes:
 - remove parameters that are not appliccable to Raman scattering.
 
 
-|Symbol|Parameter|Field length|Data type|Comments or units|
-|--- |--- |--- |--- |--- |
-|M|molecule number|2|Integer|HITRAN chronological assignment|
-|I|isotopologue number|1|Integer|Ordering by terrestrial abundance|
-|ν|Vacuum wavenumber|12|Real|cm−1|
-|S|Cross-section|10|Real| |
-|$\rho$|Depolarization ratio|10|Real|-|
-|||5||*unused*|
-|||5||*unused*|
-|E″|Lower-state energy|10|Real|cm−1|
-|||4||*unused*|
-|||8||*unused*|
-|V′|Upper-state “global” quanta|15|Text|see Table 3 of Ref. [14]|
-|V″|Lower-state “global” quanta|15|Text|see Table 3 of Ref. [14]|
-|q′|Upper-state “local” quanta|15|Text|see Table 4 of Ref. [14]|
-|Q″|Lower-state “local” quanta|15|Text|see Table 4 of Ref. [14]|
-|||6||*unused*|
-|||12||*unused*|
-|*|Flag|1|Text|Pointer to program and data for the case of line mixing|
-|g′|Statistical weight of the upper state|7|Real|See details in Ref. [15]|
-|g″|Statistical weight of the lower state|7|Real|See details in Ref. [15]|
+|Symbol|Parameter|Field length|Field start|Data type|Comments or units|
+|--- |--- |--- |--- |--- |--- |
+|M|molecule number|2|0|Integer|HITRAN chronological assignment|
+|I|isotopologue number|1|2|Integer|Ordering by terrestrial abundance|
+|ν|Vacuum wavenumber|12|3|Real|cm−1|
+|S|Cross-section|10|15|Real| |
+|$\rho$|Depolarization ratio|10|25|Real|-|
+|||5|35||*unused*|
+|||5|40||*unused*|
+|E″|Lower-state energy|10|45|Real|cm−1|
+|||4|55||*unused*|
+|||8|59||*unused*|
+|V′|Upper-state “global” quanta|15|67|Text|see Table 3 of Ref. [14]|
+|V″|Lower-state “global” quanta|15|82|Text|see Table 3 of Ref. [14]|
+|q′|Upper-state “local” quanta|15|97|Text|see Table 4 of Ref. [14]|
+|Q″|Lower-state “local” quanta|15|112|Text|see Table 4 of Ref. [14]|
+|||6|127||*unused*|
+|||12|133||*unused*|
+|*|Flag|1|145|Text|Pointer to program and data for the case of line mixing|
+|g′|Statistical weight of the upper state|7|146|Real|See details in Ref. [15]|
+|g″|Statistical weight of the lower state|7|153|Real|See details in Ref. [15]|
 
 For the quantum numbers, see [the HITRAN specification](https://www.sciencedirect.com/science/article/pii/S0022407305001081#tbl3).

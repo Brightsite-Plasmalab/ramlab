@@ -1,3 +1,6 @@
+import lmfit
+
+
 class Lineshape:
     def __init__(self, parameters=None, **kwargs):
         self.apply(parameters, **kwargs)
@@ -17,11 +20,16 @@ class Lineshape:
     def y(self, x):
         raise NotImplementedError()
 
-    def _get_parameter(self, params, kwargs, key, allow_none=False):
+    def w_typical(self):
+        raise NotImplementedError()
+
+    def _get_parameter(
+        self, params: lmfit.Parameters, kwargs: dict, key: str, allow_none=False
+    ):
         if key in kwargs.keys():
             return kwargs[key]
         elif params is not None and key in params.keys():
-            return params[key]
+            return params[key].value
         elif not allow_none:
             raise ValueError(f"Parameter `{key}` not found in parameters or kwargs")
         else:
