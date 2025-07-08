@@ -1,5 +1,5 @@
 import numpy as np
-from ramlab.simulate.linespreadfunction.base import Lineshape
+from src.ramlab.simulate.linespreadfunction.base import Lineshape
 
 
 class SimulationMethod:

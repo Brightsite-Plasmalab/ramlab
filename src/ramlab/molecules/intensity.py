@@ -1,7 +1,7 @@
 from typing_extensions import Union
 import numpy as np
 
-from ramlab.molecules.polarisation import Polarisation
+from src.ramlab.molecules.polarisation import Polarisation
 
 
 class Intensity:

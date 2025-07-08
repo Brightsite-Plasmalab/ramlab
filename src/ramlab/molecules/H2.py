@@ -1,12 +1,12 @@
 from pathlib import Path
 from typing_extensions import override
 import numpy as np
-from ramlab.molecules.custom_linelist_molecule import CustomLinelistMolecule
-from ramlab.molecules.diatomic2 import SimpleDiatomicMolecule
-from ramlab.molecules.state import State
-from ramlab.molecules.transitions import Transitions
-from ramlab.dirs import dir_data
-import h2_rovib_me
+from src.ramlab.molecules.custom_linelist_molecule import CustomLinelistMolecule
+from src.ramlab.molecules.diatomic2 import SimpleDiatomicMolecule
+from src.ramlab.molecules.state import State
+from src.ramlab.molecules.transitions import Transitions
+from src.ramlab.dirs import dir_data
+#import h2_rovib_me
 
 
 class H2(SimpleDiatomicMolecule):

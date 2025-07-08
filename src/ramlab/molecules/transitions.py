@@ -2,7 +2,7 @@ from typing_extensions import Any, Dict, Tuple
 import numpy as np
 import pandas as pd
 
-from ramlab.molecules.state import State
+from src.ramlab.molecules.state import State
 
 
 class Transitions:

@@ -1,6 +1,6 @@
 from sympy.physics import wigner
 import numpy as np
-from ramlab.math import make_equal_size, wheren
+from src.ramlab.math import make_equal_size, wheren
 
 WARNNING_PY3NJ = True
 
@@ -10,7 +10,7 @@ def placzek_teller():
 
 
 def wigner_3j_py3nj(j1, j2, j3, m1, m2, m3):
-    import py3nj
+    #import py3nj
 
     # For py3nj's wigner3j, the arguments must be multiplied by 2
     j1, j2, j3, m1, m2, m3 = [
@@ -32,10 +32,10 @@ def wigner_3j_py3nj(j1, j2, j3, m1, m2, m3):
     m2[id_invalid] = 0
     m3[id_invalid] = 0
 
-    W = py3nj.wigner3j(j1, j2, j3, m1, m2, m3)
-    W[id_invalid] = 0
+    #W = py3nj.wigner3j(j1, j2, j3, m1, m2, m3)
+    #W[id_invalid] = 0
 
-    return W
+    return 0
 
 
 def wigner_3j_sympy(j1, j2, j3, m1, m2, m3):

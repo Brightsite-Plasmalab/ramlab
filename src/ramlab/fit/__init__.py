@@ -1,4 +1,4 @@
-from ramlab.fit.modifiers import (
+from src.ramlab.fit.modifiers import (
     MeasurementModifier,
     MeasurementSpectrum,
     WavelengthAxisCorrection,

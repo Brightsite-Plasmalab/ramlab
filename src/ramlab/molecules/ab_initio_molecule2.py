@@ -1,9 +1,9 @@
-from ramlab.molecules.hitran_compatible_molecule import HitranCompatibleMolecule
+from src.ramlab.molecules.hitran_compatible_molecule import HitranCompatibleMolecule
 
-from ramlab.molecules.intensity import Intensity
-from ramlab.molecules.polarisation import Polarisation
-from ramlab.molecules.state import State
-from ramlab.molecules.transitions import Transitions
+from src.ramlab.molecules.intensity import Intensity
+from src.ramlab.molecules.polarisation import Polarisation
+from src.ramlab.molecules.state import State
+from src.ramlab.molecules.transitions import Transitions
 
 
 class AbInitioMolecule(HitranCompatibleMolecule):

@@ -1,10 +1,10 @@
 from abc import abstractmethod
 import pandas as pd
 import numpy as np
-from ramlab.hitran.lineformatter import format_transitions_initial_final
-from ramlab.molecules.base import Molecule
-from ramlab.molecules.state import State
-from ramlab.molecules.transitions import Transitions
+from src.ramlab.hitran.lineformatter import format_transitions_initial_final
+from src.ramlab.molecules.base import Molecule
+from src.ramlab.molecules.state import State
+from src.ramlab.molecules.transitions import Transitions
 
 
 class HitranCompatibleMolecule(Molecule):

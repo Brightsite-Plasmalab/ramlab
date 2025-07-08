@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 from itertools import product
-from ramlab.molecules.ab_initio_molecule import AbInitioMolecule
-from ramlab.molecules.state import State
-from ramlab.molecules.transitions import Transitions
-from ramlab.util.decorators import abstractproperty
+from src.ramlab.molecules.ab_initio_molecule import AbInitioMolecule
+from src.ramlab.molecules.state import State
+from src.ramlab.molecules.transitions import Transitions
+from src.ramlab.util.decorators import abstractproperty
 from scipy.constants import k, h, hbar, c, pi, epsilon_0
 
 
@@ -17,7 +17,6 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         print("Calculating cross-section")
 
         # Molecule specific constants
-        mu_r = 1.169e-26  # Reduced mass of nitrogen in kg, see eq 7.9 in Lucht - needs to be set for each species
         alpha_0 = cls.polarisability_mean(transitions)  # Mean polarisability isotropy
         gamma_0 = cls.polarisability_anisotropy(
             transitions
@@ -40,7 +39,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         mask_stokes = dV == 1
         mask_antistokes = dV == -1
         mask_rotational = dV == 0
-        constants = hbar / (8 * (pi**2) * mu_r * c * np.abs(nu))
+        constants = hbar / (8 * (pi**2) * cls.mu_r * c * np.abs(nu))
         # The constants are used to correct the relative intensity of the vibrational transitions to the rotational transitions
         # With current implementation, the vibrational transitions are orders of magnitude too weak compared to the rotational transitions
         # Note - Polarisabilities are incomplete, needs Herman-Wallis factors - Suggested to refer to Lucht Ch. 7, Buldakov, and Hammond - "Coupled-cluster dynamic polarizabilities including triple excitations"
@@ -76,9 +75,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
     # Intensity calculations
     @classmethod
-    def _calc_crosssection(
-        cls, transitions: Transitions, laser_wavelength, polarisation="= + T"
-    ):
+    def _calc_crosssection(cls, transitions: Transitions, laser_wavelength, polarisation="= + T"):
         assert polarisation in [
             "= + T",
             "T",
@@ -86,9 +83,8 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         ], f"Invalid polarisation {polarisation}, must be one of ['= + T', 'T', '=']"
 
         print("Calculating cross-section")
-
+        mu_r = cls.mu_r
         # Molecule specific constants
-        mu_r = 1.169e-26  # Reduced mass of nitrogen in kg, see eq 7.9 in Lucht - needs to be set for each species
         alpha_0 = cls.polarisability_mean(transitions)  # Mean polarisability isotropy
         gamma_0 = cls.polarisability_anisotropy(
             transitions
@@ -189,14 +185,21 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         dv = vp - vpp
 
         # Overtones are listed in Buldakov (2003), but not taken into account here.
-
-        dv0 = 1.777 + 0.01389 * vp * 0.000098 * vp**2  # Appendix B
-        dv1 = (
-            np.sqrt((vp + 1) / 2)
-            * np.sqrt(2 * cls.B_e / cls.w_e)
-            * (1.871 + 0.0105 * vp)
-        )
-        M = (dv == 0) * dv0 + (dv == 1) * dv1
+        if cls.molecule_name=="N2":
+            alpha_v0 = 1.777 + 0.01389 * vp * 0.000098 * vp**2  # Appendix B
+            alpha_v1 = (
+                np.sqrt((vp + 1) / 2)
+                * np.sqrt(2 * cls.B_e / cls.w_e)
+                * (1.871 + 0.0105 * vp)
+            )
+        if cls.molecule_name=="O2":
+            alpha_v0 = 1.619 + 0.01773 * vp * 0.000009 * vp**2  # Appendix B
+            alpha_v1 = (
+                np.sqrt((vp + 1) / 2)
+                * np.sqrt(2 * cls.B_e / cls.w_e)
+                * (1.779 + 0.019 * vp)
+            )
+        M = (dv == 0) * alpha_v0 + (dv == 1) * alpha_v1
 
         F = cls.hermanwallis_a(vp, Jp, vpp, Jpp)
 
@@ -227,11 +230,17 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         # Overtones are listed in Buldakov (2003), but not taken into account here.
 
         # Variables M are the matrix elements <vp|a,y|vpp>
-        M0 = 0.719 + 0.0177 * vp * 0.00015 * vp**2
-        M1 = (
-            np.sqrt((vp + 1) / 2) * np.sqrt(2 * cls.B_e / cls.w_e) * (2.25 + 0.019 * vp)
-        )
-        M = (dv == 0) * M0 + (dv == 1) * M1
+        if cls.molecule_name=="N2":
+            gamma_v0 = 0.719 + 0.0177 * vp * 0.00015 * vp**2
+            gamma_v1 = (
+                np.sqrt((vp + 1) / 2) * np.sqrt(2 * cls.B_e / cls.w_e) * (2.25 + 0.019 * vp)
+            )
+        if cls.molecule_name=="O2":
+            gamma_v0 = 1.097 + 0.0339 * vp * 0.0004 * vp**2
+            gamma_v1 = (
+                np.sqrt((vp + 1) / 2) * np.sqrt(2 * cls.B_e / cls.w_e) * (3.25 + 0.057 * vp)
+            )
+        M = (dv == 0) * gamma_v0 + (dv == 1) * gamma_v1
 
         F = cls.hermanwallis_y(vp, Jp, vpp, Jpp)
 
@@ -248,19 +257,28 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         idS = dJ == 2
 
         m = idQ * (Jp * (Jp + 1)) + idO * (-2 * Jp + 1) + idS * (2 * Jp + 3)
+        if cls.molecule_name=="N2":
+            F_SO_0 = 1 + 1.35e-5 + 0.03e-6 * m + (4.50e-6 - 0.10e-7 * vp) * m**2
+            F_Q_0 = 1 + (1.81e-5 + 0.04e-6 * vp) * m
 
-        FnQ0 = 1 + 1.35e-5 + 0.03e-6 * m + (4.50e-6 - 0.10e-7 * vp) * m**2
-        FQ0 = 1 + (1.81e-5 + 0.04e-6 * vp) * m
+            F_SO_1 = (
+                (1 + 1.04e-5 - 0.09e-6 * vp)
+                - (2.20e-3 + 0.37e-4 * vp) * m
+                + (0.47e-5 + 0.11e-7 * vp) * m**2
+            )
+            F_Q_1 = 1 + (0.14e-4 - 0.12e-6 * vp) * m
+        if cls.molecule_name=="O2":
+            F_SO_0 = 1 + 1.49e-5 + 0.19e-6 * m + (4.96e-6 - 0.39e-7 * vp) * m ** 2
+            F_Q_0 = 1 + (1.99e-5 + 0.25e-6 * vp) * m
 
-        FnQ1 = (
-            (1 + 1.04e-5 - 0.09e-6 * vp)
-            - (2.20e-3 + 0.37e-4 * vp) * m
-            + (0.47e-5 + 0.11e-7 * vp) * m**2
-        )
-        FQ1 = 1 + (0.14e-4 - 0.12e-6 * vp) * m
-
-        F0 = (idQ) * FQ0 + (~idQ) * FnQ0
-        F1 = (idQ) * FQ1 + (~idQ) * FnQ1
+            F_SO_1 = (
+                    (1 + 1.95e-5 - 0.34e-6 * vp)
+                    - (2.51e-3 + 0.32e-4 * vp) * m
+                    + (0.81e-5 - 0.75e-7 * vp) * m ** 2
+            )
+            F_Q_1 = 1 + (0.26e-4 - 0.46e-6 * vp) * m
+        F0 = (idQ) * F_Q_0 + (~idQ) * F_SO_0
+        F1 = (idQ) * F_Q_1 + (~idQ) * F_SO_1
 
         F = (dv == 0) * F0 + (dv == 1) * F1
 
@@ -269,6 +287,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
     @classmethod
     def hermanwallis_a(cls, vp, Jp, vpp, Jpp):
         # Find the locations matching O, Q, S branches
+        print(cls.molecule_name)
         dv = vp - vpp
         dJ = Jp - Jpp
         idO = dJ == -2
@@ -276,9 +295,12 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         idS = dJ == 2
 
         m = idQ * (Jp * (Jp + 1)) + idO * (-2 * Jp + 1) + idS * (2 * Jp + 3)
-
-        F0 = 1 + (6.08e-6 + 0.86e-7 * vp) * m
-        F1 = 1 + (1.10e-5 - 0.61e-7 * vp) * m
+        if cls.molecule_name=="N2":
+            F0 = 1 + (6.08e-6 + 0.86e-7 * vp) * m
+            F1 = 1 + (1.10e-5 - 0.61e-7 * vp) * m
+        if cls.molecule_name=="O2":
+            F0 = 1 + (7.39e-6 + 1.45e-7 * vp) * m
+            F1 = 1 + (2.28e-5 - 0.24e-7 * vp) * m
         F = (dv == 0) * F0 + (dv == 1) * F1
 
         return F
@@ -484,7 +506,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
             float: Vibrational energy in cm^-1"""
 
         # See Derek A. Long, eq. 5.9.3
-        return (v + 1 / 2) * cls.w_e - cls.w_ex_e * (v + 1 / 2) ** 2
+        return (v + 1 / 2) * cls.w_e - cls.w_ex_e * (v + 1 / 2) ** 2 + cls.w_ey_e * (v + 1/2)**3
 
     @abstractproperty
     def w_e(cls) -> float:
@@ -510,7 +532,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
         # Define initial quantum states
         vi = np.arange(0, 12)  # Vibrational quantum number
-        Ji = np.arange(0, 80)  # Rotational quantum number
+        Ji = np.arange(0, 120)  # Rotational quantum number
 
         # Define transitions for each quantum number
         dv = np.array([-1, 0, 1])

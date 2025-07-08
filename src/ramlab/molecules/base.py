@@ -1,5 +1,5 @@
-from ramlab.molecules.state import State
-from ramlab.molecules.transitions import Transitions
+from src.ramlab.molecules.state import State
+from src.ramlab.molecules.transitions import Transitions
 import numpy as np
 from scipy.constants import k, h, c, epsilon_0, pi
 

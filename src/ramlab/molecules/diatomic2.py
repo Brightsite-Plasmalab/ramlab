@@ -2,12 +2,12 @@ from typing_extensions import override
 import numpy as np
 import pandas as pd
 from itertools import product
-from ramlab.molecules.ab_initio_molecule2 import AbInitioMolecule
-from ramlab.molecules.intensity import Intensity
-from ramlab.molecules.polarisation import Polarisation
-from ramlab.molecules.state import State
-from ramlab.molecules.transitions import Transitions
-from ramlab.util.decorators import abstractproperty
+from src.ramlab.molecules.ab_initio_molecule2 import AbInitioMolecule
+from src.ramlab.molecules.intensity import Intensity
+from src.ramlab.molecules.polarisation import Polarisation
+from src.ramlab.molecules.state import State
+from src.ramlab.molecules.transitions import Transitions
+from src.ramlab.util.decorators import abstractproperty
 from scipy.constants import k, h, hbar, c, pi, epsilon_0
 
 
@@ -378,7 +378,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
         # Define initial quantum states
         vi = np.arange(0, 12)  # Vibrational quantum number
-        Ji = np.arange(0, 80)  # Rotational quantum number
+        Ji = np.arange(0, 120)  # Rotational quantum number
 
         # Define transitions for each quantum number
         dv = np.array([-1, 0, 1])

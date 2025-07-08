@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing_extensions import List, override
 from lmfit import Parameters
 from toddler.data.spectrum import Spectrum
@@ -111,6 +113,7 @@ class WavelengthAxisCorrection(MeasurementModifier):
     @override
     def modify(self, measurement: MeasurementSpectrum):
         N_center = np.size(measurement.data.lambda_) / 2
+        print(measurement.data.lambda_)
         lambda_relative = np.arange(np.size(measurement.data.lambda_)) - N_center
         lambda_relative /= np.max(lambda_relative)
 
@@ -120,7 +123,7 @@ class WavelengthAxisCorrection(MeasurementModifier):
             corr += self.coefficients[i] * (lambda_relative**i) * 1e-9
 
         measurement.data.lambda_ = measurement.data.lambda_ + corr
-
+        print(corr)
         return measurement
 
 
@@ -211,5 +214,5 @@ class Fit:
     def __init__(self, measurement, modifier):
         pass
 
-    def apply_modifiers():
+    def apply_modifiers(self):
         pass

@@ -1,5 +1,5 @@
 import pandas as pd
-from ramlab.util.pandas import load_csv_with_progress
+from src.ramlab.util.pandas import load_csv_with_progress
 
 # Hitran format:
 # line[0:2], # Molecule no

@@ -1,13 +1,13 @@
 import pandas as pd
-from ramlab.molecules.base import Molecule
-from ramlab.dirs import dir_data
-from ramlab.hitran.parser import parse_hitran_data
-from ramlab.molecules.hitran_linelist_molecule import LineListMolecule
-from ramlab.molecules.state import State
+from src.ramlab.molecules.base import Molecule
+from src.ramlab.dirs import dir_data
+from src.ramlab.hitran.parser import parse_hitran_data
+from src.ramlab.molecules.hitran_linelist_molecule import LineListMolecule
+from src.ramlab.molecules.state import State
 import numpy as np
 from scipy.constants import k, h, c
 
-from ramlab.molecules.transitions import Transitions
+from src.ramlab.molecules.transitions import Transitions
 
 
 # TODO: Make a class for downloading and/or extracting data from the HITRAN database

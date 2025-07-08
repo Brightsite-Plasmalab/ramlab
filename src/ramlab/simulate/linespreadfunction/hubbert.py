@@ -1,6 +1,6 @@
 from typing_extensions import override
 
-from ramlab.simulate.linespreadfunction.base import Lineshape
+from src.ramlab.simulate.linespreadfunction.base import Lineshape
 
 import numpy as np
 import scipy.integrate as integrate

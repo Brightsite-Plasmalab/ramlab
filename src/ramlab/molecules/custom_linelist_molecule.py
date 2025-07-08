@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
-from ramlab.molecules.base import Molecule
-from ramlab.molecules.transitions import Transitions
+from src.ramlab.molecules.base import Molecule
+from src.ramlab.molecules.transitions import Transitions
 import re
 
 

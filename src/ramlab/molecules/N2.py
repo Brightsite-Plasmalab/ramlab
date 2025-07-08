@@ -1,8 +1,8 @@
 import numpy as np
 
-from ramlab.molecules.diatomic import SimpleDiatomicMolecule
-from ramlab.molecules.state import State
-from ramlab.molecules.transitions import Transitions
+from src.ramlab.molecules.diatomic import SimpleDiatomicMolecule
+from src.ramlab.molecules.state import State
+from src.ramlab.molecules.transitions import Transitions
 
 
 class N2(SimpleDiatomicMolecule):
@@ -10,6 +10,7 @@ class N2(SimpleDiatomicMolecule):
     molecule_number = 45
     molecule_name = "N2"
     isotope_number = 1
+    mu_r = 1.169e-26  # Reduced mass of nitrogen in kg, see eq 7.9 in Lucht - needs to be set for each species
 
     # Degeneracy constants
     g_e = 6  # nuclear degeneracy for even J
@@ -18,6 +19,7 @@ class N2(SimpleDiatomicMolecule):
     # Energy constants
     w_e = 2.35862e03  # /m
     w_ex_e = 1.43444e01  # /m
+    w_ey_e = -0.00226
     B_e = 1.99829e00  # /m
     alpha0_e_1 = 1.74130e-02  # /m
     D1_e = 5.49723e-06  # /m

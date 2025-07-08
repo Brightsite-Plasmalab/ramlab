@@ -7,11 +7,11 @@
 
 import numpy as np
 import scipy
-from ramlab.simulate.base import SimulationMethod
-from ramlab.simulate.linespreadfunction.base import Lineshape
-from ramlab.simulate.linespreadfunction import voigt, Voigt
+from src.ramlab.simulate.base import SimulationMethod
+from src.ramlab.simulate.linespreadfunction.base import Lineshape
+from src.ramlab.simulate.linespreadfunction import voigt, Voigt
 
-from ttictoc import tic, toc
+#from ttictoc import tic, toc
 
 # TODO: Make the subsampler a wrapper around other SimulationMethods
 

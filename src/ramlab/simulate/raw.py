@@ -1,10 +1,12 @@
 import numpy as np
-
-from ramlab.simulate.base import SimulationMethod
-from ramlab.simulate.linespreadfunction.base import Lineshape
-from ramlab.simulate.linespreadfunction.voigt import voigt
-
-from ttictoc import tic, toc
+import sys
+np.set_printoptions(threshold=sys.maxsize)
+from src.ramlab.simulate.base import SimulationMethod
+from src.ramlab.simulate.linespreadfunction.base import Lineshape
+from src.ramlab.simulate.linespreadfunction.voigt import voigt
+from src.ramlab.simulate.convolution import simulate_convolution2, simulate_convolution_skewed,simulate_convolution
+import matplotlib.pyplot as plt
+#from ttictoc import tic, toc
 
 
 class RawSimulationMethod(SimulationMethod):
@@ -47,8 +49,6 @@ def simulate_raw_binned_general(x, x_stick, I_stick, lineshape: Lineshape, N_bin
     x2 = x + dx / N_bin * (np.arange(N_bin)[:, np.newaxis] - (N_bin - 1) / 2)
     x2 = x2.T.ravel()
 
-    # Ii2 = I_stick * gaussian(x2 - x_stick, sigma)
-    # Ii2 = I_stick * custom(x2 - x_stick, sigma, gamma)
     Ii2 = I_stick * lineshape.y(x2 - x_stick)
     I_x2 = np.sum(Ii2, axis=0)
 
@@ -59,22 +59,28 @@ def simulate_raw_binned_general(x, x_stick, I_stick, lineshape: Lineshape, N_bin
     return I_x3
 
 
-def simulate_raw(x, x_stick, I_stick, sigma=1, gamma=0, N_bin=50):
+def simulate_raw(x, x_stick, I_stick, sigma, gamma, N_bin=40):
+
     x_stick = np.array(x_stick)[:, np.newaxis]
     I_stick = np.array(I_stick)[:, np.newaxis]
 
+
     dx = np.median(np.diff(x))
     x2 = x + dx / N_bin * (np.arange(N_bin)[:, np.newaxis] - (N_bin - 1) / 2)
+    x2.sort()
     x2 = x2.T.ravel()
-
+    print(np.diff(x2))
     # Ii2 = I_stick * gaussian(x2 - x_stick, sigma)
     # Ii2 = I_stick * custom(x2 - x_stick, sigma, gamma)
-    Ii2 = I_stick * voigt(x2 - x_stick, sigma, gamma)
-    I_x2 = np.sum(Ii2, axis=0)
 
+    Ii2 = simulate_convolution2(x2,x_stick,I_stick,sigma,gamma)
+    #Ii2 = I_stick * voigt(x2 - x_stick, sigma, gamma)
+    I_x2 = np.sum(Ii2, axis=0)
+    plt.plot(x2,Ii2)
+    plt.show()
     x3 = x2.reshape(-1, N_bin).mean(axis=1)
     I_x3 = I_x2.reshape(-1, N_bin).mean(axis=1)
-
+    print(I_x3)
     # assert np.all(x == x3)
     return I_x3
 
@@ -97,3 +103,45 @@ def simulate_raw_binned(x, x_stick, I_stick, sigma=1, gamma=0, N_bin=50):
 
     # assert np.all(x == x3)
     return I_x3
+
+
+def simulate_raw_stijn(x,x_full, x_stick, I_stick, sigma, gamma, N_bin=40):
+    x_stick = np.array(x_stick)[:, np.newaxis]
+    I_stick = np.array(I_stick)[:, np.newaxis]
+
+
+    x2 = np.linspace(min(x_full), max(x_full), len(x_full) * N_bin)
+
+    Ii2 = simulate_convolution2(x2, x_stick, I_stick, sigma, gamma)
+
+    x3 = x2[(x2>=np.min(x)) & (x2<=np.max(x))]
+    Ii3 = Ii2[(x2>=np.min(x)) & (x2<=np.max(x))]
+
+    return x3, Ii3
+
+def simulate_raw_skew(x,x_full, x_stick, I_stick, sigma, gamma, skew,N_bin=40):
+    x_stick = np.array(x_stick)[:, np.newaxis]
+    I_stick = np.array(I_stick)[:, np.newaxis]
+
+
+    x2 = np.linspace(min(x_full), max(x_full), len(x_full) * N_bin)
+
+    Ii2 = simulate_convolution_skewed(x2, x_stick, I_stick, sigma, gamma,skew)
+
+    x3 = x2[(x2>=np.min(x)) & (x2<=np.max(x))]
+    Ii3 = Ii2[(x2>=np.min(x)) & (x2<=np.max(x))]
+    return x3, Ii3
+
+def simulate_raw_stijn_full(x,x_full, x_stick, I_stick, sigma, gamma, N_bin=40):
+    x_stick = np.array(x_stick)[:, np.newaxis]
+    I_stick = np.array(I_stick)[:, np.newaxis]
+
+
+    x2 = np.linspace(-600, 600, len(x_full) * N_bin)
+
+    Ii2 = simulate_convolution2(x2, x_stick, I_stick, sigma, gamma)
+
+    x3 = x2[(x2>=-570) & (x2<=570)]
+    Ii3 = Ii2[(x2>=-570) & (x2<=570)]
+
+    return x3, Ii3

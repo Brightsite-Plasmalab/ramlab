@@ -1,6 +1,6 @@
 import numpy as np
 
-from ramlab.molecules.diatomic import SimpleDiatomicMolecule
+from src.ramlab.molecules.diatomic import SimpleDiatomicMolecule
 
 
 class N2(SimpleDiatomicMolecule):

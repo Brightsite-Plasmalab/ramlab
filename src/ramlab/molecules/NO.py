@@ -7,12 +7,12 @@ from itertools import product
 
 # # Add the src directory to the PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
-from ramlab.math import make_quantum_numbers
-from ramlab.molecules.state import State
-from ramlab.molecules.transitions import Transitions
-from ramlab.molecules.ab_initio_molecule import AbInitioMolecule
+from src.ramlab.math import make_quantum_numbers
+from src.ramlab.molecules.state import State
+from src.ramlab.molecules.transitions import Transitions
+from src.ramlab.molecules.ab_initio_molecule import AbInitioMolecule
 from sympy.physics.wigner import wigner_3j
-from ramlab.raman.common import akp2_perturbed2
+from src.ramlab.raman.common import akp2_perturbed2
 
 
 class NO(AbInitioMolecule):

@@ -2,7 +2,7 @@ from typing_extensions import override
 from scipy.special import voigt_profile as voigt
 import numpy as np
 
-from ramlab.simulate.linespreadfunction.base import Lineshape
+from src.ramlab.simulate.linespreadfunction.base import Lineshape
 
 
 class Voigt(Lineshape):

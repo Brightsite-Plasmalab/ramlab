@@ -1,20 +1,20 @@
 from typing_extensions import override
 from lmfit import minimize, Parameters
-from ramlab.molecules.base import Molecule
-from ramlab.molecules.transitions import Transitions
-from ramlab.simulate.base import SimulationMethod
-from ramlab.simulate.linespreadfunction.base import Lineshape
+from src.ramlab.molecules.base import Molecule
+from src.ramlab.molecules.transitions import Transitions
+from src.ramlab.simulate.base import SimulationMethod
+from src.ramlab.simulate.linespreadfunction.base import Lineshape
 import numpy as np
 import lmfit
 import numpy as np
 
-from ramlab.fit.result import FitResult
+from src.ramlab.fit.result import FitResult
 
-from ttictoc import tic, toc
+#from ttictoc import tic, toc
 
 
-from ramlab.fit.modifiers import *
-from ramlab.molecules.polarisation import Polarisation
+from src.ramlab.fit.modifiers import *
+from src.ramlab.molecules.polarisation import Polarisation
 
 
 class FitRecipe:
