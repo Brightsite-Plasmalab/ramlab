@@ -48,7 +48,7 @@ class Transitions:
         return self.state_initial, self.state_final
 
     def sortby(self, column: str, **kwargs) -> "Transitions":
-        return Transitions(self.linelist.sort_values(by=column, **kwargs))
+        return Transitions(self.linelist.sort_values(by=column, **kwargs).copy())
 
     def __getattr__(self, name: str) -> Any:
         if name in self.__dict__["linelist"].columns:
@@ -74,7 +74,7 @@ class Transitions:
             or isinstance(key, pd.arrays.BooleanArray)
         ):
             # Get the start, stop, and step from the slice
-            return Transitions(self.linelist.iloc[key])
+            return Transitions(self.linelist.iloc[key].copy())
         elif isinstance(key, str):
             return self.linelist[key]
         else:
@@ -82,11 +82,22 @@ class Transitions:
                 f"Invalid argument type `{type(key)}`. Use a slice or an integer."
             )
 
-    def filter(self, **kwargs):
+    def filter(self, return_mask=False, **kwargs):
         mask = np.ones(len(self), dtype=bool)
         for k, v in kwargs.items():
             mask &= np.array(self[k] == v)
+        if return_mask:
+            return self[mask], mask
         return self[mask]
+
+    def unique(self, columns=None):
+        df = self.linelist.copy().reset_index()
+        # df = pd.DataFrame.from_dict(self.state).reset_index()
+
+        # Drop duplicate rows and keep the first occurrence
+        df_unique = df.drop_duplicates(subset=columns, keep="first")
+
+        return Transitions(df_unique)
 
     def __len__(self):
         return len(self.linelist)

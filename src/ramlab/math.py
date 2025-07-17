@@ -41,4 +41,4 @@ def wheren(*x):
 
 
 def orthogonal(*x):
-    return [xi[:, *[np.newaxis] * i] for i, xi in enumerate(x)]
+    return [xi[slice(None, *([np.newaxis] * i))] for i, xi in enumerate(x)]

@@ -2,7 +2,7 @@ from pathlib import Path
 from typing_extensions import override
 import numpy as np
 from ramlab.molecules.custom_linelist_molecule import CustomLinelistMolecule
-from ramlab.molecules.diatomic2 import SimpleDiatomicMolecule
+from ramlab.molecules.diatomic import SimpleDiatomicMolecule
 from ramlab.molecules.state import State
 from ramlab.molecules.transitions import Transitions
 from ramlab.dirs import dir_data
@@ -80,52 +80,6 @@ class H2(SimpleDiatomicMolecule):
             "nm",
             "aniso",
         )
-
-    # @override
-    # @classmethod
-    # def dE(cls, transitions: Transitions):
-    #     # H2 has a very complex energy level structure, and the energy levels are not well described by the simple diatomic model.
-    #     # Therefore, we use HITRAN data to calculate the energy levels.
-
-    #     M_hitran = CustomLinelistMolecule(
-    #         Path(dir_data / "H2" / "HITRAN_linebyline_0_6000_cm-1.txt")
-    #     )
-    #     transitions_hitran = M_hitran.get_all_transitions()
-
-    #     # The HITRAN database is meant for absorption, so the initial state is always the lower energy state.
-    #     # We need to flip the transitions to get the correct energy difference.
-    #     idx_Stokes: np.ndarray = super().dE(transitions) > 0
-    #     idx_aStokes = ~idx_Stokes
-
-    #     dE_hitran = np.zeros_like(transitions.vacuum_wavenumber)
-    #     for i in range(len(transitions)):
-    #         if idx_Stokes[i]:
-    #             mask = (
-    #                 (transitions_hitran.initial_v == transitions.initial_v[i])
-    #                 & (transitions_hitran.initial_J == transitions.initial_J[i])
-    #                 & (transitions_hitran.final_v == transitions.final_v[i])
-    #                 & (transitions_hitran.final_J == transitions.final_J[i])
-    #             )
-
-    #         else:
-    #             mask = (
-    #                 (transitions_hitran.initial_v == transitions.final_v[i])
-    #                 & (transitions_hitran.initial_J == transitions.final_J[i])
-    #                 & (transitions_hitran.final_v == transitions.initial_v[i])
-    #                 & (transitions_hitran.final_J == transitions.initial_J[i])
-    #             )
-    #         if not np.any(mask):
-    #             dE_hitran[i] = super().dE(transitions[i])
-    #             continue
-    #         elif np.sum(mask) > 1:
-    #             idx = np.where(mask)[0][0]
-    #         else:
-    #             idx = np.where(mask)[0]
-
-    #         dE_hitran[i] = transitions_hitran[idx].vacuum_wavenumber
-    #     dE_hitran[idx_aStokes] *= -1
-
-    #     return dE_hitran
 
     @override
     @classmethod

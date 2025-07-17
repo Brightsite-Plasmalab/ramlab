@@ -37,7 +37,7 @@ class Molecule:
         return cls.E(transitions.state_final) - cls.E(transitions.state_initial)
 
     @classmethod
-    def degeneracy(state: State) -> int:
+    def degeneracy(cls, state: State) -> int:
         """Returns the degeneracy of a given state.
 
         Args:

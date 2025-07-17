@@ -3,3 +3,5 @@ from ramlab.fit.modifiers import (
     MeasurementSpectrum,
     WavelengthAxisCorrection,
 )
+
+from ramlab.fit.multi import MultiMoleculeFitRecipe

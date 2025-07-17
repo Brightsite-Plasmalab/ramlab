@@ -69,7 +69,6 @@ class AbInitioMolecule(HitranCompatibleMolecule):
     ) -> Transitions:
         crosssection_polarised = cls.crosssection_polarised(transitions)
         transitions.crosssection = crosssection_polarised.I
-        crosssection_polarised = cls.crosssection_polarised(transitions)
         transitions.depolarization_ratio = (
             crosssection_polarised.I_parallel / crosssection_polarised.I_perpendicular
         )
@@ -91,8 +90,15 @@ class AbInitioMolecule(HitranCompatibleMolecule):
         transitions.initial_E = cls.E(state_initial)
         transitions.final_E = cls.E(state_final)
 
-        transitions.dE = transitions.final_E - transitions.initial_E
+        transitions.dE = (
+            transitions.final_E - transitions.initial_E
+        )  # The change in energy of the molecule
         transitions.vacuum_wavenumber = transitions.dE
+
+        laser_frequency = 1e-2 / (laser_wavelength)  # Convert from nm to 1/cm
+        transitions.scattering_wavenumber = (
+            laser_frequency - transitions.vacuum_wavenumber
+        )
 
         # Discard invalid transitions
         id_invalid = transitions.initial_E < 0

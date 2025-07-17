@@ -19,7 +19,7 @@ def plot_results(fitresults, T_name="T"):
         label=rf"Fit ($T={T_str} \pm {T_stderr_str}$)",
     )
     plt.plot(
-        fitresults["data"]["lambda"], fitresults["data"]["data"], "r.", label="Data"
+        fitresults["data"]["lambda"], fitresults["data"]["data"], "r.-", label="Data"
     )
     plt.xlabel("Wavelength [nm]")
     plt.ylabel("Intensity [a.u.]")
