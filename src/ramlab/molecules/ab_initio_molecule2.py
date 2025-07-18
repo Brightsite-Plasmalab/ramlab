@@ -94,6 +94,7 @@ class AbInitioMolecule(HitranCompatibleMolecule):
             transitions.final_E - transitions.initial_E
         )  # The change in energy of the molecule
         transitions.vacuum_wavenumber = transitions.dE
+        transitions.raman_shift = transitions.dE
 
         laser_frequency = 1e-2 / (laser_wavelength)  # Convert from nm to 1/cm
         transitions.scattering_wavenumber = (

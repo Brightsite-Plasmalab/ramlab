@@ -382,7 +382,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
     @classmethod
     def _get_all_transition_states(cls) -> tuple[State, State]:
         # Define initial quantum states
-        vi = np.arange(0, 5)  # Vibrational quantum number
+        vi = np.arange(0, 15)  # Vibrational quantum number
         Ji = np.arange(0, 130)  # Rotational quantum number
 
         # Define transitions for each quantum number

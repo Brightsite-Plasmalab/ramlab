@@ -21,8 +21,8 @@ class O(AbInitioMolecule):
 
     @classmethod
     def crosssection_polarised(cls, transitions: Transitions) -> Intensity:
-        _, dJ1 = transitions.filter(return_mask=True, dJ=-1)
-        _, dJ2 = transitions.filter(return_mask=True, dJ=-2)
+        _, dJ1 = transitions.filter(return_mask=True, dJ=1)
+        _, dJ2 = transitions.filter(return_mask=True, dJ=2)
 
         sigma_dJ1 = dJ1 * 5.27e-31  # cm^2/sr
         sigma_dJ2 = dJ2 * 2.11e-31  # cm^2/sr
@@ -34,12 +34,12 @@ class O(AbInitioMolecule):
         alpha2 = sigma / (nu**4) / conv  # m^6
         alpha2_au = alpha2 * 1e60  # A^6
 
-        return Intensity(transitions.initial_J * 0.0, alpha2_au)  # m^6
+        return Intensity(dJ1 * 0.0, alpha2_au)  # A^6
 
     @classmethod
     def _get_all_transition_states(cls) -> tuple[State, State]:
-        state_initial = State(J=np.array([2, 2]))
-        state_final = State(J=np.array([0, 1]))
+        state_initial = State(J=np.array([0, 0]))
+        state_final = State(J=np.array([1, 2]))
 
         return state_initial, state_final
 
@@ -74,5 +74,6 @@ class O(AbInitioMolecule):
 if __name__ == "__main__":
     # Example usage
     transitions = O.get_all_transitions()
-    intensity = O.crosssection_polarised(transitions)
+    # intensity = O.crosssection_polarised(transitions)
+    intensity = O.get_intensity(transitions, T=3000)
     print(intensity)

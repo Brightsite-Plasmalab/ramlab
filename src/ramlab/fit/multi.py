@@ -6,6 +6,7 @@ from ramlab.molecules.base import Molecule
 from ramlab.molecules.transitions import Transitions
 from ramlab.simulate.base import SimulationMethod
 from ramlab.simulate.linespreadfunction.base import Lineshape
+from ramlab.simulate.combine import CombinedMolecule
 import numpy as np
 import lmfit
 import numpy as np
@@ -17,14 +18,13 @@ from ramlab.molecules.polarisation import Polarisation
 
 
 class MultiMoleculeFitRecipe(FitRecipe):
-    molecules: List[Tuple[Molecule, Transitions]]
     polarisation: Polarisation
     lineshape: Lineshape
     simulation_method: SimulationMethod
     meas_modifiers: List[MeasurementModifier]
     fit_modifiers: List[MeasurementModifier]
 
-    I_const: List[np.ndarray]
+    molecules: CombinedMolecule
     fitparameters: Parameters
 
     def __init__(
@@ -36,7 +36,13 @@ class MultiMoleculeFitRecipe(FitRecipe):
         meas_modifiers: List[MeasurementModifier] = [],
         fit_modifiers: List[MeasurementModifier] = [],
     ):
-        self.molecules = molecules
+        self.molecules = CombinedMolecule(
+            polarisation=polarisation,
+            **{
+                molecule.molecule_name: (molecule, transitions)
+                for molecule, transitions in molecules
+            },
+        )
         self.polarisation = polarisation
         self.lineshape = lineshape
         self.meas_modifiers = meas_modifiers
@@ -45,21 +51,13 @@ class MultiMoleculeFitRecipe(FitRecipe):
 
     @override
     def prepare(self):
-        self.I_const = [
-            molecule.get_intensity_constant(
-                transitions, laser_wavelength=532e-9, polarisation=self.polarisation
-            )
-            for molecule, transitions in self.molecules
-        ]
-
         self.fitparameters = Parameters()
         self.fitparameters.add("A", value=1, vary=True)
         for T_name in self._get_temperature_names():
             self.fitparameters.add(T_name, value=3000, min=250, max=10e3, vary=True)
-        for molecule, _ in self.molecules:
-            self.fitparameters.add(
-                f"X_{molecule.molecule_name}", value=1, min=0, max=1, vary=True
-            )
+
+        for molecule in self.molecules.molecule_names():
+            self.fitparameters.add(f"X_{molecule}", value=1, min=0, max=1, vary=True)
 
         self.lineshape.prepare_fitparameters(self.fitparameters)
 
@@ -86,23 +84,10 @@ class MultiMoleculeFitRecipe(FitRecipe):
         dnu_meas = (meas.dnu() / 1e2,)
         lambda_meas = meas.lambdanm
 
-        I_stick_sim = []
-        dnu_stick = []
-        for i, (molecule, transitions) in enumerate(self.molecules):
-            I_var_i = molecule.get_intensity_variable(transitions, **T_dict)
-            I_stick_sim_i = (self.I_const[i]) * I_var_i
-            I_stick_sim.append(
-                I_stick_sim_i * pars[f"X_{molecule.molecule_name}"].value
-            )
-            dnu_stick.append(transitions.vacuum_wavenumber)
-
-        # Merge the stick spectra by creating one numpy array
-        I_stick_sim = np.concatenate(I_stick_sim)
-        dnu_stick = np.concatenate(dnu_stick)
-
-        dnu_scat = 1 / 532e-9 - dnu_stick * 1e2
-        lambda_stick = 1e9 / dnu_scat
-
+        dnu_stick, lambda_stick, I_stick_sim = self.molecules.stick(
+            T_dict["T"],
+            **{x: pars[f"X_{x}"] for x in self.molecules.molecule_names()},
+        )
         self.lineshape.apply(pars)
 
         I_sim_broad = self.simulation_method.simulate(
@@ -128,19 +113,25 @@ class MultiMoleculeFitRecipe(FitRecipe):
 
     @override
     def fit(self, meas: MeasurementSpectrum):
+        # Fit the parameters to the measurement
         out: lmfit.minimizer.MinimizerResult = minimize(
             self.fit_residuals,
             self.fitparameters,
             args=(meas.original.c.normalize(axis=0),),
         )
 
+        # Synthesize the fitted spectrum
+        fit_normalized = self.make(out.params, meas.original)
+
+        # Apply the measurement modifiers according to the fit parameters
         for mod in self.meas_modifiers:
             meas = mod.apply_and_modify(meas, out.params)
-
-        fit_normalized = self.make(out.params, meas.original)
         data_normalized = meas.data.c.normalize(axis=0).sdata
+
+        # Calculate the residuals between the measured and fitted spectrum
         residuals = data_normalized - fit_normalized
 
+        # Return the fit result
         return FitResult(
             fit_params=out.params,
             meas_original=meas.original,

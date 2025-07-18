@@ -36,10 +36,14 @@ class MeasurementModifier:
         return self.modify(measurement)
 
     def _get_parameter(self, params, kwargs, key, allow_none=False):
+        if params is not None and type(params) is not Parameters:
+            raise TypeError(
+                "Parameters should be of type Parameters, not {}".format(type(params))
+            )
         if key in kwargs.keys():
             return kwargs[key]
         elif params is not None and key in params.keys():
-            return params[key]
+            return params[key].value
         elif not allow_none:
             raise ValueError(f"Parameter `{key}` not found in parameters or kwargs")
         else:
@@ -61,7 +65,8 @@ class WavelengthAxisCorrection(MeasurementModifier):
 
         coefficient_names = self.get_parameter_names()
         self.apply(
-            {
+            None,
+            **{
                 coefficient_names[i]: (
                     initial_values[i] if i < len(initial_values) else 0
                 )
@@ -139,7 +144,8 @@ class BackgroundCorrection(MeasurementModifier):
 
         coefficient_names = self.get_parameter_names()
         self.apply(
-            {
+            None,
+            **{
                 coefficient_names[i]: (
                     initial_values[i] if i < len(initial_values) else 0
                 )

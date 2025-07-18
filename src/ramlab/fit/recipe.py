@@ -19,15 +19,36 @@ from ramlab.molecules.polarisation import Polarisation
 
 class FitRecipe:
     def prepare(self):
+        """
+        Prepares the fit recipe by initializing parameters and such.
+        """
         raise NotImplementedError()
 
     def fit(self, meas: MeasurementSpectrum):
+        """
+        Fits the measured spectrum. Should be overriden by subclasses.
+        """
         raise NotImplementedError()
 
     def make(self, pars: Parameters, meas: MeasurementSpectrum):
+        """Generate a synthetic spectrum based on the parameters and measurement.
+
+        Args:
+            pars (Parameters): The fit parameters to use for the simulation. These include wavelength corrections, lineshape parameters, temperature, etc.
+            meas (MeasurementSpectrum): The measurement spectrum to use as a basis for the simulation.
+        """
         raise NotImplementedError()
 
-    def fit_residuals(self, pars: Parameters, meas: MeasurementSpectrum):
+    def fit_residuals(self, pars: Parameters, meas: MeasurementSpectrum) -> np.ndarray:
+        """For given simulation parameters, calculate the residuals between the measured spectrum and the simulated spectrum.
+
+        Args:
+            pars (Parameters): The fit parameters to use for the simulation. These include wavelength corrections, lineshape parameters, temperature, etc.
+            meas (MeasurementSpectrum): The measurement spectrum to use as a basis for the simulation.
+
+        Returns:
+            np.ndarray: The residuals between the measured spectrum and the simulated spectrum.
+        """
         I_meas = meas.c.normalize(axis=0).sdata
         I_sim = self.make(pars, meas)
         return (I_meas - I_sim) ** 2

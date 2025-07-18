@@ -1,7 +1,7 @@
 from typing_extensions import override
 from scipy.special import voigt_profile as voigt
 import numpy as np
-
+from lmfit import Parameters
 from ramlab.simulate.linespreadfunction.base import Lineshape
 
 
@@ -12,7 +12,7 @@ class Voigt(Lineshape):
     vary_l: bool = True
 
     @override
-    def prepare_fitparameters(self, parameters):
+    def prepare_fitparameters(self, parameters: Parameters):
         parameters.add("w_g", value=self.w_g, min=0, vary=self.vary_g)
         parameters.add("w_l", value=self.w_l, min=0, vary=self.vary_l)
 

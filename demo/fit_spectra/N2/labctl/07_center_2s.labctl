@@ -1,0 +1,2039 @@
+# Configuration file for lab automation
+#   Title:  
+#   Date:   2025-07-04__12:00:11
+#   Author: Martijn Ruijzendaal
+# [N_iter, [N_reps]] = [1, [200]]
+#SELSER 1
+STP
+SAI
+ERR?
+RON 1 0
+SVO 1 1
+POS 1 0.000
+
+#SELSER 0
+# Channel G - gate
+:PULS7:STAT ON
+:PULS7:DELAY 0.0000000000
+:PULS7:SYNC T0
+:PULS7:WIDT 0.0333333333
+:PULS7:POL NORM
+:PULS7:MOD SING
+:PULS3:CGAT LOW
+# Selecting config 0
+# Selecting position 0: 0.000 mm
+#SELSER 1
+MOV 1 0.000
+#WAIT 0
+#SELSER 0
+:PULS3:BCO 62
+# Acquiring: config 1/1, foreground (1/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (1/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (2/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (2/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (3/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (3/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (4/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (4/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (5/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (5/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (6/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (6/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (7/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (7/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (8/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (8/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (9/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (9/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (10/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (10/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (11/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (11/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (12/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (12/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (13/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (13/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (14/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (14/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (15/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (15/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (16/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (16/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (17/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (17/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (18/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (18/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (19/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (19/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (20/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (20/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (21/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (21/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (22/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (22/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (23/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (23/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (24/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (24/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (25/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (25/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (26/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (26/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (27/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (27/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (28/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (28/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (29/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (29/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (30/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (30/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (31/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (31/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (32/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (32/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (33/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (33/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (34/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (34/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (35/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (35/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (36/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (36/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (37/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (37/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (38/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (38/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (39/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (39/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (40/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (40/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (41/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (41/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (42/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (42/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (43/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (43/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (44/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (44/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (45/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (45/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (46/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (46/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (47/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (47/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (48/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (48/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (49/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (49/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (50/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (50/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (51/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (51/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (52/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (52/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (53/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (53/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (54/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (54/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (55/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (55/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (56/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (56/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (57/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (57/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (58/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (58/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (59/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (59/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (60/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (60/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (61/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (61/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (62/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (62/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (63/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (63/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (64/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (64/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (65/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (65/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (66/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (66/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (67/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (67/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (68/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (68/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (69/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (69/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (70/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (70/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (71/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (71/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (72/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (72/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (73/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (73/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (74/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (74/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (75/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (75/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (76/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (76/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (77/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (77/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (78/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (78/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (79/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (79/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (80/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (80/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (81/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (81/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (82/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (82/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (83/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (83/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (84/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (84/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (85/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (85/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (86/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (86/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (87/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (87/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (88/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (88/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (89/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (89/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (90/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (90/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (91/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (91/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (92/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (92/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (93/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (93/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (94/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (94/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (95/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (95/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (96/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (96/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (97/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (97/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (98/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (98/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (99/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (99/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (100/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (100/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (101/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (101/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (102/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (102/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (103/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (103/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (104/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (104/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (105/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (105/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (106/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (106/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (107/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (107/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (108/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (108/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (109/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (109/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (110/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (110/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (111/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (111/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (112/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (112/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (113/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (113/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (114/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (114/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (115/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (115/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (116/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (116/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (117/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (117/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (118/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (118/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (119/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (119/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (120/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (120/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (121/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (121/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (122/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (122/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (123/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (123/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (124/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (124/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (125/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (125/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (126/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (126/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (127/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (127/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (128/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (128/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (129/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (129/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (130/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (130/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (131/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (131/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (132/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (132/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (133/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (133/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (134/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (134/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (135/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (135/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (136/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (136/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (137/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (137/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (138/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (138/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (139/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (139/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (140/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (140/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (141/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (141/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (142/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (142/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (143/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (143/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (144/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (144/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (145/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (145/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (146/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (146/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (147/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (147/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (148/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (148/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (149/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (149/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (150/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (150/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (151/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (151/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (152/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (152/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (153/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (153/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (154/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (154/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (155/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (155/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (156/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (156/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (157/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (157/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (158/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (158/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (159/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (159/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (160/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (160/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (161/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (161/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (162/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (162/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (163/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (163/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (164/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (164/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (165/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (165/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (166/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (166/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (167/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (167/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (168/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (168/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (169/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (169/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (170/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (170/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (171/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (171/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (172/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (172/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (173/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (173/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (174/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (174/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (175/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (175/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (176/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (176/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (177/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (177/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (178/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (178/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (179/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (179/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (180/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (180/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (181/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (181/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (182/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (182/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (183/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (183/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (184/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (184/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (185/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (185/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (186/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (186/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (187/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (187/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (188/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (188/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (189/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (189/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (190/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (190/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (191/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (191/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (192/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (192/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (193/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (193/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (194/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (194/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (195/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (195/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (196/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (196/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (197/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (197/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (198/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (198/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (199/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (199/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, foreground (200/200), iteration 1/1
+:PULS3:DELAY 0.0000004540
+#WAIT 50
+*ARM
+#WAIT 2517
+# Acquiring: config 1/1, background (200/200), iteration 1/1
+:PULS3:DELAY 0.0000000000
+#WAIT 50
+*ARM
+#WAIT 2517
+#SELSER 1
+MOV 1 0.000
+#WAIT 0
+STP
+# Total wait: 17.1min
+# NB: Put the PDG in burst mode
+# Kinetic acquisition settings:
+# 	Exposure time:		2.017s
+# 	Accumulation count:	1
+# 	Frame count:		400

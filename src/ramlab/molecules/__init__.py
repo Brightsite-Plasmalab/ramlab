@@ -6,6 +6,7 @@ from ramlab.molecules.transitions import Transitions
 from ramlab.molecules.H2 import H2
 from ramlab.molecules.N2 import N2
 from ramlab.molecules.O2 import O2
+from ramlab.molecules.O import O
 from ramlab.molecules.NO_hitran import NO_Hitran
 from ramlab.molecules.NO import NO
 from ramlab.molecules.CH4 import CH4
