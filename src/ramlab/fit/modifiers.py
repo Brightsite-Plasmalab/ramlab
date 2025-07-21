@@ -1,4 +1,4 @@
-from typing_extensions import List, override
+from typing_extensions import List, override, Union
 from lmfit import Parameters
 from toddler.data.spectrum import Spectrum
 import numpy as np
@@ -52,8 +52,8 @@ class MeasurementModifier:
 
 class WavelengthAxisCorrection(MeasurementModifier):
     order: int
-    coefficients: List[float] | None
-    vary: List[bool] | bool | None
+    coefficients: Union[List[float], None]
+    vary: Union[List[bool], bool, None]
 
     VARY_NAME = "vary_wl"
 
@@ -131,8 +131,8 @@ class WavelengthAxisCorrection(MeasurementModifier):
 
 class BackgroundCorrection(MeasurementModifier):
     order: int
-    coefficients: List[float] | None
-    vary: List[bool] | bool | None
+    coefficients: Union[List[float], None]
+    vary: Union[List[bool], bool, None]
 
     VARY_NAME = "vary_bg"
 
