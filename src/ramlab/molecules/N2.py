@@ -38,7 +38,7 @@ class N2(SimpleDiatomicMolecule):
         alpha_dv0 = 1.777 + 0.01389 * v_l + 0.000098 * v_l**2
         alpha_dv1 = (
             ((v_l + 1) / 2) ** (1 / 2)
-            * (cls.B_e / cls.w_e) ** (1 / 2)
+            * (2 * cls.B_e / cls.w_e) ** (1 / 2)
             * (1.871 + 0.0105 * v_l)
         )
 
@@ -59,7 +59,7 @@ class N2(SimpleDiatomicMolecule):
         gamma_dv0 = 0.719 + 0.0177 * v_l + 0.00015 * v_l**2
         gamma_dv1 = (
             ((v_l + 1) / 2) ** (1 / 2)
-            * (cls.B_e / cls.w_e) ** (1 / 2)
+            * (2 * cls.B_e / cls.w_e) ** (1 / 2)
             * (2.25 + 0.019 * v_l)
         )
 

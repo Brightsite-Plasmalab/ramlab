@@ -139,7 +139,8 @@ class Molecule:
         wavelength_intensity = (laser_wavenumber - transition_wavenumber) ** 4
 
         constants = 1 / (16 * (c**4) * (pi**2) * (epsilon_0**2))
-        return Crosssection * wavelength_intensity  # * constants
+        # return Crosssection * wavelength_intensity  # * constants
+        return Crosssection
 
     @classmethod
     def get_intensity_variable(cls, transitions: Transitions, **temperatures) -> float:

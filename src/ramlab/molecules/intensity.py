@@ -27,6 +27,12 @@ class Intensity:
             self.I_parallel + other.I_parallel,
         )
 
+    def multiply(self, other: Union[float, np.ndarray]) -> "Intensity":
+        return Intensity(
+            self.I_perpendicular * other,
+            self.I_parallel * other,
+        )
+
     def for_polarisation(self, polarisation: Union[str, Polarisation]) -> float:
         if type(polarisation) is str:
             polarisation = Polarisation.str_to_enum(polarisation)

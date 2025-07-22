@@ -8,7 +8,7 @@ from ramlab.molecules.polarisation import Polarisation
 from ramlab.molecules.state import State
 from ramlab.molecules.transitions import Transitions
 from ramlab.util.decorators import abstractproperty
-from scipy.constants import k, h, hbar, c, pi, epsilon_0
+from scipy.constants import k, h, hbar, c, pi, epsilon_0, fine_structure
 
 
 class SimpleDiatomicMolecule(AbInitioMolecule):
@@ -104,7 +104,6 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
         v = transitions.initial_v
         dV = transitions.dv
-        nu = transitions.vacuum_wavenumber * 100  # Convert from cm^-1 to m^-1
 
         # Initialise values for calculation
         id_vib_Stokes = dV == 1
@@ -121,19 +120,37 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         # b_v_k from Long, eq. 5.7.8
         # constants = np.sqrt(h / (8 * pi**2 * c * np.abs(nu)))
 
-        alpha = id_Q * (  # Only Q-branches
+        alpha = id_Q * (  # Only Q-branches [A^3]
             (id_rot * alpha0)  # Rot
             + (id_vib_Stokes * alpha0)  # Vib Stokes
             + (id_vib_aStokes * alpha0)  # Vib a-Stokes
         )
 
-        gamma = (  # All branches
+        gamma = (  # All branches, atomic units [A^3]
             (gamma0 * id_rot)  # Rot
             + (gamma0 * id_vib_Stokes)  # Vib Stokes
             + (gamma0 * id_vib_aStokes)  # Vib a-Stokes
         )
 
-        return Intensity(alpha**2 + (4 / 45) * pt * gamma**2, (1 / 15) * pt * gamma**2)
+        # See Long section 5.10, specifically eq. 5.10.5
+        conv = 4 * (np.pi**2) * (fine_structure**2)  # [-] See Long eq 5.10.5
+        nu = transitions.scattering_wavenumber * 100  # Convert from cm^-1 to m^-1
+
+        return Intensity(  # [cm^2/sr]
+            (nu**4)
+            * conv
+            * (alpha**2 + (4 / 45) * pt * gamma**2)
+            * 1e-60
+            * 100,  # Long eq. 5.5.8
+            (nu**4) * conv * (1 / 15) * pt * gamma**2 * 1e-60 * 100,  # Long eq. 5.5.9
+        )
+
+        # See Penney (1974), eq (6)
+        # nu = transitions.scattering_wavenumber  # [cm^-1]
+        # return Intensity(
+        #     16 * np.pi**4 * nu**4 * (alpha**2 + (4 / 45) * pt * gamma**2) * (1e-48),
+        #     16 * np.pi**4 * nu**4 * (1 / 15) * pt * gamma**2 * (1e-48),
+        # )
 
     @classmethod
     def placzekteller(cls, transitions: Transitions) -> float:

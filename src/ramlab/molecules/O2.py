@@ -38,7 +38,7 @@ class O2(SimpleDiatomicMolecule):
         alpha_dv0 = 1.619 + 0.01773 * v_l + 0.00009 * v_l**2
         alpha_dv1 = (
             ((v_l + 1) / 2) ** (1 / 2)
-            * (cls.B_e / cls.w_e) ** (1 / 2)
+            * (2 * cls.B_e / cls.w_e) ** (1 / 2)
             * (1.779 + 0.019 * v_l)
         )
 
@@ -66,7 +66,7 @@ class O2(SimpleDiatomicMolecule):
         gamma_dv0 = 1.097 + 0.0339 * v_l + 0.00040 * v_l**2
         gamma_dv1 = (
             ((v_l + 1) / 2) ** (1 / 2)
-            * (cls.B_e / cls.w_e) ** (1 / 2)
+            * (2 * cls.B_e / cls.w_e) ** (1 / 2)
             * (3.25 + 0.057 * v_l)
         )
 
