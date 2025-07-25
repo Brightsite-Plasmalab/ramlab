@@ -57,7 +57,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
             * np.exp(-h * c * (E_rot) / (k * T_rot))
         )
 
-        # _, idx_unique = state_initial.unique(return_index=True)
+        _, idx_unique = state_initial.unique(return_index=True)
         # partition_sum = np.nansum(weights[idx_unique])
         partition_sum = np.nansum(weights)
         n = weights / partition_sum
@@ -125,32 +125,26 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
             + (id_vib_Stokes * alpha0)  # Vib Stokes
             + (id_vib_aStokes * alpha0)  # Vib a-Stokes
         )
+        alpha *= 1e-24  # [cm^2]
 
         gamma = (  # All branches, atomic units [A^3]
             (gamma0 * id_rot)  # Rot
             + (gamma0 * id_vib_Stokes)  # Vib Stokes
             + (gamma0 * id_vib_aStokes)  # Vib a-Stokes
         )
+        gamma *= 1e-24  # [cm^2]
 
-        # See Long section 5.10, specifically eq. 5.10.5
-        conv = 4 * (np.pi**2) * (fine_structure**2)  # [-] See Long eq 5.10.5
-        nu = transitions.scattering_wavenumber * 100  # Convert from cm^-1 to m^-1
+        # Assume Buldakov (2003) eq. 4 with every element in cm^-1
+        # See Penney (1974), eq (6)
+        nu = transitions.scattering_wavenumber  # [cm^-1]
 
         return Intensity(  # [cm^2/sr]
-            (nu**4)
-            * conv
-            * (alpha**2 + (4 / 45) * pt * gamma**2)
-            * 1e-60
-            * 100,  # Long eq. 5.5.8
-            (nu**4) * conv * (1 / 15) * pt * gamma**2 * 1e-60 * 100,  # Long eq. 5.5.9
+            16
+            * np.pi**4
+            * (nu**4)
+            * (alpha**2 + (4 / 45) * pt * gamma**2),  # Long eq. 5.5.8
+            16 * np.pi**4 * (nu**4) * (1 / 15) * pt * gamma**2,  # Long eq. 5.5.9
         )
-
-        # See Penney (1974), eq (6)
-        # nu = transitions.scattering_wavenumber  # [cm^-1]
-        # return Intensity(
-        #     16 * np.pi**4 * nu**4 * (alpha**2 + (4 / 45) * pt * gamma**2) * (1e-48),
-        #     16 * np.pi**4 * nu**4 * (1 / 15) * pt * gamma**2 * (1e-48),
-        # )
 
     @classmethod
     def placzekteller(cls, transitions: Transitions) -> float:
@@ -398,39 +392,26 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
     # Defining the possible transitions
     @classmethod
     def _get_all_transition_states(cls) -> tuple[State, State]:
-        # Define initial quantum states
-        vi = np.arange(0, 15)  # Vibrational quantum number
-        Ji = np.arange(0, 130)  # Rotational quantum number
+        states_initial, states_final = cls._get_all_states().transition_each(
+            v=np.array([-1, 0, 1]), J=np.array([-2, 0, 2])
+        )
 
-        # Define transitions for each quantum number
-        dv = np.array([-1, 0, 1])
-        dJ = np.array([-2, 0, 2])
+        dv = states_final.v - states_initial.v
+        dJ = states_final.J - states_initial.J
 
-        # Calculate the total number of transitions
-        total_transitions = len(dv) * len(dJ)
+        legal = (
+            ~((dv == 0) & (dJ == 0))  # No Rayleigh scattering
+            & (states_final.v >= 0)  # Only valid quantum numbers
+            & (states_final.J >= 0)
+            & (states_initial.v >= 0)
+            & (states_initial.J >= 0)
+        )
+        return states_initial[legal], states_final[legal]
 
-        # Generate initial states
-        initial_states = np.array(list(product(vi, Ji)))
-        i_states_all = np.repeat(initial_states, total_transitions, axis=0)
-        VI, JI = i_states_all[:, 0], i_states_all[:, 1]
-
-        # Generate transitions for each quantum number and tile them appropriately
-        dv_full = np.tile(dv, len(initial_states) * len(dJ))
-        dJ_full = np.tile(np.repeat(dJ, len(dv)), len(initial_states))
-
-        # Apply transitions
-        VF = i_states_all[:, 0] + dv_full
-        JF = i_states_all[:, 1] + dJ_full
-
-        rayleigh = (VI == VF) & (JI == JF)
-        legal = VF >= 0
-        legal &= JF >= 0
-        legal &= ~rayleigh
-        vi, Ji, vf, Jf = VI[legal], JI[legal], VF[legal], JF[legal]
-        state_initial = State(v=vi, J=Ji)
-        state_final = State(v=vf, J=Jf)
-
-        return state_initial, state_final
+    @override
+    @classmethod
+    def _get_all_states(cls):
+        return State(J=np.arange(0, 130)).add_each(v=np.arange(0, 15))
 
     @classmethod
     def _format_quanta_global(cls, state: State):

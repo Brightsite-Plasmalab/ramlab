@@ -85,7 +85,10 @@ class Transitions:
     def filter(self, return_mask=False, **kwargs):
         mask = np.ones(len(self), dtype=bool)
         for k, v in kwargs.items():
-            mask &= np.array(self[k] == v)
+            if type(v) is list or type(v) is np.ndarray:
+                mask &= np.array(self[k].isin(v))
+            else:
+                mask &= np.array(self[k] == v)
         if return_mask:
             return self[mask], mask
         return self[mask]

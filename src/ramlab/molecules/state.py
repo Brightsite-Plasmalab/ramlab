@@ -140,6 +140,106 @@ class State:
         """
         return State(**copy.deepcopy(self.state))
 
+    def add_each(self, **kwargs):
+        """
+        Create a new State object with updated attributes.
+
+        Example:
+            state = State(J=np.array([1, 2]))
+            state.add_each(v=np.array([0, 1]))
+            > State(J=array([1, 1, 2, 2]), v=array([0, 1, 0, 1]))
+
+        Args:
+            **kwargs: Attributes to update in the new State object.
+
+        Returns:
+            State: A new State object with the updated attributes.
+        """
+        if len(kwargs) == 0:
+            raise ValueError("No attributes provided to add.")
+        if len(kwargs) > 1:
+            # If multiple attributes are provided, recursively call add_each
+            a = self
+            for k, v in kwargs.items():
+                a = a.add_each(**{k: v})
+            return a
+
+        k, v = list(kwargs.items())[0]
+
+        assert (
+            k not in self.state
+        ), f"Key '{k}' already exists in the state. Did you mean to use `transition_each`?"
+
+        # Expand the current state such that each attribute is repeated N times,
+        # where N is the length of the new attribute
+        new_state = self.copy()
+        for key in self.state.keys():
+            new_state.state[key] = np.tile(self.state[key], len(v))
+
+        # Add the new attribute
+        new_state.state[k] = np.repeat(v, len(self))
+
+        return new_state
+
+    def transition_each(self, **kwargs):
+        """
+        Create a new State object with transitions applied to each attribute.
+
+        Example:
+            state = State(J=np.array([1, 2]), v=np.array([1]))
+            state.transition_each(J=np.array([0, 2]), v=np.array([-1, 1]))
+            > State(J=np.array([1, 2, 1, 2]), v=np.array([1, 1, 1, 1])),
+              State(J=np.array([3, 4, 3, 4]), v=np.array([0, 2, 0, 2]))
+
+        Args:
+            **kwargs: Attributes to transition in the new State object.
+
+        Returns:
+            State: The original state, but tiled and repeated for each transition.
+            State: A new State object with the transitioned attributes.
+        """
+        if len(kwargs) == 0:
+            raise ValueError("No attributes provided to transition.")
+
+        # If multiple attributes are provided, recursively call transition_each
+        if len(kwargs) >= 2:
+            # Recursively apply transition_each for more than one kwarg
+            k1, v1 = kwargs.popitem()
+            a, b = self.transition_each(**{k1: v1})
+            a, _ = a.transition_each(**kwargs)
+            _, b = b.transition_each(**kwargs)
+            return a, b
+
+        # If only one attribute is provided, we can proceed with the transition
+        k, v = list(kwargs.items())[0]
+
+        assert (
+            k in self.state
+        ), f"Key '{k}' doesn't exists in the state. Did you mean to use `add_each`?"
+
+        state_i = self.copy()
+        for key in self.state.keys():
+            state_i.state[key] = np.tile(self.state[key], len(v))
+
+        # Create a new State object with the transitioned attributes
+        state_f = self.copy()
+        for key in self.state.keys():
+            state_f.state[key] = np.tile(self.state[key], len(v))
+        state_f.state[k] += np.repeat(v, len(self))
+
+        return state_i, state_f
+
+    def filter(self, return_mask=False, **kwargs):
+        mask = np.ones(len(self), dtype=bool)
+        for k, v in kwargs.items():
+            if type(v) is list or type(v) is np.ndarray:
+                mask &= np.array(self[k].isin(v))
+            else:
+                mask &= np.array(self[k] == v)
+        if return_mask:
+            return self[mask], mask
+        return self[mask]
+
 
 if __name__ == "__main__":
     # Test cases for the State class, particularly the __eq__ method
