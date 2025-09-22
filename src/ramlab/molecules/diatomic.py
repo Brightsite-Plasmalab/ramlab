@@ -58,8 +58,8 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         )
 
         _, idx_unique = state_initial.unique(return_index=True)
-        # partition_sum = np.nansum(weights[idx_unique])
-        partition_sum = np.nansum(weights)
+        partition_sum = np.nansum(weights[idx_unique])
+        #partition_sum = np.nansum(weights)
         n = weights / partition_sum
         return n
 
@@ -411,6 +411,9 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
     @override
     @classmethod
     def _get_all_states(cls):
+		# TODO: Limit the maximal state energy by the dissociation energy.
+		# Quasibound states are unlikely to be observable by the Raman scattering.
+		# Should it be limited by Edis - E(laser photon)?
         return State(J=np.arange(0, 130)).add_each(v=np.arange(0, 15))
 
     @classmethod

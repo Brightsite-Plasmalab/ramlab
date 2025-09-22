@@ -111,11 +111,11 @@ class State:
         return True
 
     def unique(self, return_index=False):
-        df = pd.DataFrame.from_dict(self.state, orient="index").reset_index()
+        df = pd.DataFrame.from_dict(self.state).reset_index()
         # df = pd.DataFrame.from_dict(self.state).reset_index()
 
         # Drop duplicate rows and keep the first occurrence
-        df_unique = df.drop_duplicates(keep="first")
+        df_unique = df.drop_duplicates(subset=("J", "v"), keep="first")
 
         # Get the indices of the unique rows
         idx = df_unique.index.tolist()
@@ -127,7 +127,7 @@ class State:
         # _, idx = np.unique(matrix, axis=1, return_index=True)
 
         if return_index:
-            return self[np.ndarray(idx, dtype=int)], idx
+            return self[np.array(idx, dtype=int)], idx
         else:
             return self[idx]
 
