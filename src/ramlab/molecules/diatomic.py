@@ -50,18 +50,51 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         E_rot = cls.E_rot(state_initial.v, state_initial.J) * 100
 
         g = state_initial.degeneracy
-        E = state_initial.E * 100
+
         weights = (
             g
             * np.exp(-h * c * (E_vib) / (k * T_vib))
             * np.exp(-h * c * (E_rot) / (k * T_rot))
         )
 
-        _, idx_unique = state_initial.unique(return_index=True)
-        partition_sum = np.nansum(weights[idx_unique])
-        #partition_sum = np.nansum(weights)
+        partition_sum = cls.get_partition_sum(**temperatures)
         n = weights / partition_sum
         return n
+
+    @override
+    @classmethod
+    def get_partition_sum(cls, **temperatures) -> float:
+        """Returns the partition sum of the molecule.
+
+        Args:
+            **temperatures: The temperatures in Kelvin.
+
+        Returns:
+            float: The partition sum of the molecule.
+        """
+
+        if len(temperatures) <= 1:
+            # Assume populations are described by a Boltzmann distribution if only one temperature is given
+            return super().get_populations(**temperatures)
+
+        state = cls._get_all_states()
+
+        # Implementation of vibrational-rotational non-equilibrium populations
+        T_vib = temperatures["T_vib"]
+        T_rot = temperatures["T_rot"]
+
+        E_vib = cls.E_vib(state.v) * 100  # 100*E converts E from cm^-1 to m^-1
+        E_rot = cls.E_rot(state.v, state.J) * 100
+
+        g = cls.degeneracy(state)
+
+        weights = (
+            g
+            * np.exp(-h * c * (E_vib) / (k * T_vib))
+            * np.exp(-h * c * (E_rot) / (k * T_rot))
+        )
+
+        return np.nansum(weights)
 
     @override
     @classmethod
