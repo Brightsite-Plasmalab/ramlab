@@ -75,7 +75,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
         if len(temperatures) <= 1:
             # Assume populations are described by a Boltzmann distribution if only one temperature is given
-            return super().get_populations(**temperatures)
+            return super().get_partition_sum(**temperatures)
 
         state = cls._get_all_states()
 
