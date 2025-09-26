@@ -2,18 +2,75 @@ from typing_extensions import override
 import numpy as np
 from ramlab.molecules.diatomic import SimpleDiatomicMolecule
 from ramlab.molecules.transitions import Transitions
+from scipy.constants import k, h, hbar, c, pi, epsilon_0, fine_structure
 
 
 class N2(SimpleDiatomicMolecule):
     # Molecule properties
     molecule_number = 22
     molecule_name = "N2"
-    isotope_number = 1
-
+    isotope_number = None
 
     # Energy constants
     B_e = None  # /m
     w_e = None  # /m
+
+    # Store energies and degeneracies and degeneracies of states
+    # which could have non-negligible populations at certain temperature range
+    # ToDo: Should it relate to an instance instead of the class?
+    selected_E_vib = None
+    selected_E_rot = None
+    selected_degeneracy = None
+
+    @classmethod
+    @override
+    def select_states(cls, maxT):
+        state = cls._get_all_states()
+        E_vib = cls.E_vib(state.v) * 100  # 100*E converts E from cm^-1 to m^-1
+        E_rot = cls.E_rot(state.v, state.J) * 100
+        g = cls.degeneracy(state)
+        mask = False
+        for T in range(300, maxT+499, 500):
+            p = g * np.exp(-h * c * (E_vib + E_rot) / (k * T))
+            p /= np.max(p)
+            mask = np.logical_or(mask, p>1e-5)
+        
+        # Additional states that could be populated in case Tvib > Trot
+        for Trot in range(300, maxT+499, 500):
+            p = g * np.exp(-h * c * E_rot / (k * Trot)) * np.exp(-h * c * E_vib / (k * maxT))
+            p /= np.max(p)
+            mask = np.logical_or(mask, p>1e-5)
+        
+        cls.selected_E_vib = E_vib[mask]
+        cls.selected_E_rot = E_rot[mask]
+        cls.selected_degeneracy = g[mask]
+
+    @override
+    @classmethod
+    def get_partition_sum(cls, **temperatures) -> float:
+        """Returns the partition sum of the molecule using precalculated energies if possible.
+
+        Args:
+            **temperatures: The temperatures in Kelvin.
+
+        Returns:
+            float: The partition sum of the molecule.
+        """
+        if (cls.selected_E_vib is None) or (cls.selected_E_rot is None) or (cls.selected_degeneracy is None):
+            return super().get_partition_sum(**temperatures)
+        
+        if len(temperatures) <= 1:
+            # Assume populations are described by a Boltzmann distribution if only one temperature is given
+            weights = cls.selected_degeneracy * np.exp(-h * c * (cls.selected_E_vib + cls.selected_E_rot) / (k * temperatures["T"]))
+        else:
+            T_vib = temperatures["T_vib"]
+            T_rot = temperatures["T_rot"]
+            weights = (
+                cls.selected_degeneracy
+                * np.exp(-h * c * cls.selected_E_vib / (k * T_vib))
+                * np.exp(-h * c * cls.selected_E_rot / (k * T_rot))
+            )
+        return np.nansum(weights)
 
 
     @classmethod
