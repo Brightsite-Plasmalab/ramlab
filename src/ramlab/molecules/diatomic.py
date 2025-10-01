@@ -6,7 +6,7 @@ from src.ramlab.molecules.state import State
 from src.ramlab.molecules.transitions import Transitions
 from src.ramlab.util.decorators import abstractproperty
 from scipy.constants import k, h, hbar, c, pi, epsilon_0
-
+import matplotlib.pyplot as plt
 
 class SimpleDiatomicMolecule(AbInitioMolecule):
     # Intensity calculations
@@ -91,8 +91,8 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         )  # Mean polarisability anisotropy
         alpha_p = np.sqrt(cls.alpha_p_sq)  # Derivative of polarisability isotropy
         gamma_p = np.sqrt(cls.gamma_p_sq)  # Derivative of polarisability anisotropy
-        # hw_a = cls.hermanwallis_a(transitions)#Herman-Walls factors not yet implemented
-        # hw_y = cls.hermanwallis_y(transitions) #Herman-Walls factors not yet implemented
+        #hw_a = cls.hermanwallis_a(transitions)#Herman-Walls factors not yet implemented
+        #hw_y = cls.hermanwallis_y(transitions) #Herman-Walls factors not yet implemented
 
         v = transitions.initial_v
         dV = transitions.dv
@@ -203,7 +203,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
         F = cls.hermanwallis_a(vp, Jp, vpp, Jpp)
 
-        return M
+        return M * np.sqrt(F)
         # return np.sqrt(F) * M * 1e-30  # Convert from Å^3 to m^3
 
     @classmethod
@@ -244,7 +244,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 
         F = cls.hermanwallis_y(vp, Jp, vpp, Jpp)
 
-        return M
+        return M * np.sqrt(F)
         # return np.sqrt(F) * M * 1e-30  # Convert from Å^3 to m^3
 
     @classmethod
@@ -506,7 +506,7 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
             float: Vibrational energy in cm^-1"""
 
         # See Derek A. Long, eq. 5.9.3
-        return (v + 1 / 2) * cls.w_e - cls.w_ex_e * (v + 1 / 2) ** 2 + cls.w_ey_e * (v + 1/2)**3
+        return (v + 1 / 2) * cls.w_e - cls.w_ex_e * (v + 1 / 2) ** 2
 
     @abstractproperty
     def w_e(cls) -> float:
@@ -601,3 +601,5 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         df["crosssection"] = df["einstein_A_coefficient"].values
 
         return df
+
+
