@@ -134,12 +134,12 @@ def spectral_fit_residuals(pars: Parameters, meas, meas_full, I_const_per,I_cons
                                               skew=params[2])
     else:
         dnu_new, I_sim_O2 = simulate_raw_stijn(dnu_meas,dnu_meas_full, dnu_stick_temp, I_stick_sim, w_g, w_l)
-    I_sim_O2 = A / np.nanmax(I_sim_O2)*I_sim_O2+ y0
+    #I_sim_O2 = A / np.nanmax(I_sim_O2)*I_sim_O2+ y0
     
     spec_binned = np.zeros(len(dnu_meas))
     for i in range(len(dnu_meas)):
         spec_binned[i]=np.mean(I_sim_O2[np.abs(dnu_meas[i]-dnu_new[:])<=0.4])
-    
+    spec_binned = A / np.namax(spec_binned)*spec_binned + y0
     if test1 is True:
         plt.plot(dnu_meas,I_meas)
         plt.plot(dnu_meas,spec_binned)

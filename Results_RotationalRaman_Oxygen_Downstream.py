@@ -1,46 +1,45 @@
 import matplotlib
-import scipy.integrate as inte
 
-mm0_T = [3838, 4061]
+mm0_T = [4061]
 mm0_I_O1 = [3.5661]
-mm0_I_O = [0.6495]
-mm0W_wG = [0.9844, 1.0289]
-mm0_wL = [1.031, 1.031]
-mm0_k0 = [10.7944, 10.4601]
-mm0_k1 = [1.0198, 1.02]
-mm0_k2 = [0.5142549, 0.4330]
-mm0_k3 = [0,4.99998]
+mm0W_wG = [1.0289]
+mm0_wL = [1.031]
+mm0_k0 = [10.4601]
+mm0_k1 = [1.02]
+mm0_k2 = [0.4330]
+mm0_k3 = [4.99998]
 
 mm0_0W_T = [296,296,296,296,296]
 mm0_0W_ratio_I = [0,0,0,0,0]
 mm0_0W_wG = [0.9497,0.9501,0.9517,0.952,0.9498]
-mm0_0W_wL = [1.0309,1.0313,1.0324,1.0331,1.0313]
+mm0_0W_wL = [1.309,1.0313,1.0324,1.0331,1.0313]
 mm0_0W_k0 = [9.4282,9.3411,9.1625,8.711,9.4544]
 mm0_0W_k1 = [1.022,1.0251,1.0244,1.027,1.0231]
 mm0_0W_k2 = [1.08e-05,6.9e-06,4e-07,-5.79e-05,7.4e-06]
 
 # 15 mm
-mm15_400W_T = [2887,2628,1906,1087,585] #[x,x,x,x,x]
-mm15_400W_O = [0.073,0.0269,0,0,0]
-mm15_400W_wG = [0.9764,0.9734,0.9655,0.9558,0.9501]
-mm15_400W_wL = [1.0311,1.0311,1.0311, 1.0311,1.031]
-mm15_400W_k0 = [5.4968,5.9014,6.3564, 6.7192,6.7378]
-mm15_400W_k1 = [1.0201,1.0201,1.02,1.0199,1.0201]
-mm15_400W_k2 = [0.4145,0.4311,0.4207,0.4074,0.4196]
-mm15_500W_T = [2898,2764,2430,1502,807] #[x,x,x,x,x]
-mm15_500W_O = [0.0814,0.0445,0.0047,0,0]
-mm15_500W_wG = [0.9771,0.9752,0.9716,0.9604,0,9528]
-mm15_500W_wL = [1.0314,1.0312,1.0312,1.0315,1.031]
-mm15_500W_k0 = [8.814,8.2253,8.2063,8.9048,8.9882]
-mm15_500W_k1 = [1.02,1.0201,1.0199,1.0201, 1.0205]
-mm15_500W_k2 = [0.3608,0.3941,0.4033,0.4238, 0.4273]
-mm15_600W_T = [3195,3012,2786,1752,927] #[x,a,a,a,a]
-mm15_600W_O = [0.1909,0.1081,0.0483,0,0]
-mm15_600W_wG = [0.9804, 0.9778, 0.9752, 0.9633,0.954]
-mm15_600W_wL = [1.032, 1.0308,1.031,1.031,1.0312]
-mm15_600W_k0 = [9.3016, 8.914,9.0036,8.554,9.6504]
-mm15_600W_k1 = [1.0201,1.0184,1.0186,1.0162,1.0245]
-mm15_600W_k2 = [0.4095,0.4184,0.4172,0.5005,0.434]
+mm15_400W_T = [2845,2639,1775,937,490] #[x,x,x,x,x] #2946
+mm15_400W_O = [0.053,0.0276,0,0,0] #0.089
+mm15_400W_wG = [0.9768,0.9736,0.9632,0.9544,0.9492] #0.9751
+mm15_400W_wL = [1.031,1.0313,1.0313, 1.0307,1.031] #1.0306
+mm15_400W_k0 = [5.6654,5.558,5.5709, 6.4086,6.1304] #6.2728
+mm15_400W_k1 = [1.021,1.0183,1.0148,1.0178,1.0154] #1.0203
+mm15_400W_k2 = [0.4141,0.4003,0.4257,0.4221,0.427] #0.4286
+mm15_500W_T = [2940,2810,2472,1539,811] #[x,x,x,x,x]
+mm15_500W_O = [0.085,0.0579,0.0122,0,0]
+mm15_500W_wG = [0.977,0.9756,0.9716,0.961,0,9528]
+mm15_500W_wL = [1.0301,1.0312,1.0314,1.0311,1.031]
+mm15_500W_k0 = [8.7995,8.2119,8.2276,8.9955,8.9882]
+mm15_500W_k1 = [1.0201,1.02,1.0199,1.0201, 1.0205]
+mm15_500W_k2 = [0.5006,0.4243,0.4275,0.4162, 0.4273]
+mm15_600W_T = [3307,3012,2786,1752,927] #[x,x,x,x,x]
+mm15_600W_ratio_I = [0.3451,0.1212,0.0507,0,0]
+mm15_600W_O = [0.2566,0.1081,0.0483,0,0]
+mm15_600W_wG = [0.9808, 0.9778, 0.9752, 0.9633,0.954]
+mm15_600W_wL = [1.031, 1.0308,1.031,1.031,1.0312]
+mm15_600W_k0 = [8.4198, 8.914,9.0036,8.554,9.6504]
+mm15_600W_k1 = [1.0157,1.0184,1.0186,1.0162,1.0245]
+mm15_600W_k2 = [0.4702,0.4184,0.4172,0.5005,0.434]
 mm15_700W_T = [3444,3209,2915,2043,1131] #[x,x,x,x,x]
 mm15_700W_ratio_I = [0.5368,0.2442,0.0903,0.0,0]
 mm15_700W_O = [0.3492,0.1963,0.0828,0.0,0]
@@ -155,20 +154,21 @@ mm100_500W_wL = [1.0312,1.0306,1.0313,1.0308,1.0338]
 mm100_500W_k0 = [7.0179,7.1517,7.4007,7.3886,7.344]
 mm100_500W_k1 = [1.0201,1.0197,1.0202,1.0201, 1.0195]
 mm100_500W_k2 = [0.42,0.4032,0.4214,0.3851, 0.6431]
-mm100_600W_T = [2648,2425,2133,1638,1016]  #[x,x,x,x,x]
-mm100_600W_O = [0.027,0.0137,0,0,0]
-mm100_600W_wG = [0.9735, 0.9712, 0.9676, 0.9615,0.9544]
-mm100_600W_wL = [1.031, 1.0311,1.0316,1.0301,1.0307]
-mm100_600W_k0 = [5.3297, 5.8644,6.0375,5.7192,5.8914]
-mm100_600W_k1 = [1.02,1.02,1.0201,1.0181, 1.0207]
-mm100_600W_k2 = [0.3925,0.4232,0.5335,0.2208,0.5738]
-mm100_700W_T = [2906,2575,2314,1795,1190] #[x,x,x,x,x]
-mm100_700W_O = [0.083,0.0211,0.0059,0,0]
-mm100_700W_wG = [0.9764,0.9789,0.9702,0.9643,0.9566]
-mm100_700W_wL = [1.0312, 1.0308, 1.0307,1.031,1.0315]
-mm100_700W_k0 = [4.8848,4.7754,4.4457,4.1989,4.0651]
-mm100_700W_k1 = [1.0201,1.0199,1.0198,1.02,1.0201]
-mm100_700W_k2 = [0.4205,0.4097,0.4457,0.3765,0.4238]
+mm100_600W_T = [2557,2398,2133,1638,1016]  #[1,1,x,x,x]
+mm100_600W_O = [0.0200,0.0104,0,0,0]
+mm100_600W_wG = [0.9981, 0.9946, 0.9676, 0.9615,0.9544]
+mm100_600W_wL = [1.031, 1.0309,1.0316,1.0301,1.0307]
+mm100_600W_k0 = [4.6386, 4.9211,6.0375,5.7192,5.8914]
+mm100_600W_k1 = [1.0157,1.0144,1.0201,1.0181, 1.0207]
+mm100_600W_k2 = [0.4458,0.4744,0.5335,0.2208,0.5738]
+mm100_700W_T = [2868,2633,2303,1803,1271] #[1,1,1,1,1]
+mm100_700W_ratio_I = [0.0715,0.0274,0.006,0,0]
+mm100_700W_O = [0.0667,0.0267,0.006,0,0]
+mm100_700W_wG = [1.0046,0.9997,0.9924,0.9822,0.9712]
+mm100_700W_wL = [1.0307, 1.0309, 1.0308,1.0308,1.0307]
+mm100_700W_k0 = [3.8969,3.9279,3.5018,3.2613,2.8209]
+mm100_700W_k1 = [1.0143,1.0149,1.0137,1.0139,1.0114]
+mm100_700W_k2 = [0.4138,0.4183,0.3651,0.4182,0.4953]
 
 radial_list = [0,2,4,6,8]
 distance_list = [15,30,50,70,100]
@@ -186,21 +186,9 @@ power700W_O = [mm15_700W_O, mm30_700W_O, mm50_700W_O, mm70_700W_O, mm100_700W_O]
 import numpy as np
 import matplotlib.pyplot as plt
 import cantera as ct
+from scipy.integrate import simpson as si
 
 x, y = np.meshgrid(distance_list, radial_list)
-gas1 = ct.Solution('gri30.yaml')
-temp = range(300,4000,10)
-O2 = np.zeros(len(temp))
-O = np.zeros(len(temp))
-ratio = np.zeros(len(temp))
-
-for i in range(len(temp)):
-    temp_now = temp[i]
-    gas1.TPX = temp_now, 101325, "O2:1"
-    gas1.equilibrate("TP")
-    O2[i] =(gas1["O2"].X[0])
-    O[i] =(gas1["O"].X[0])
-    ratio[i] = (gas1["O"].X[0]/(gas1["O2"].X[0]))
 
 z_400 = []
 z_500 = []
@@ -234,107 +222,136 @@ for i in range(len(y)):
         z_700_O[i][j] = power700W_O[j][i]
 
 
-temperature_list_temp = sum([[mm0_0W_T],power400W_T,power500W_T,power600W_T,power700W_T],[])
-O_list_temp = sum([[mm0_0W_ratio_I],power400W_O,power500W_O,power600W_O,power700W_O],[])
+temperature_list_temp = sum([power400W_T,power500W_T,power600W_T,power700W_T],[])
+O_list_temp = sum([power400W_O,power500W_O,power600W_O,power700W_O],[])
 temperature_list = sum(temperature_list_temp,[])
 O_list = sum(O_list_temp,[])
 
-plt.plot(radial_list,power400W_T[0])
-plt.plot(radial_list, power400W_T[1])
-plt.plot(radial_list, power400W_T[2])
-plt.plot(radial_list, power400W_T[3])
-plt.plot(radial_list, power400W_T[4])
-plt.show()
 
-integrals = [[],[],[],[],[]]
-for i in range(len(integrals)):
-    integrals[0].append(inte.simpson(power400W_T[i], x=radial_list))
-    integrals[1].append(inte.simpson(power500W_T[i], x=radial_list))
-    integrals[2].append(inte.simpson(power600W_T[i], x=radial_list))
-    integrals[3].append(inte.simpson(power700W_T[i], x=radial_list))
 
-matplotlib.rcParams['xtick.labelsize'] = 18
-matplotlib.rcParams['ytick.labelsize'] = 18
+gas1 = ct.Solution('gri30.yaml')
+gas2 = ct.Solution('gri30.yaml')
+gas3 = ct.Solution('gri30.yaml')
+
+temp = range(300,3500,10)
+O2_general = np.zeros(len(temp))
+O_general = np.zeros(len(temp))
+
+O2 = np.zeros(len(temperature_list))
+O = np.zeros(len(temperature_list))
+O_error = np.zeros(len(temperature_list))
+
+O_with_N2 = np.zeros(len(temp))
+O2_with_N2 = np.zeros(len(temp))
+
+for i in range(len(temp)):
+    temp_now = temp[i]
+    gas1.TPX = temp_now, 101325, "O2:1"
+    gas2.TPX = temp_now, 101325, "O2:0.75, N2:0.25"
+    gas1.equilibrate("TP")
+    gas2.equilibrate("TP")
+    O2_general[i] =(gas1["O2"].X[0])
+    O_general[i] =(gas1["O"].X[0])
+    O2_with_N2[i] = (gas2["O2"].X[0])
+    O_with_N2[i] = (gas2["O"].X[0])
+
+
+for i in range(len(temperature_list)):
+    temp_now = temperature_list[i]
+    gas3.TPX = temp_now, 101325, "O2:1"
+    gas3.equilibrate("TP")
+    O2[i] = (gas3["O2"].X[0])
+    O[i] = (gas3["O"].X[0])
+    O_error[i] = O_list[i] - O[i]
+
+matplotlib.rcParams['xtick.labelsize'] = 22
+matplotlib.rcParams['ytick.labelsize'] = 22
 matplotlib.rcParams['axes.labelsize'] =24
 matplotlib.rcParams['axes.titlesize'] = 20
 matplotlib.rcParams['legend.fontsize'] = 20
+matplotlib.rcParams['axes.grid'] = False
 
-fig, ax = plt.subplots(1,1)
-fig.set_size_inches(20,10)
-ax.plot(distance_list,integrals[0]/np.max(integrals[0]), label="400 W")
-ax.plot(distance_list,integrals[1]/np.max(integrals[1]), label="500 W")
-ax.plot(distance_list,integrals[2]/np.max(integrals[2]), label="600 W")
-ax.plot(distance_list,integrals[3]/np.max(integrals[3]), label="700 W")
-ax.set_xlabel('Distance (mm)')
-ax.set_ylabel('Percentage of initial heat (-)')
-ax.legend()
-plt.savefig("C:\\Users\\P70085588\\Data\\Raman_Spectoscopy\\Analyzed\\Oxygen\\Heat_Loss_over_Distance.jpg", dpi=300
-            ,bbox_inches='tight')
-plt.show()
+cmap_name = 'nipy_spectral'
 
-fig, ax = plt.subplots(1,1)
-fig.set_size_inches(20,10)
-ax.plot(temp,O.tolist(),label="Chemical Equilibrium")
-ax.scatter(temperature_list,O_list,color='red', label="Experimental Results")
-ax.set_xlabel('Temperature (K)')
-ax.set_ylabel('O atom  Fraction (-)')
-ax.legend()
-plt.savefig("C:\\Users\\P70085588\\Data\\Raman_Spectoscopy\\Analyzed\\Oxygen\\Temperature_vs_O_Fraction.jpg", dpi=300
-            ,bbox_inches='tight')
-plt.show()
+fig, ax= plt.subplots(4,2, sharex='all', sharey='all', layout="constrained")
+fig.set_size_inches(26,13)
+im0_0 = ax[0,0].contourf(x,y,z_400, vmin=500,levels=np.arange(500,3450,10), vmax=3450, cmap=cmap_name)
+ax[0,0].scatter(x,y,color="grey")
+ax[0,0].set_title('Power=400W', fontsize=24)
+im1_0 = ax[1,0].contourf(x,y,z_500, vmin=500,levels=np.arange(500,3450,10), vmax=3450, cmap=cmap_name)
+ax[1,0].scatter(x,y,color="grey")
+ax[1,0].set_title('Power=500W', fontsize=24)
+im2_0 = ax[2,0].contourf(x,y,z_600, vmin=500,levels=np.arange(500,3450,10), vmax=3450, cmap=cmap_name)
+ax[2,0].scatter(x,y,color="grey")
+ax[2,0].set_title('Power=600W', fontsize=24)
+im3_0 = ax[3,0].contourf(x,y,z_700, vmin=500,levels=np.arange(500,3450,10), vmax=3450, cmap=cmap_name)
+ax[3,0].scatter(x,y,color="grey")
+ax[3,0].set_title('Power=700W', fontsize=24)
 
+im0_1 = ax[0,1].contourf(x, y, z_400_O, vmin=0, levels=np.arange(0, 0.35, 0.005), vmax=0.35, cmap=cmap_name)
+ax[0,1].scatter(x,y,color="grey")
+ax[0,1].set_title('Power=400W', fontsize=24)
+im1_1 = ax[1,1].contourf(x, y, z_500_O, vmin=0, levels=np.arange(0, 0.35, 0.005), vmax=0.35, cmap=cmap_name)
+ax[1,1].scatter(x,y,color="grey")
+ax[1,1].set_title('Power=500W', fontsize=24)
+im2_1 = ax[2,1].contourf(x, y, z_600_O, vmin=0, levels=np.arange(0, 0.35, 0.005), vmax=0.35, cmap=cmap_name)
+ax[2,1].scatter(x,y,color="grey")
+ax[2,1].set_title('Power=600W', fontsize=24)
+im3_1 = ax[3,1].contourf(x, y, z_700_O, vmin=0, levels=np.arange(0, 0.35, 0.005), vmax=0.35, cmap=cmap_name)
+ax[3,1].scatter(x,y,color="grey")
+ax[3,1].set_title('Power=700W', fontsize=24)
 
-fig, ax= plt.subplots(4,1, sharex='all')
-fig.set_size_inches(30,15)
-im0 = ax[0].contourf(x,y,z_400, vmin=500,levels=np.arange(500,3450,100), vmax=3450)
-ax[0].set_title('Power=400W')
-im1 = ax[1].contourf(x,y,z_500, vmin=500,levels=np.arange(500,3450,100), vmax=3450)
-ax[1].set_title('Power=500W')
-im2 = ax[2].contourf(x,y,z_600, vmin=500,levels=np.arange(500,3450,100), vmax=3450)
-ax[2].set_title('Power=600W')
-im3 = ax[3].contourf(x,y,z_700, vmin=500,levels=np.arange(500,3450,100), vmax=3450)
-ax[3].set_title('Power=700W')
+ax[0,0].text(-0.1, 7.5, "(a)",
+        size=34, font="serif", weight="medium")
+ax[0,1].text(-0.1, 7.5, "(b)",
+        size=34, font="serif", weight="medium")
 
-fig.supylabel('Radial distance (mm)',x=0.1, fontsize=24)
-ax[3].set_xlabel('Downstream distance (mm)')
-cbar = fig.colorbar(im3, ax=ax)
-plt.savefig("C:\\Users\\P70085588\\Data\\Raman_Spectoscopy\\Analyzed\\Oxygen\\No_Injection_T_vs_Power_contour100.jpg", dpi=300
-            ,bbox_inches='tight')
+fig.supylabel('Radial distance (mm)', fontsize=28)
+fig.supxlabel('Downstream distance (mm)', fontsize=28)
+
+cbar_0 = fig.colorbar(im3_0, ax=ax[:,0], pad=0.01)
+cbar_1 = fig.colorbar(im3_1, ax=ax[:,1], pad=0.01)
+cbar_0.ax.set_title("T (K)", fontsize=28, pad=12)
+cbar_1.ax.set_title("O (%)", fontsize=28, pad=12)
+
+plt.savefig(
+    "C:\\Users\\P70085588\\Data\\Raman_Spectoscopy\\Analyzed\\Oxygen\\0_SLM_Measurements_vs_Power_Rainbow.jpg",
+    dpi=300,bbox_inches='tight')
 plt.clf()
 
-fig, ax= plt.subplots(4,1, sharex='all', sharey='all')
-fig.set_size_inches(30,15)
-im0 = ax[0].contourf(x,y,z_400, vmin=500,levels=np.arange(500,3450,10), vmax=3450)
-ax[0].set_title('Power=400W')
-im1 = ax[1].contourf(x,y,z_500, vmin=500,levels=np.arange(500,3450,10), vmax=3450)
-ax[1].set_title('Power=500W')
-im2 = ax[2].contourf(x,y,z_600, vmin=500,levels=np.arange(500,3450,10), vmax=3450)
-ax[2].set_title('Power=600W')
-im3 = ax[3].contourf(x,y,z_700, vmin=500,levels=np.arange(500,3450,10), vmax=3450)
-ax[3].set_title('Power=700W')
+integral_400T = []
+integral_500T = []
+integral_600T = []
+integral_700T = []
+integral_400_O = []
+integral_500_O = []
+integral_600_O = []
+integral_700_O = []
+for i in range(len(distance_list)):
+    integral_400T.append(si(power400W_T[i], x=radial_list))
+    integral_500T.append(si(power500W_T[i], x=radial_list))
+    integral_600T.append(si(power600W_T[i], x=radial_list))
+    integral_700T.append(si(power700W_T[i], x=radial_list))
 
-fig.supylabel('Radial distance (mm)',x=0.1, fontsize=24)
+    integral_400_O.append(si(power400W_O[i], x=radial_list))
+    integral_500_O.append(si(power500W_O[i], x=radial_list))
+    integral_600_O.append(si(power600W_O[i], x=radial_list))
+    integral_700_O.append(si(power700W_O[i], x=radial_list))
 
-ax[3].set_xlabel('Downstream distance (mm)')
-cbar = fig.colorbar(im3, ax=ax)
-plt.savefig("C:\\Users\\P70085588\\Data\\Raman_Spectoscopy\\Analyzed\\Oxygen\\No_Injection_T_vs_Power_contour10.jpg", dpi=300
-            ,bbox_inches='tight')
-plt.clf()
 
-fig, ax= plt.subplots(4,1, sharex='all')
-fig.set_size_inches(30,15)
-im0 = ax[0].contourf(x,y,z_400_O, vmin=0,levels=np.arange(0,0.36,0.001), vmax=0.36)
-ax[0].set_title('Power=400W')
-im1 = ax[1].contourf(x,y,z_500_O, vmin=0,levels=np.arange(0,0.36,0.001), vmax=0.36)
-ax[1].set_title('Power=500W')
-im2 = ax[2].contourf(x,y,z_600_O, vmin=0,levels=np.arange(0,0.36,0.001), vmax=0.36)
-ax[2].set_title('Power=600W')
-im3 = ax[3].contourf(x,y,z_700_O, vmin=0,levels=np.arange(0,0.36,0.001), vmax=0.36)
-ax[3].set_title('Power=700W')
 
-fig.supylabel('Radial distance (mm)',x=0.1, fontsize=24)
-ax[3].set_xlabel('Downstream distance (mm)')
-cbar = fig.colorbar(im3, ax=ax)
-plt.savefig("C:\\Users\\P70085588\\Data\\Raman_Spectoscopy\\Analyzed\\Oxygen\\No_Injection_O_vs_Power_contour100.jpg", dpi=300
-            ,bbox_inches='tight')
+integral_400T /= integral_400T[0]
+integral_500T /= integral_500T[0]
+integral_600T /= integral_600T[0]
+integral_700T /= integral_700T[0]
+
+integral_400_O /= integral_400_O[0]
+integral_500_O /= integral_500_O[0]
+integral_600_O /= integral_600_O[0]
+integral_700_O /= integral_700_O[0]
+
+plt.plot(distance_list, integral_400_O)
+plt.plot(distance_list, integral_500_O)
+plt.plot(distance_list, integral_600_O)
+plt.plot(distance_list, integral_700_O)
 plt.clf()

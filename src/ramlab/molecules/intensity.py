@@ -1,7 +1,7 @@
 from typing_extensions import Union
 import numpy as np
 
-from src.ramlab.molecules.polarisation import Polarisation
+from ramlab.molecules.polarisation import Polarisation
 
 
 class Intensity:
@@ -25,6 +25,12 @@ class Intensity:
         return Intensity(
             self.I_perpendicular + other.I_perpendicular,
             self.I_parallel + other.I_parallel,
+        )
+
+    def multiply(self, other: Union[float, np.ndarray]) -> "Intensity":
+        return Intensity(
+            self.I_perpendicular * other,
+            self.I_parallel * other,
         )
 
     def for_polarisation(self, polarisation: Union[str, Polarisation]) -> float:

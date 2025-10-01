@@ -1,7 +1,7 @@
 from typing_extensions import override
 
 import numpy as np
-from src.ramlab.simulate.linespreadfunction.base import Lineshape
+from ramlab.simulate.linespreadfunction.base import Lineshape
 
 
 def lorentzian(x, gamma=1):

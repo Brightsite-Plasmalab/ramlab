@@ -1,8 +1,8 @@
 from sympy.physics import wigner
 import numpy as np
-from src.ramlab.math import make_equal_size, wheren
+from ramlab.math import make_equal_size, wheren
 
-WARNNING_PY3NJ = True
+WARNING_PY3NJ = True
 
 
 def placzek_teller():
@@ -10,7 +10,7 @@ def placzek_teller():
 
 
 def wigner_3j_py3nj(j1, j2, j3, m1, m2, m3):
-    #import py3nj
+    import py3nj
 
     # For py3nj's wigner3j, the arguments must be multiplied by 2
     j1, j2, j3, m1, m2, m3 = [
@@ -32,10 +32,10 @@ def wigner_3j_py3nj(j1, j2, j3, m1, m2, m3):
     m2[id_invalid] = 0
     m3[id_invalid] = 0
 
-    #W = py3nj.wigner3j(j1, j2, j3, m1, m2, m3)
-    #W[id_invalid] = 0
+    W = py3nj.wigner3j(j1, j2, j3, m1, m2, m3)
+    W[id_invalid] = 0
 
-    return 0
+    return W
 
 
 def wigner_3j_sympy(j1, j2, j3, m1, m2, m3):
@@ -57,14 +57,15 @@ def wigner_3j(j1, j2, j3, m1, m2, m3):
         np.atleast_1d(x) for x in np.broadcast_arrays(j1, j2, j3, m1, m2, m3)
     ]
 
+    global WARNING_PY3NJ
     try:
         W = wigner_3j_py3nj(j1, j2, j3, m1, m2, m3)
     except ImportError as e:
-        if WARNNING_PY3NJ:
+        if WARNING_PY3NJ:
             print(
                 "py3nj is not installed, falling back to the (>100x slower) sympy implementation."
             )
-            WARNNING_PY3NJ = False
+            WARNING_PY3NJ = False
         W = wigner_3j_sympy(j1, j2, j3, m1, m2, m3)
 
     return W

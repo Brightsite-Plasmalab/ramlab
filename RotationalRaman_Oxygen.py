@@ -30,18 +30,18 @@ from src.ramlab.molecules.polarisation import Polarisation
 from ttictoc import tic, toc
 
 # Important information
-directory = "C:\\Users\\P70085588\\Data\\Raman_Spectoscopy\\2024\\12\\6\\15mm_600W\\"
+directory = "C:\\Users\\P70085588\\Data\\Raman_Spectoscopy\\2024\\12\\21\\100mm_600W\\"
 directory_params = "C:\\Users\\P70085588\\Data\\Raman_Spectoscopy\\Parameters\\Rotational_Raman\\"
 
-name_sig = "534nm_5s_60um_1700lmm_0mm"
-name_bg = "534nm_5s_60um_1700lmm_0mm_bg"
+name_sig = "534nm_20s_60um_1700lmm_2mm"
+name_bg = "534nm_20s_60um_1700lmm_2mm_bg"
 
 molecule_list = ["O2","O"]
 grating = "1700lmm"
 slit = "60um"
 pressure = 1000
 laser_middle = 532.0
-cutoff_min = 535.1
+cutoff_min = 535.0
 cutoff_max = 546
 wav_len_av = (cutoff_min + cutoff_max)/2
 cutoff_max_full = 550
@@ -86,15 +86,15 @@ dnu = M.dE(transitions)
 #plt.show()
 fitParameters = Parameters()
 fitParameters.add("A", value=1, min=0.9, max=1.1, vary=True)
-fitParameters.add("y0",value=0.00, min=.0, max=0.001, vary=True)
+fitParameters.add("y0",value=0.0015, min=.0, max=0.0018, vary=True)
 fitParameters.add("T", value=300, min=295, max=3500, vary=True)
 
 fitParameters.add("w_g_r", value=0, min=-params[0]*0.1, max=params[0]*0.1, vary=True)
 fitParameters.add("w_l_r", value=0, min=-params[1]*0.1, max=params[1]*0.1, vary=True)
 
-fitParameters.add("c_O", value=0.08, min=0.0, max=0.1, vary=True)
+fitParameters.add("c_O", value=0.01, min=0.0, max=0.1, vary=True)
 
-fitParameters.add('k0', value=6.5, vary=True, min=2, max=13)
+fitParameters.add('k0', value=6, vary=True, min=2, max=13)
 fitParameters.add('k1', value=o_params[4], vary=True, min=0.9*o_params[4], max=1.1*o_params[4])
 fitParameters.add('k2', value=o_params[5], vary=True, min=0.5*o_params[5], max=2*o_params[5])
 
@@ -174,8 +174,6 @@ def spectral_fit_residuals(pars: Parameters, meas, meas_full, I_const_per, I_con
     spec_binned = np.zeros(len(dnu_meas))
     for i in range(len(dnu_meas)):
         spec_binned[i]=np.mean(I_sim_mix[np.abs(dnu_meas[i]-dnu_new[:])<=0.4])
-
-    spec_binned /= np.nanmax(spec_binned)
 
     if test1 is True:
         print(I_sim_O2_max)

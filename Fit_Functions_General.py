@@ -72,6 +72,8 @@ def calc_new_w(T,av_lambda, molecule):
             mass = 2. * cons.m_u * 16
         elif molecule=="N2":
             mass = 2*cons.m_u*18
+        elif molecule=="Combined":
+            mass = 2. * cons.m_u * (17)
         lambda_0 = 1e-2/(av_lambda*10**-9)
 
     w_DG = (2./cons.c) * lambda_0 *np.sqrt(2*cons.k*T*np.log(2)/mass)

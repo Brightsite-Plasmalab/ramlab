@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from typing_extensions import List, override
+from typing_extensions import List, override, Union
 from lmfit import Parameters
 from toddler.data.spectrum import Spectrum
 import numpy as np
@@ -38,10 +36,14 @@ class MeasurementModifier:
         return self.modify(measurement)
 
     def _get_parameter(self, params, kwargs, key, allow_none=False):
+        if params is not None and type(params) is not Parameters:
+            raise TypeError(
+                "Parameters should be of type Parameters, not {}".format(type(params))
+            )
         if key in kwargs.keys():
             return kwargs[key]
         elif params is not None and key in params.keys():
-            return params[key]
+            return params[key].value
         elif not allow_none:
             raise ValueError(f"Parameter `{key}` not found in parameters or kwargs")
         else:
@@ -50,8 +52,8 @@ class MeasurementModifier:
 
 class WavelengthAxisCorrection(MeasurementModifier):
     order: int
-    coefficients: List[float] | None
-    vary: List[bool] | bool | None
+    coefficients: Union[List[float], None]
+    vary: Union[List[bool], bool, None]
 
     VARY_NAME = "vary_wl"
 
@@ -63,7 +65,8 @@ class WavelengthAxisCorrection(MeasurementModifier):
 
         coefficient_names = self.get_parameter_names()
         self.apply(
-            {
+            None,
+            **{
                 coefficient_names[i]: (
                     initial_values[i] if i < len(initial_values) else 0
                 )
@@ -113,7 +116,6 @@ class WavelengthAxisCorrection(MeasurementModifier):
     @override
     def modify(self, measurement: MeasurementSpectrum):
         N_center = np.size(measurement.data.lambda_) / 2
-        print(measurement.data.lambda_)
         lambda_relative = np.arange(np.size(measurement.data.lambda_)) - N_center
         lambda_relative /= np.max(lambda_relative)
 
@@ -123,14 +125,14 @@ class WavelengthAxisCorrection(MeasurementModifier):
             corr += self.coefficients[i] * (lambda_relative**i) * 1e-9
 
         measurement.data.lambda_ = measurement.data.lambda_ + corr
-        print(corr)
+
         return measurement
 
 
 class BackgroundCorrection(MeasurementModifier):
     order: int
-    coefficients: List[float] | None
-    vary: List[bool] | bool | None
+    coefficients: Union[List[float], None]
+    vary: Union[List[bool], bool, None]
 
     VARY_NAME = "vary_bg"
 
@@ -142,7 +144,8 @@ class BackgroundCorrection(MeasurementModifier):
 
         coefficient_names = self.get_parameter_names()
         self.apply(
-            {
+            None,
+            **{
                 coefficient_names[i]: (
                     initial_values[i] if i < len(initial_values) else 0
                 )
@@ -214,5 +217,5 @@ class Fit:
     def __init__(self, measurement, modifier):
         pass
 
-    def apply_modifiers(self):
+    def apply_modifiers():
         pass

@@ -1,9 +1,9 @@
 import pandas as pd
-from src.ramlab.hitran.parser import parse_hitran_data
-from src.ramlab.molecules.base import Molecule
-from src.ramlab.molecules.state import State
-from src.ramlab.molecules.transitions import Transitions
-from src.ramlab.dirs import dir_data
+from ramlab.hitran.parser import parse_hitran_data
+from ramlab.molecules.base import Molecule
+from ramlab.molecules.state import State
+from ramlab.molecules.transitions import Transitions
+from ramlab.dirs import dir_data
 
 
 class LineListMolecule(Molecule):

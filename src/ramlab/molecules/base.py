@@ -1,5 +1,5 @@
-from src.ramlab.molecules.state import State
-from src.ramlab.molecules.transitions import Transitions
+from ramlab.molecules.state import State
+from ramlab.molecules.transitions import Transitions
 import numpy as np
 from scipy.constants import k, h, c, epsilon_0, pi
 
@@ -37,7 +37,7 @@ class Molecule:
         return cls.E(transitions.state_final) - cls.E(transitions.state_initial)
 
     @classmethod
-    def degeneracy(state: State) -> int:
+    def degeneracy(cls, state: State) -> int:
         """Returns the degeneracy of a given state.
 
         Args:
@@ -89,6 +89,35 @@ class Molecule:
         raise NotImplementedError()
 
     @classmethod
+    def get_partition_sum(cls, **temperatures) -> float:
+        """Returns the partition sum of the molecule.
+
+        Args:
+            **temperatures: The temperatures in Kelvin.
+
+        Returns:
+            float: The partition sum of the molecule.
+        """
+
+        state = cls._get_all_states()
+
+        T = temperatures["T"]
+        g = cls.degeneracy(state)
+        E = cls.E(state)
+        weights = g * np.exp(-h * c * (100 * E) / (k * T))
+
+        return np.nansum(weights)
+
+    @classmethod
+    def _get_all_states(cls) -> State:
+        """Returns all possible states for the molecule.
+
+        Returns:
+            State: The states.
+        """
+        raise NotImplementedError()
+
+    @classmethod
     def get_populations(cls, state_initial, **temperatures) -> float:
         """Returns the populations of a state.
 
@@ -102,18 +131,15 @@ class Molecule:
         # Assume thermal equilibrium for now
         if len(temperatures) != 1:
             raise ValueError(
-                f"Only one temperature is allowed for the base molecule. Fitting of Tr=/=Tv is not yet implemented for {cls.__name__}."
+                f"Exactly one temperature should be supplied. Fitting of Tr=/=Tv is not yet implemented for {cls.__name__}."
             )
 
         T = temperatures["T"]
         g = state_initial.degeneracy
         E = state_initial.E
-        weights = g * np.exp(
-            -h * c * (100 * E) / (k * T)
-        )  # 100*E converts E from cm^-1 to m^-1
-        # _, idx_unique = state_initial.unique(return_index=True)
-        # partition_sum = np.nansum(weights[idx_unique])
-        partition_sum = np.nansum(weights)
+        weights = g * np.exp(-h * c * (100 * E) / (k * T))
+
+        partition_sum = cls.get_partition_sum(**temperatures)
         n = weights / partition_sum
         return n
 
@@ -139,7 +165,8 @@ class Molecule:
         wavelength_intensity = (laser_wavenumber - transition_wavenumber) ** 4
 
         constants = 1 / (16 * (c**4) * (pi**2) * (epsilon_0**2))
-        return Crosssection * wavelength_intensity  # * constants
+        # return Crosssection * wavelength_intensity  # * constants
+        return Crosssection
 
     @classmethod
     def get_intensity_variable(cls, transitions: Transitions, **temperatures) -> float:

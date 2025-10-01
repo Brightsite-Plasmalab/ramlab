@@ -16,7 +16,7 @@ def project_to_axis(x, x_stick, I_stick):
     diffs_x = np.diff(x)
     assert np.all(diffs_x > 0), "x must be sorted in ascending order."
     assert np.all(~np.isnan(x)), "x must not contain NaNs."
-    #assert (np.max(diffs_x) - np.min(diffs_x)) < np.min(diffs_x) / 1e10, "x must be equally spaced."
+    assert (np.max(diffs_x) - np.min(diffs_x)) < np.min(diffs_x) / 1e10, "x must be equally spaced."
 
     I_x = np.zeros_like(x, dtype=np.float32)
 

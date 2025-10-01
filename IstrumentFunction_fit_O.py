@@ -95,7 +95,7 @@ fitParameters.add('mid_O_2', value=226, min=224, max=227, vary=True)
 
 fitParameters.add('k0', value=10, vary=True, min=4, max=13)
 fitParameters.add('k1', value=1.02, vary=True, min=0.99, max=1.05)
-fitParameters.add('k2', value=0.1, vary=True, min=-0.1, max=2)
+fitParameters.add('k2', value=0.3372, vary=True, min=-0.1, max=2)
 fitParameters.add('k3', value=4.99999, vary=True, min=0, max=10)
 
 # wavelengthCorrection = WavelengthAxisCorrection(1, initial_values=[1.,0.], vary_wl=True)

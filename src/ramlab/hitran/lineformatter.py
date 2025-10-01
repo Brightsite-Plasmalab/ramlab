@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.ramlab.molecules.transitions import Transitions
+from ramlab.molecules.transitions import Transitions
 
 
 # HITRAN format:
@@ -32,7 +32,7 @@ def format_transitions_initial_final(transitions: Transitions) -> pd.Series:
         return (
             f"{row.molecule_number:02.0f}"
             f"{row.isotope_number:1.0f}"
-            f"{row.vacuum_wavenumber: 12.9f}"
+            f"{row.vacuum_wavenumber: 12.6f}"
             f"{row.crosssection:10.3e}"
             f"{row.depolarization_ratio:10.3e}"
             f"{0:5.2f}"  # gamma_air

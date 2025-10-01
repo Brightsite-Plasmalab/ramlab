@@ -1,18 +1,18 @@
 from pathlib import Path
 from typing_extensions import override
 import pandas as pd
-from src.ramlab.hitran.lineformatter import format_transitions_initial_final
-from src.ramlab.hitran.parser import parse_hitran_data
-from src.ramlab.molecules.ab_initio_molecule2 import AbInitioMolecule
-from src.ramlab.molecules.base import Molecule
-from src.ramlab.molecules.hitran_compatible_molecule import HitranCompatibleMolecule
-from src.ramlab.molecules.hitran_linelist_molecule import LineListMolecule
-from src.ramlab.molecules.intensity import Intensity
-from src.ramlab.molecules.polarisation import Polarisation
-from src.ramlab.molecules.state import State
-from src.ramlab.molecules.transitions import Transitions
-from src.ramlab.util.decorators import abstractproperty
-from src.ramlab.dirs import dir_data
+from ramlab.hitran.lineformatter import format_transitions_initial_final
+from ramlab.hitran.parser import parse_hitran_data
+from ramlab.molecules.ab_initio_molecule2 import AbInitioMolecule
+from ramlab.molecules.base import Molecule
+from ramlab.molecules.hitran_compatible_molecule import HitranCompatibleMolecule
+from ramlab.molecules.hitran_linelist_molecule import LineListMolecule
+from ramlab.molecules.intensity import Intensity
+from ramlab.molecules.polarisation import Polarisation
+from ramlab.molecules.state import State
+from ramlab.molecules.transitions import Transitions
+from ramlab.util.decorators import abstractproperty
+from ramlab.dirs import dir_data
 
 
 class CalculatedLinelistMolecule(Molecule):

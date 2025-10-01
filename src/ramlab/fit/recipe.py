@@ -1,33 +1,54 @@
 from typing_extensions import override
 from lmfit import minimize, Parameters
-from src.ramlab.molecules.base import Molecule
-from src.ramlab.molecules.transitions import Transitions
-from src.ramlab.simulate.base import SimulationMethod
-from src.ramlab.simulate.linespreadfunction.base import Lineshape
+from ramlab.molecules.base import Molecule
+from ramlab.molecules.transitions import Transitions
+from ramlab.simulate.base import SimulationMethod
+from ramlab.simulate.linespreadfunction.base import Lineshape
 import numpy as np
 import lmfit
 import numpy as np
 
-from src.ramlab.fit.result import FitResult
+from ramlab.fit.result import FitResult
 
-#from ttictoc import tic, toc
+from ttictoc import tic, toc
 
 
-from src.ramlab.fit.modifiers import *
-from src.ramlab.molecules.polarisation import Polarisation
+from ramlab.fit.modifiers import *
+from ramlab.molecules.polarisation import Polarisation
 
 
 class FitRecipe:
     def prepare(self):
+        """
+        Prepares the fit recipe by initializing parameters and such.
+        """
         raise NotImplementedError()
 
     def fit(self, meas: MeasurementSpectrum):
+        """
+        Fits the measured spectrum. Should be overriden by subclasses.
+        """
         raise NotImplementedError()
 
     def make(self, pars: Parameters, meas: MeasurementSpectrum):
+        """Generate a synthetic spectrum based on the parameters and measurement.
+
+        Args:
+            pars (Parameters): The fit parameters to use for the simulation. These include wavelength corrections, lineshape parameters, temperature, etc.
+            meas (MeasurementSpectrum): The measurement spectrum to use as a basis for the simulation.
+        """
         raise NotImplementedError()
 
-    def fit_residuals(self, pars: Parameters, meas: MeasurementSpectrum):
+    def fit_residuals(self, pars: Parameters, meas: MeasurementSpectrum) -> np.ndarray:
+        """For given simulation parameters, calculate the residuals between the measured spectrum and the simulated spectrum.
+
+        Args:
+            pars (Parameters): The fit parameters to use for the simulation. These include wavelength corrections, lineshape parameters, temperature, etc.
+            meas (MeasurementSpectrum): The measurement spectrum to use as a basis for the simulation.
+
+        Returns:
+            np.ndarray: The residuals between the measured spectrum and the simulated spectrum.
+        """
         I_meas = meas.c.normalize(axis=0).sdata
         I_sim = self.make(pars, meas)
         return (I_meas - I_sim) ** 2

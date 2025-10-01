@@ -1,9 +1,9 @@
-from src.ramlab.molecules.hitran_linelist_molecule import LineListMolecule
-from src.ramlab.molecules.state import State
-from src.ramlab.molecules.transitions import Transitions
+from ramlab.molecules.hitran_linelist_molecule import LineListMolecule
+from ramlab.molecules.state import State
+from ramlab.molecules.transitions import Transitions
 import pandas as pd
 import numpy as np
-from src.ramlab.dirs import dir_data
+from ramlab.dirs import dir_data
 
 
 class NO_Hitran(LineListMolecule):

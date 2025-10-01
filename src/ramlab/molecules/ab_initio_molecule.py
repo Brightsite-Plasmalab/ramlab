@@ -1,13 +1,13 @@
 from pathlib import Path
-from src.ramlab.hitran.lineformatter import format_transitions_initial_final
-from src.ramlab.molecules.hitran_linelist_molecule import LineListMolecule
+from ramlab.hitran.lineformatter import format_transitions_initial_final
+from ramlab.molecules.hitran_linelist_molecule import LineListMolecule
 import pandas as pd
 import numpy as np
 
-from src.ramlab.dirs import dir_data
-from src.ramlab.molecules.state import State
-from src.ramlab.molecules.transitions import Transitions
-from src.ramlab.util.decorators import abstractproperty
+from ramlab.dirs import dir_data
+from ramlab.molecules.state import State
+from ramlab.molecules.transitions import Transitions
+from ramlab.util.decorators import abstractproperty
 
 
 class AbInitioMolecule(LineListMolecule):
@@ -167,9 +167,9 @@ class AbInitioMolecule(LineListMolecule):
     def _calc_degeneracy(cls, state: State):
         raise NotImplementedError()
 
-    #@classmethod
-    #def _calc_crosssection(cls, transitions: Transitions):
-    #    raise NotImplementedError()
+    @classmethod
+    def _calc_crosssection(cls, transitions: Transitions):
+        raise NotImplementedError()
 
     @classmethod
     def _calc_depolarization_ratio(cls, transitions: Transitions):

@@ -1,5 +1,5 @@
 from typing_extensions import override
-from src.ramlab.simulate.linespreadfunction.base import Lineshape
+from ramlab.simulate.linespreadfunction.base import Lineshape
 
 import numpy as np
 from scipy.special import erf
