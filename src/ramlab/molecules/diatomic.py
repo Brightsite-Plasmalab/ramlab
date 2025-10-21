@@ -61,6 +61,29 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         n = weights / partition_sum
         return n
 
+    @classmethod
+    def get_populations_vdf(cls, state_initial, T_rot, vib_factors) -> float:
+        '''
+        Calculates populations of rotational substates for provided vibrational distribution function
+        
+        Args:
+            state_initial: states whaich populations are to be calculated.
+            T_rot: rotational temperature.
+            vib_factors: factors defining VDF. For a Boltzmann distribution they are proportional to exp(-Evib/(k*Tvib)).
+
+        Returns:
+            float: The populations of the state.
+        '''
+        p_vib = np.zeros(len(state_initial))
+        for i in range(len(vib_factors)):
+            p_vib[state_initial.v == i] = vib_factors[i]
+        E_rot = cls.E_rot(state_initial.v, state_initial.J) * 100
+        g = state_initial.degeneracy
+        weights = g * np.exp(-h * c * (E_rot) / (k * T_rot)) * p_vib
+        partition_sum = cls.get_partition_sum_vdf(T_rot, vib_factors)
+        n = weights / partition_sum
+        return n
+    
     @override
     @classmethod
     def get_partition_sum(cls, **temperatures) -> float:
@@ -95,6 +118,44 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         )
 
         return np.nansum(weights)
+
+    @classmethod
+    def get_partition_sum_vdf(cls, T_rot, vib_factors) -> float:
+        """Returns the partition sum of the molecule with an arbitrary vibrational distribution function.
+
+        Args:
+            T_rot: The rotational temperature in Kelvin.
+            vib_factors: factors defining VDF. For a Boltzmann distribution they are proportional to exp(-Evib/(k*Tvib)).
+            Vibrational states vith numbers >= len(vib_factors) are assumed unpopulated.       
+
+        Returns:
+            float: The partition sum of the molecule.
+        """
+        state = cls._get_all_states()
+        p_vib = np.zeros(len(state))
+        for i in range(len(vib_factors)):
+            p_vib[state.v == i] = vib_factors[i]
+        E_rot = cls.E_rot(state.v, state.J) * 100
+        g = cls.degeneracy(state)
+        weights = g * np.exp(-h * c * (E_rot) / (k * T_rot)) * p_vib
+        return np.nansum(weights)
+
+
+    @classmethod
+    def get_intensity_variable_vdf(cls, transitions: Transitions, T_rot, vib_factors) -> float:
+        """Returns the variable part of the intensity calculation for an arbitrary VDF. These involve populations, but not physical constants or cross-sections.
+        When fitting temperatures, this is the only part that changes. Calculating this separately greatly speeds up the fitting process.
+
+        Args:
+            transitions: The transitions.
+            T_rot: The rotational temperature in Kelvin.
+            vib_factors: factors defining VDF. For a Boltzmann distribution they are proportional to exp(-Evib/(k*Tvib)).
+
+        Returns:
+            float: The intensity variable of the transition.
+        """
+        return cls.get_populations_vdf(transitions.state_initial, T_rot, vib_factors)
+
 
     @override
     @classmethod
