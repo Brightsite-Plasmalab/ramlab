@@ -1,6 +1,7 @@
 from typing_extensions import override
 import numpy as np
 from ramlab.molecules.diatomic import SimpleDiatomicMolecule
+from ramlab.molecules.state import State
 from ramlab.molecules.transitions import Transitions
 from scipy.constants import k, h, hbar, c, pi, epsilon_0, fine_structure
 
@@ -21,7 +22,12 @@ class N2(SimpleDiatomicMolecule):
     selected_E_vib = None
     selected_E_rot = None
     selected_degeneracy = None
-
+    
+    @override
+    @classmethod
+    def _get_all_states(cls):
+        return State(J=np.arange(0, 200)).add_each(v=np.arange(0, 20))
+    
     @classmethod
     @override
     def select_states(cls, maxT):
@@ -227,6 +233,7 @@ class N2_29(N2):
     isotope_number = 2
 
     # Degeneracy constants
+    # s(N14) = 1; s(N15) = 1/2; s(N2_29) = 3/2 or 1/2
     g_e = 6  # nuclear degeneracy for even J
     g_o = 6  # nuclear degeneracy for odd J
 
