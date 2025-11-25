@@ -26,7 +26,7 @@ class O(AbInitioMolecule):
 
         sigma_dJ1 = idx_dJ1 * 5.27e-31  # cm^2/sr
         sigma_dJ2 = idx_dJ2 * 2.11e-31  # cm^2/sr
-        sigma = sigma_dJ1 + sigma_dJ2  # cm^2/sr
+        sigma = sigma_dJ1 + sigma_dJ2   # cm^2/sr
 
         conv = 4 * (np.pi**2) * (constants.fine_structure**2)  # [-] See Long eq 5.10.5
         nu = transitions.scattering_wavenumber * 100  # Convert from cm^-1 to m^-1
@@ -38,6 +38,7 @@ class O(AbInitioMolecule):
         # sigma *= 8.405021142857142e-05
 
         return Intensity(sigma, sigma * 0.0)  # A^6
+
 
     @classmethod
     def _get_all_transition_states(cls) -> tuple[State, State]:
@@ -72,6 +73,7 @@ class O(AbInitioMolecule):
     @classmethod
     def degeneracy(cls, state: State) -> int:
         return 2 * state.J + 1
+
 
     @override
     @classmethod

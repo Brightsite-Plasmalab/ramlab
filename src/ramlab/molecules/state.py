@@ -167,7 +167,7 @@ class State:
         k, v = list(kwargs.items())[0]
 
         assert (
-            k not in self.state
+                k not in self.state
         ), f"Key '{k}' already exists in the state. Did you mean to use `transition_each`?"
 
         # Expand the current state such that each attribute is repeated N times,
@@ -214,7 +214,7 @@ class State:
         k, v = list(kwargs.items())[0]
 
         assert (
-            k in self.state
+                k in self.state
         ), f"Key '{k}' doesn't exists in the state. Did you mean to use `add_each`?"
 
         state_i = self.copy()

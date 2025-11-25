@@ -3,6 +3,7 @@ import numpy as np
 from ramlab.simulate.base import SimulationMethod
 from ramlab.simulate.linespreadfunction.base import Lineshape
 from ramlab.simulate.linespreadfunction.voigt import voigt
+from ramlab.simulate.convolution import simulate_convolution2
 
 from ttictoc import tic, toc
 
@@ -18,12 +19,12 @@ class RawBinnedSimulationMethod(SimulationMethod):
     def __init__(self, N_bin=50):
         self.N_bin = N_bin
 
-    def simulate(self, x, x_stick, I_stick, lineshape: Lineshape):
+    def simulate(self, x, x_full, x_stick, I_stick, sigma, gamma):
         # tic()
-        y = simulate_raw_binned_general(x, x_stick, I_stick, lineshape, self.N_bin)
+        x_new, y = simulate_raw_stijn(x, x_full, x_stick, I_stick, sigma, gamma, self.N_bin)
         # print(f"Execution time: {toc()*1e3:.0f}ms")
 
-        return y
+        return x_new, y
 
 
 def simulate_raw_general(x, x_stick, I_stick, lineshape: Lineshape):
@@ -58,6 +59,20 @@ def simulate_raw_binned_general(x, x_stick, I_stick, lineshape: Lineshape, N_bin
     # assert np.all(x == x3)
     return I_x3
 
+
+def simulate_raw_stijn(x,x_full, x_stick, I_stick, sigma, gamma, N_bin=40):
+    x_stick = np.array(x_stick)[:, np.newaxis]
+    I_stick = np.array(I_stick)[:, np.newaxis]
+
+
+    x2 = np.linspace(min(x_full), max(x_full), len(x_full) * N_bin)
+
+    Ii2 = simulate_convolution2(x2, x_stick, I_stick, sigma, gamma)
+
+    x3 = x2[(x2>=np.min(x)) & (x2<=np.max(x))]
+    Ii3 = Ii2[(x2>=np.min(x)) & (x2<=np.max(x))]
+
+    return x3, Ii3
 
 def simulate_raw(x, x_stick, I_stick, sigma=1, gamma=0, N_bin=50):
     x_stick = np.array(x_stick)[:, np.newaxis]

@@ -494,11 +494,11 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
         dJ = states_final.J - states_initial.J
 
         legal = (
-            ~((dv == 0) & (dJ == 0))  # No Rayleigh scattering
-            & (states_final.v >= 0)  # Only valid quantum numbers
-            & (states_final.J >= 0)
-            & (states_initial.v >= 0)
-            & (states_initial.J >= 0)
+                ~((dv == 0) & (dJ == 0))  # No Rayleigh scattering
+                & (states_final.v >= 0)  # Only valid quantum numbers
+                & (states_final.J >= 0)
+                & (states_initial.v >= 0)
+                & (states_initial.J >= 0)
         )
         return states_initial[legal], states_final[legal]
 

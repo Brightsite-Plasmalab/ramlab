@@ -35,17 +35,17 @@ class O2(SimpleDiatomicMolecule):
         alpha = np.zeros_like(dV, dtype=np.float64)
         v_l = np.minimum(transitions.initial_v, transitions.final_v)
 
-        alpha_dv0 = 1.619 + 0.01773 * v_l + 0.00009 * v_l**2
+        alpha_dv0 = 1.619 + 0.01773 * v_l + 0.00009 * v_l**2 # [A^3]
         alpha_dv1 = (
             ((v_l + 1) / 2) ** (1 / 2)
             * (2 * cls.B_e / cls.w_e) ** (1 / 2)
             * (1.779 + 0.019 * v_l)
-        )
+        ) # [A^3]
 
         alpha[dV == 0] = alpha_dv0[dV == 0]
         alpha[dV == 1] = alpha_dv1[dV == 1]
 
-        # [A^3] = [10^-30 m^3] = [10^-24 cm^3], atomig oxygen has a total cross-section of 1e-31 cm2/sr
+        # [A^3] = [10^-30 m^3] = [10^-24 cm^3], atomic oxygen has a total cross-section of 1e-31 cm2/sr
         # Contribution of alpha to total cross-section ~ 1e-48 cm^6
         # [w0 = 19 cm-1] -> [130 cm^-1]
         # [16pi^4 = 1558]
@@ -53,6 +53,40 @@ class O2(SimpleDiatomicMolecule):
         # Question: what's included in the reduced polarizability tensor?
 
         return alpha
+
+    @classmethod
+    @override
+    def hermanwallis_y(cls, transitions: Transitions) -> np.ndarray:
+
+        J = np.abs(transitions.J)
+        dV = np.abs(transitions.dv)
+        dJ = np.abs(transitions.dJ)
+
+        idO = dJ == -2
+        idQ = dJ == 0
+        idS = dJ == 2
+
+        F = np.zeros_like(dV, dtype=np.float64)
+        v_l = np.minimum(transitions.initial_v, transitions.final_v)
+
+        m = idQ * (J * (J + 1)) + idO * (-2 * J + 1) + idS * (2 * J + 3)
+
+        F_SO_0 = 1 + 1.49e-5 + 0.19e-6 * m + (4.96e-6 - 0.39e-7 * v_l) * m ** 2
+        F_Q_0 = 1 + (1.99e-5 + 0.25e-6 * v_l) * m
+        F_SO_1 = (
+                    (1 + 1.95e-5 - 0.34e-6 * v_l)
+                    - (2.51e-3 + 0.32e-4 * v_l) * m
+                    + (0.81e-5 - 0.75e-7 * v_l) * m ** 2
+            )
+        F_Q_1 = 1 + (0.26e-4 - 0.46e-6 * v_l) * m
+
+        F0 = (idQ) * F_Q_0 + (~idQ) * F_SO_0
+        F1 = (idQ) * F_Q_1 + (~idQ) * F_SO_1
+
+        F[dV == 0] = F0[dV ==0]
+        F(dV == 1) * F1[dV==1]
+
+        return F
 
     @classmethod
     @override
