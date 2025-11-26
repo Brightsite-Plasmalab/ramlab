@@ -143,10 +143,7 @@ def akp2_perturbed2(k, p, JA, JB, perturbationA, perturbationB):
                 Dkp_lij, qij = Dkp(k, p, JA[l], JB[l], OmegaA[l], OmegaB[l], Ma, Mb)
 
                 # Find the value of <a^k_q> corresponding to this transition
-                assert (
-                    np.isclose(qij % 1, 0),
-                    f"qij must be an integer, but is {qij} for JA={JA[l]}, JB={JB[l]}, OmegaA={OmegaA[l]}, OmegaB={OmegaB[l]}",
-                )
+                assert np.isclose(qij % 1, 0), f"qij must be an integer, but is {qij} for JA={JA[l]}, JB={JB[l]}, OmegaA={OmegaA[l]}, OmegaB={OmegaB[l]}"
 
                 qij = int(np.abs(qij))
                 if qij >= len(akq_values):

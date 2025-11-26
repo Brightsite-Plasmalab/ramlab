@@ -16,10 +16,7 @@ def wheren(*x):
     """
     Call with N boolean arrays to be paired with N value arrays. Returns the values where the boolean arrays are True.
     """
-    assert (
-        (len(x) % 2) == 0,
-        "Same number of boolean and value arrays must be provided.",
-    )
+    assert (len(x) % 2) == 0, "Same number of boolean and value arrays must be provided."
     N = len(x) // 2
 
     criteria, values = *x[:N], *x[N:]
