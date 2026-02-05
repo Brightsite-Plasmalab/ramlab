@@ -508,7 +508,9 @@ class SimpleDiatomicMolecule(AbInitioMolecule):
 		# TODO: Limit the maximal state energy by the dissociation energy.
 		# Quasibound states are unlikely to be observable by the Raman scattering.
 		# Should it be limited by Edis - E(laser photon)?
-        return State(J=np.arange(0, 130)).add_each(v=np.arange(0, 15))
+        states = State(J=np.arange(0, 130)).add_each(v=np.arange(0, 15))
+        degeneracies = cls.degeneracy(states)
+        return states[degeneracies > 0]
 
     @classmethod
     def _format_quanta_global(cls, state: State):

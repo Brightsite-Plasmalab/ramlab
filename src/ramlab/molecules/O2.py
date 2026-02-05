@@ -44,6 +44,7 @@ class O2(SimpleDiatomicMolecule):
 
         alpha[dV == 0] = alpha_dv0[dV == 0]
         alpha[dV == 1] = alpha_dv1[dV == 1]
+        alpha *= np.sqrt(cls.hermanwallis_a(transitions))
 
         # [A^3] = [10^-30 m^3] = [10^-24 cm^3], atomic oxygen has a total cross-section of 1e-31 cm2/sr
         # Contribution of alpha to total cross-section ~ 1e-48 cm^6
@@ -56,9 +57,36 @@ class O2(SimpleDiatomicMolecule):
 
     @classmethod
     @override
+    def hermanwallis_a(cls, transitions: Transitions) -> np.ndarray:
+
+        J = transitions.initial_J
+        dV = np.abs(transitions.dv)
+        dJ = np.abs(transitions.dJ)
+        
+        # Mean polarizabilyty contributes to Q branch only
+        idQ = dJ == 0
+
+        F = np.zeros_like(dV, dtype=np.float64)
+        v_l = np.minimum(transitions.initial_v, transitions.final_v)
+
+        m = idQ * (J * (J + 1))
+        
+        F_Q_0 = 1 + (7.39e-6 + 1.45e-7 * v_l) * m
+        F_Q_1 = 1 + (2.28e-5 - 0.24e-6 * v_l) * m
+
+        F0 = (idQ) * F_Q_0
+        F1 = (idQ) * F_Q_1
+
+        F[dV == 0] = F0[dV==0]
+        F[dV == 1] = F1[dV==1]
+
+        return F
+    
+    @classmethod
+    @override
     def hermanwallis_y(cls, transitions: Transitions) -> np.ndarray:
 
-        J = np.abs(transitions.J)
+        J = transitions.initial_J
         dV = np.abs(transitions.dv)
         dJ = np.abs(transitions.dJ)
 
@@ -71,7 +99,7 @@ class O2(SimpleDiatomicMolecule):
 
         m = idQ * (J * (J + 1)) + idO * (-2 * J + 1) + idS * (2 * J + 3)
 
-        F_SO_0 = 1 + 1.49e-5 + 0.19e-6 * m + (4.96e-6 - 0.39e-7 * v_l) * m ** 2
+        F_SO_0 = 1 + 1.49e-5 + 0.19e-6 * v_l + (4.96e-6 - 0.39e-7 * v_l) * m ** 2
         F_Q_0 = 1 + (1.99e-5 + 0.25e-6 * v_l) * m
         F_SO_1 = (
                     (1 + 1.95e-5 - 0.34e-6 * v_l)
@@ -84,9 +112,10 @@ class O2(SimpleDiatomicMolecule):
         F1 = (idQ) * F_Q_1 + (~idQ) * F_SO_1
 
         F[dV == 0] = F0[dV ==0]
-        F(dV == 1) * F1[dV==1]
+        F[dV == 1] = F1[dV==1]
 
         return F
+
 
     @classmethod
     @override
@@ -106,6 +135,7 @@ class O2(SimpleDiatomicMolecule):
 
         gamma[dV == 0] = gamma_dv0[dV == 0]
         gamma[dV == 1] = gamma_dv1[dV == 1]
+        gamma *= np.sqrt(cls.hermanwallis_y(transitions))
 
         return gamma
 
@@ -121,7 +151,14 @@ class O2(SimpleDiatomicMolecule):
             float: Vibrational energy in cm^-1"""
 
         # See Derek A. Long, eq. 5.9.3
-        return (-1) ** (2) * 1556.35820196816 * (v + 1 / 2) ** 1
+        #return (-1) ** (2) * 1556.35820196816 * (v + 1 / 2) ** 1
+        #Constants from Laher & Gilmore J. Phys. Chem. Ref. Data 1991
+        return ( 1580.39  * (v + 0.5) 
+                - 12.112  * (v + 0.5)**2 
+                + 7.54e-2 * (v + 0.5)**3
+                - 4.09e-3 * (v + 0.5)**4
+                + 1.30e-4 * (v + 0.5)**5
+                - 2.21e-6 * (v + 0.5)**6 )
 
     @override
     @classmethod
@@ -142,6 +179,7 @@ class O2(SimpleDiatomicMolecule):
         # NB: Do not combine constants from different sources, as these sources may have determined those constants from different orders of the expansion.
 
         # NB: Here we deviate from Long's notation. Long uses B, D, H, while we use B, D_1, D_2, D_3
+        # ToDo: Compare with fit in Laher & Gilmore J. Phys. Chem. Ref. Data 1991
         return (
             1.445587560355248 * (v + 1 / 2) ** 0
             + -0.015694718136882425 * (v + 1 / 2) ** 1
