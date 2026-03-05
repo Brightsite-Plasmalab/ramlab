@@ -5,8 +5,8 @@ from ramlab.math import make_equal_size, wheren
 WARNING_PY3NJ = True
 
 
-def placzek_teller():
-    raise NotImplementedError("This function is not implemented yet.")
+# def placzek_teller():
+#     raise NotImplementedError("This function is not implemented yet.")
 
 
 def wigner_3j_py3nj(j1, j2, j3, m1, m2, m3):
@@ -187,6 +187,6 @@ def branchname(d):
     # S = 2
     # T = 3
     assert isinstance(d, int), "d must be an integer."
-    assert d >= -3 and d <= 3, "d must be between -3 and 3."
+    assert -3 <= d <= 3, "d must be between -3 and 3."
 
     return ["N", "O", "P", "Q", "R", "S", "T"][d + 3]

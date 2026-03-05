@@ -1,5 +1,5 @@
 from lmfit import Parameters
-from toddler.data.spectrum import Spectrum
+from .spectrum import Spectrum
 
 
 class FitResult:

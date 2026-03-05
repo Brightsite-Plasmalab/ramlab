@@ -1,0 +1,1 @@
+from .hitran import hitran_schema_dict, GlobalQuanta, LocalQuanta

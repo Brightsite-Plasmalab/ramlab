@@ -1,20 +1,17 @@
 from typing_extensions import override
 from lmfit import minimize, Parameters
-from ramlab.molecules.base import Molecule
-from ramlab.molecules.transitions import Transitions
-from ramlab.simulate.base import SimulationMethod
-from ramlab.simulate.linespreadfunction.base import Lineshape
-import numpy as np
+from ramlab.calculate_molecules.Molecule import Molecule
+from ramlab.state.transitions import Transitions
+from ramlab.simulate_spectrum.base import SimulationMethod
+from ramlab.simulate_spectrum.linespreadfunction.base import Lineshape
 import lmfit
 import numpy as np
 
 from ramlab.fit.result import FitResult
 
-from ttictoc import tic, toc
 
-
-from ramlab.fit.modifiers import *
-from ramlab.molecules.polarisation import Polarisation
+from ramlab.fit.modifiers import MeasurementModifier, MeasurementSpectrum, Spectrum
+from ramlab.state.polarisation import Polarisation
 
 
 class FitRecipe:
@@ -63,8 +60,8 @@ class SingleMoleculeFitRecipe(FitRecipe):
     polarisation: Polarisation
     lineshape: Lineshape
     simulation_method: SimulationMethod
-    meas_modifiers: List[MeasurementModifier]
-    fit_modifiers: List[MeasurementModifier]
+    meas_modifiers: list[MeasurementModifier]
+    fit_modifiers: list[MeasurementModifier]
 
     I_const: np.ndarray
     fitparameters: Parameters
@@ -76,15 +73,15 @@ class SingleMoleculeFitRecipe(FitRecipe):
         polarisation: Polarisation,
         lineshape: Lineshape,
         simulation_method: SimulationMethod,
-        meas_modifiers: List[MeasurementModifier] = [],
-        fit_modifiers: List[MeasurementModifier] = [],
+        meas_modifiers: list[MeasurementModifier] = None,
+        fit_modifiers: list[MeasurementModifier] = None,
     ):
         self.molecule = molecule
         self.transitions = transitions
         self.polarisation = polarisation
         self.lineshape = lineshape
-        self.meas_modifiers = meas_modifiers
-        self.fit_modifiers = fit_modifiers
+        self.meas_modifiers = meas_modifiers or []
+        self.fit_modifiers = fit_modifiers or []
         self.simulation_method = simulation_method
 
     @override

@@ -1,7 +1,10 @@
+from abc import ABC, abstractmethod
 from typing_extensions import List, override, Union
+
 from lmfit import Parameters
-from toddler.data.spectrum import Spectrum
 import numpy as np
+
+from ramlab.fit.spectrum import Spectrum
 
 
 class MeasurementSpectrum:
@@ -13,29 +16,32 @@ class MeasurementSpectrum:
         self.data = spectrum.c
 
 
-class MeasurementModifier:
+class MeasurementModifier(ABC):
+    @abstractmethod
     def add_parameters(self, pars: Parameters):
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def apply(self, pars: Parameters):
-        raise NotImplementedError()
+        pass
 
+    @abstractmethod
     def get_parameter_names(self):
-        raise NotImplementedError()
+        pass
 
     def get_parameter_dict(self, pars: Parameters):
         return {name: pars[name] for name in self.get_parameter_names()}
 
-    def modify(
-        self, measurement: MeasurementSpectrum, pars: Parameters
-    ) -> MeasurementSpectrum:
-        raise NotImplementedError()
+    @abstractmethod
+    def modify(self, measurement: MeasurementSpectrum) -> MeasurementSpectrum:
+        pass
 
     def apply_and_modify(self, measurement: MeasurementSpectrum, pars: Parameters):
         self.apply(pars)
         return self.modify(measurement)
 
-    def _get_parameter(self, params, kwargs, key, allow_none=False):
+    @staticmethod
+    def _get_parameter(params, kwargs, key, allow_none=False):
         if params is not None and type(params) is not Parameters:
             raise TypeError(
                 "Parameters should be of type Parameters, not {}".format(type(params))

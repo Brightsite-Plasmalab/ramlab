@@ -123,7 +123,17 @@ classifiers = [
 # For an analysis of this field vs pip's requirements files see:
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
 dependencies = [
-  "numpy", "pandas", "scipy", "lmfit", "sympy", "h2_rovib_me @ git+https://github.com/Brightsite-Plasmalab/H2-PolarizabilityMatrixElements", "tqdm", "ttictoc", "toddler", "wedme-plots", "labctl @ git+https://github.com/Brightsite-Plasmalab/labctl"
+    "numpy",
+    "pandas",
+    "scipy",
+    "lmfit",
+    "sympy",
+    "h2_rovib_me @ git+https://github.com/Brightsite-Plasmalab/H2-PolarizabilityMatrixElements",
+    "tqdm",
+    "sif_parser",
+    "typing-extensions",
+    "numba",
+    "astropy"
 ]
 
 # List additional groups of dependencies here (e.g. development
@@ -166,3 +176,7 @@ dependencies = [
 # If there are data files included in your packages that need to be
 # installed, specify them here.
 # package-data = {"sample" = ["*.dat"]}
+[tool.pytest.ini_options]
+pythonpath = [
+  "src",
+]

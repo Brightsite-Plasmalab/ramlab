@@ -1,20 +1,19 @@
-from typing import Tuple
+from typing import Tuple, List
 from typing_extensions import override
+
 from lmfit import minimize, Parameters
-from ramlab.fit.recipe import FitRecipe
-from ramlab.molecules.base import Molecule
-from ramlab.molecules.transitions import Transitions
-from ramlab.simulate.base import SimulationMethod
-from ramlab.simulate.linespreadfunction.base import Lineshape
-from ramlab.simulate.combine import CombinedMolecule
-import numpy as np
-import lmfit
+from lmfit.minimizer import MinimizerResult
 import numpy as np
 
 from ramlab.fit.result import FitResult
-
-from ramlab.fit.modifiers import *
-from ramlab.molecules.polarisation import Polarisation
+from ramlab.fit.modifiers import MeasurementModifier, MeasurementSpectrum, Spectrum
+from ramlab.state.polarisation import Polarisation
+from ramlab.fit.recipe import FitRecipe
+from ramlab.calculate_molecules.Molecule import Molecule
+from ramlab.state.transitions import Transitions
+from ramlab.simulate_spectrum.base import SimulationMethod
+from ramlab.simulate_spectrum.linespreadfunction.base import Lineshape
+from ramlab.simulate_spectrum.combine import CombinedMolecule
 
 
 class MultiMoleculeFitRecipe(FitRecipe):
@@ -33,8 +32,8 @@ class MultiMoleculeFitRecipe(FitRecipe):
         polarisation: Polarisation,
         lineshape: Lineshape,
         simulation_method: SimulationMethod,
-        meas_modifiers: List[MeasurementModifier] = [],
-        fit_modifiers: List[MeasurementModifier] = [],
+        meas_modifiers: List[MeasurementModifier] = None,
+        fit_modifiers: List[MeasurementModifier] = None,
     ):
         self.molecules = CombinedMolecule(
             polarisation=polarisation,
@@ -45,8 +44,8 @@ class MultiMoleculeFitRecipe(FitRecipe):
         )
         self.polarisation = polarisation
         self.lineshape = lineshape
-        self.meas_modifiers = meas_modifiers
-        self.fit_modifiers = fit_modifiers
+        self.meas_modifiers = meas_modifiers or []
+        self.fit_modifiers = fit_modifiers or []
         self.simulation_method = simulation_method
 
     @override
@@ -114,7 +113,7 @@ class MultiMoleculeFitRecipe(FitRecipe):
     @override
     def fit(self, meas: MeasurementSpectrum):
         # Fit the parameters to the measurement
-        out: lmfit.minimizer.MinimizerResult = minimize(
+        out: MinimizerResult = minimize(
             self.fit_residuals,
             self.fitparameters,
             args=(meas.original.c.normalize(axis=0),),

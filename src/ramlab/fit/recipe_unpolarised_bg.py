@@ -1,10 +1,9 @@
 from typing_extensions import override
-from lmfit import minimize, Parameters
-import numpy as np
+from lmfit import Parameters
 import numpy as np
 
 from ramlab.fit.recipe import SingleMoleculeFitRecipe
-from ramlab.fit.modifiers import *
+from ramlab.fit.modifiers import Spectrum, MeasurementSpectrum
 
 
 class UnpolarisedBackgroundFit(SingleMoleculeFitRecipe):
