@@ -67,8 +67,8 @@ class O(AbInitioMolecule):
     @classmethod
     def E(cls, state: State) -> float:
         """Returns the energy of a given state in cm^-1."""
-
-        return (state.J == 1) * (158) + (state.J == 0) * (226)
+        # Use energies from NIST ASD
+        return (state.J == 1) * (158.265) + (state.J == 0) * (226.977)
 
     @classmethod
     def degeneracy(cls, state: State) -> int:
