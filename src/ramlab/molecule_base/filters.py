@@ -52,7 +52,7 @@ def _levels_filter(default: bool, logical_operator, **kwargs: float | Collection
         else:
             expr = pl.col(f"{key}")
 
-        if isinstance(value, Collection):
+        if isinstance(value, Collection) and not isinstance(value, str):
             filters.append(expr.is_in(value))
         else:
             filters.append(expr == value)

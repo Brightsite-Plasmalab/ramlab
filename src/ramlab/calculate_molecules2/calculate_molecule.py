@@ -8,9 +8,9 @@ from ramlab.molecule_base.Molecule import Population
 from ramlab.state.polarisation import Polarisation
 from ramlab.state.state2 import RoVibState
 from ramlab.data_parsing.reader_generator import read_data
-from ramlab.molecule_base.molecule_base import DataHandler, missing_message
+from ramlab.molecule_base.molecule_base import DataHandler
 from ramlab.molecule_base.filters import levels_filter_and
-
+from ramlab.data_parsing.missing import missing_message
 
 # class MustAttributes(ABC):
 #     _must_attributes = ()

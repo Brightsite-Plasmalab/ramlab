@@ -1,2 +1,2 @@
-from .Molecule import Molecule
 from .Methane import Methane
+from .Ethene import Ethene

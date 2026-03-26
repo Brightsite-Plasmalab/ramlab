@@ -5,8 +5,10 @@ import os
 import polars as pl
 
 from ramlab.data_parsing.reader_generator import read_data, write_txt, SchemaDict
+from ramlab.data_parsing.missing import missing_message, missing_check
 
 _TypeReadTxtLoc = str | os.PathLike | Collection[str | os.PathLike]
+_TypeReadTxtLoc_tester = str | os.PathLike | Collection
 
 
 class DataHandler:
@@ -16,9 +18,9 @@ class DataHandler:
     _data: pl.DataFrame
 
     def __init__(self, data: pl.DataFrame | _TypeReadTxtLoc):
-        if isinstance(data, _TypeReadTxtLoc):
+        if isinstance(data, _TypeReadTxtLoc_tester):
             data = read_data(data, schema=self._default_schema)
-        elif isinstance(data, pl.LazyFrame):
+        if isinstance(data, pl.LazyFrame):
             data = data.collect()
         elif not isinstance(data, pl.DataFrame):
             msg = f"Data must be a polars DataFrame, LazyFrame, a file path, or a collection of file paths, got {type(data)}."
@@ -142,69 +144,3 @@ class DataHandler:
             return self._data.filter(data_filter)
         else:
             return self._data
-
-
-def missing_check(value, values, base_string) -> str | None:
-    """
-    Build a formatted message listing any items from `value` that are not present in `values`.
-
-    Parameters
-    ----------
-    value : Iterable[str]
-        Items to check for presence (e.g. requested column names or schema entries).
-    values : Collection[str]
-        Available items to check against (e.g. dataframe columns).
-    base_string : str
-        A format string used to construct the final message. It must contain the placeholders:
-        - `{param}` : replaced with the missing parameter name(s)
-        - `{s}` : replaced with `''` for singular or `'s'` for plural
-        - `{is_are}` : replaced with `'is'` for singular or `'are'` for plural
-        If you want missing names quoted, include the quotes in `base_string` (for example `\"'{param}'\"`).
-
-    Returns
-    -------
-    str | None
-        A formatted message describing the missing item(s) when any are missing; otherwise `None`.
-
-    Notes
-    -----
-    - The function only checks membership and does not raise; callers should raise an exception if desired.
-    - For a single missing item the item is inserted as-is; for multiple missing items they are joined with `\", \"`.
-    """
-    missing = [param for param in value if param not in values]
-    if not missing:
-        return None
-    return missing_message(missing, base_string)
-
-
-def missing_message(missing_values, base_string) -> str:
-    """
-    Build a formatted message listing any items that are missing.
-
-    Parameters
-    ----------
-    missing_values : Sequence[str]
-        The missing values
-    base_string : str
-        A format string used to construct the final message. It must contain the placeholders:
-        - `{param}` : replaced with the missing parameter name(s)
-        - `{s}` : replaced with `''` for singular or `'s'` for plural
-        - `{is_are}` : replaced with `'is'` for singular or `'are'` for plural
-        If you want missing names quoted, include the quotes in `base_string` (for example `\"'{param}'\"`).
-
-    Returns
-    -------
-    str | None
-        A formatted message describing the missing item(s) when any are missing; otherwise `None`.
-
-    Notes
-    -----
-    - For a single missing item the item is inserted as-is; for multiple missing items they are joined with `\", \"`.
-    """
-    if len(missing_values) == 1:
-        param = missing_values[0]
-        msg = base_string.format(param=param, s="", is_are="is")
-    else:
-        params = "', '".join(missing_values)
-        msg = base_string.format(param=params, s="s", is_are="are")
-    return msg

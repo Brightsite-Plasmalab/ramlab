@@ -105,9 +105,14 @@ def convolute_spectrum(spectrum_wavelengths, peak_wavelengths, peak_intensities,
     -------
     np.ndarray
         The generated spectrum.
+
+    Notes
+    -------
+    The `peak_shape` sum will be normalized to 1, to make the total intensity in the output the same as in `peak_intensities`.
     """
     out = np.zeros_like(spectrum_wavelengths)
     stick = _make_stick(out, spectrum_wavelengths, peak_wavelengths, peak_intensities)
+    peak_shape /= np.sum(peak_shape)
     return np.convolve(stick, peak_shape, mode="same")
 
 

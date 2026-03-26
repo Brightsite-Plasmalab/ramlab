@@ -25,11 +25,12 @@ write_csv(loc: str or os.PathLike, data: dict[str, Sequence[any]], schema: dict[
     Write data to a CSV file according to the provided schema.
 """
 
-from typing import Any, TextIO, Mapping, Literal, assert_never
-from collections.abc import Collection, Sequence
+from dataclasses import dataclass, field
+from functools import cached_property
+from typing import Any, TextIO, Literal, assert_never, MutableMapping
+from collections.abc import Collection, Sequence, Mapping
 import functools
 import operator
-import warnings
 import re
 import os
 
@@ -38,7 +39,8 @@ import polars as pl
 SchemaDict = dict[str, 'SchemaEntry']
 
 
-class SchemaEntry:  #TODO: change to frozen (data)class, with offset function to change the start value
+@dataclass(frozen=True)
+class SchemaEntry:
     """
     A class representing an entry in a schema with start position, length, format, and data type.
 
@@ -54,17 +56,26 @@ class SchemaEntry:  #TODO: change to frozen (data)class, with offset function to
         The length of the entry in characters.
     explanation: str | None
         The explanation for the meaning of the entry.
+    mapping: dict | Collection | None:
+        A mapping to be applied to the parsed value. If a (non Mapping) collection is provided, it is converted to a
+        dictionary where the keys are the indexes of the collection and the values are the corresponding values from
+        the collection.
     """
-    def __init__(self, start: int, fmt: str, dtype: pl.DataType, length: int, explanation: str | None = None,
-                 mapping: dict | Collection | None = None):
-        self.start = start
-        self.fmt = fmt
-        self.dtype = dtype
-        self.length = length
-        self.explanation = explanation
-        if isinstance(mapping, Collection):
+    start: int
+    fmt: str
+    dtype: pl.DataType
+    length: int
+    explanation: str | None = None
+    mapping: dict | Collection | None = field(default=None)
+    inverse_mapping: dict = field(init=False)
+
+    def __post_init__(self):
+        mapping = self.mapping
+        if (mapping is not None) and (not isinstance(mapping, Mapping)) and isinstance(mapping, Collection):
             mapping = {i: v for i, v in enumerate(mapping)}
-        self.mapping = mapping
+        object.__setattr__(self, 'mapping', mapping)
+        inverse_mapping = {v: i for i, v in mapping.items()}
+        object.__setattr__(self, 'inverse_mapping', inverse_mapping)
 
     def copy(self):
         """
@@ -75,7 +86,8 @@ class SchemaEntry:  #TODO: change to frozen (data)class, with offset function to
         SchemaEntry
             A new instance of SchemaEntry with the same attributes.
         """
-        return SchemaEntry(self.start, self.fmt, self.dtype, self.length, self.explanation)
+        mapping_copy = self.mapping.copy() if isinstance(self.mapping, MutableMapping) else self.mapping
+        return SchemaEntry(self.start, self.fmt, self.dtype, self.length, self.explanation, mapping_copy)
 
     def __repr__(self):
         return (f"SchemaEntry(start={self.start}, fmt='{self.fmt}', dtype={self.dtype}, length={self.length},"
@@ -84,6 +96,21 @@ class SchemaEntry:  #TODO: change to frozen (data)class, with offset function to
     @property
     def end(self):
         return self.start + self.length
+
+    def offset(self, offset: int):
+        mapping_copy = self.mapping.copy() if isinstance(self.mapping, MutableMapping) else self.mapping
+        return SchemaEntry(self.start + offset, self.fmt, self.dtype, self.length, self.explanation, mapping_copy)
+
+    def map_value(self, value):
+        if self.mapping is not None:
+            return self.mapping[value]
+        return value
+
+    def float_precision(self):
+        if self.dtype not in (pl.Float16, pl.Float32, pl.Float64):
+            return None
+        return int(self.fmt.split(".")[1][:-1])
+
 
 
 class HitranSchemaEntry(SchemaEntry):
@@ -116,7 +143,7 @@ class HitranSchemaEntry(SchemaEntry):
                 msg = (f"Unsupported format specifier letter: `{fmt}`: '{fmt[-1]}',"
                        f" supported are 's', 'f', 'e', and 'd'.")
                 raise ValueError(msg)
-        super().__init__(start, fmt, dtype, length, explanation)
+        super().__init__(start, fmt, dtype, length, explanation, mapping)
 
     def copy(self):
         """
@@ -127,7 +154,12 @@ class HitranSchemaEntry(SchemaEntry):
         HitranSchemaEntry
             A new instance of HitranSchemaEntry with the same attributes.
         """
-        return HitranSchemaEntry(self.start, self.fmt, self.explanation)
+        mapping_copy = self.mapping.copy() if isinstance(self.mapping, dict) else self.mapping
+        return HitranSchemaEntry(self.start, self.fmt, self.explanation, mapping_copy)
+
+    def offset(self, offset: int):
+        mapping_copy = self.mapping.copy() if isinstance(self.mapping, dict) else self.mapping
+        return HitranSchemaEntry(self.start + offset, self.fmt, self.explanation, mapping_copy)
 
     def format_string(self) -> str:
         """
@@ -199,13 +231,14 @@ def add_subschema(schema: dict[str, SchemaEntry],* , del_old=True, **subschemas:
 
         entry = schema[name]
         offset = entry.start
+        shifted_subschema = {}
         for key, value in subschema.items():
-            value.start += offset
-            if (value.length + value.start) > (entry.start + entry.length):
+            value = value.offset(offset)
+            if value.end > entry.end:
                 msg = f"Subschema entry '{key}' exceeds the length of the parent schema entry '{name}'."
                 raise ValueError(msg)
-            subschema[key] = value
-        schema.update(subschema)
+            shifted_subschema[key] = value
+        schema.update(shifted_subschema)
         if del_old:
             del schema[name]
     return schema
@@ -268,8 +301,10 @@ def _read_str(string, schema: dict[str, SchemaEntry], entries: Collection[str] =
     dict[str, any]
         A dictionary with parsed values.
     """
-    #TODO implement using the mapping of HitranSchemaEntry
-    return {k: v.dtype.to_python(string[v.start:v.start + v.length]) for k, v in schema.items() if k in entries}
+    def parse(v):
+        return v.dtype.to_python(v.map_value(string[v.start:v.start + v.length]))
+
+    return {k: parse(v) for k, v in schema.items() if k in entries}
 
 
 def _write_line(file_handler: TextIO, data: list[str], delimiter=',', end='\n'):
@@ -293,9 +328,15 @@ def write_line(file_handler: TextIO, data: dict[str, Any], schema: dict[str, Sch
     end : str, optional
         The end character to use after the line. Default is '\n'.
     """
-    #TODO implement using the mapping of HitranSchemaEntry
+    def formatter(value, schema_entry: SchemaEntry):
+        if schema_entry.inverse_mapping is None:
+            mapper = lambda x: x
+        else:
+            mapper = lambda x: schema_entry.inverse_mapping[x]
+        return f"{mapper(value)}:{schema_entry.fmt}"
+
     sorted_schema = dict(sorted(schema.items(), key=lambda x: x[1].start))
-    _write_line(file_handler, [f"{data[k]:{schema[k].fmt}}" for k in sorted_schema], delimiter=delimiter, end=end)
+    _write_line(file_handler, [formatter(data[k], schema[k]) for k in sorted_schema], delimiter=delimiter, end=end)
 
 
 def write_txt(loc, data: pl.DataFrame, schema: dict[str, SchemaEntry], null_fill: str = ''):
@@ -315,19 +356,46 @@ def write_txt(loc, data: pl.DataFrame, schema: dict[str, SchemaEntry], null_fill
 
     Notes
     ------
-    This function only works when all entries from the schema are present in the data.
+    This function does not fully fulfill float specifiers, it may add too many zeros after the decimal.
     """
-    #TODO implement using the mapping of HitranSchemaEntry
+    def caster_maker(key: str, schema_entry: SchemaEntry):
+        """
+        Convert values to str, if value is a float, first round, then cast and pad with zero's at the end. For all other
+        values, cast to string and pad with spaces at the front.
+        """
+        start = pl.col(key)
+        if schema_entry.mapping is not None:
+            start = start.replace(schema_entry.inverse_mapping)
+
+        if schema_entry.dtype in (pl.Float16, pl.Float32, pl.Float64):
+            pres = schema_entry.float_precision()
+            # BUG: Not fully correct behavior, since it may add too many zeros
+            return start.round(pres).cast(pl.String).str.pad_end(schema_entry.length, "0")
+        else:
+            return start.cast(pl.String).str.pad_start(schema_entry.length)
+
     sorted_entries = list(sorted(schema.items(), key=lambda x: x[1].start))
     result = []
-    for key, entry in sorted_entries:
-        # Cast value to string, pad with spaces to the left to ensure correct length, and handle null values
+    for entry_name, schema_entry in sorted_entries:
+        # Cast value to string and handle null values
         result.append((
-            pl.when(pl.col(key).is_null())
+            pl.when(pl.col(entry_name).is_null())
                 .then(pl.lit(null_fill))
-                .otherwise(pl.col(key).cast(pl.String).str.pad_start(entry.length))
-        ).alias(key))
-    adder = functools.reduce(operator.add, [pl.col(key) for key, entry in sorted_entries]).alias("map")
+                .otherwise(caster_maker(entry_name, schema_entry))
+        ).alias(entry_name))
+
+    adder = pl.col(sorted_entries[0][0])
+    for index in range(len(sorted_entries) - 1):
+        _, value1 = sorted_entries[index]
+        key2, value2 = sorted_entries[index + 1]
+
+        difference = value2.start - value1.end - 1
+        if difference > 0:
+            adder += pl.lit(" "*difference)
+        adder += pl.col(key2)
+    adder.alias("map")
+
+    # adder = functools.reduce(operator.add, [pl.col(key) for key, entry in sorted_entries]).alias("map")
     data = data.with_columns(
         *result
     ).with_columns(adder).select("map")
@@ -370,6 +438,24 @@ def _check_entries(schema: dict[str, SchemaEntry], entries: Collection[str]):
 
 def read_data(loc, schema: dict[str, SchemaEntry], entries: Collection[str] | Mapping[str, str] = None,
               filter_expr: pl.Expr = None, strict=False, collect=False):
+    def read(loc):
+        return _read_data(loc, schema=schema, filter_expr=filter_expr, strict=strict, collect=collect, entries=entries)
+
+    if isinstance(loc, str | os.PathLike):
+        return read(loc)
+    else:
+        frames = []
+        for index, file_loc in enumerate(loc):
+            try:
+                frame = read(file_loc)
+            except Exception as e:
+                raise type(e)(f"Exception in file {index}") from e
+            frames.append(frame)
+        return pl.concat(frames)
+
+
+def _read_data(loc, schema: dict[str, SchemaEntry], entries: Collection[str] | Mapping[str, str] = None,
+              filter_expr: pl.Expr = None, strict=False, collect=False):
     """
     Read data from a file according to the provided schema.
 
@@ -410,13 +496,19 @@ def read_data(loc, schema: dict[str, SchemaEntry], entries: Collection[str] | Ma
     if name_mapping is None:
         name_mapping = {entry: entry for entry in entries}
 
-    # checks for a out of bounds, i.e. that the schema entries do not exceed the line length
+    # checks for an out of bounds, i.e. that the schema entries do not exceed the line length
     total_end = max( schema[entry].end for entry in entries )
     with open(loc, 'r') as f:
         first_line = f.readline()
         if total_end > len(first_line):
             msg = f"The length of the schema ({total_end}) is bigger than the line length ({len(first_line)})."
             raise ValueError(msg)
+
+    def caster(entry_name, schema_entry):
+        if schema_entry.mapping is not None:
+            return pl.col(entry_name).replace_strict(schema_entry.mapping, return_dtype=schema_entry.dtype)
+        else:
+            return pl.col(entry_name).cast(schema_entry.dtype, strict=strict)
 
     # the parsing is split in two steps, so that if there is an error in the casting, the error message contains the
     # name of the column that caused the error.
@@ -427,10 +519,7 @@ def read_data(loc, schema: dict[str, SchemaEntry], entries: Collection[str] | Ma
             .alias(name_mapping[entry])
         for entry in entries
     ).with_columns(
-        *(pl.col(name_mapping[entry]).cast(schema[entry].dtype, strict=strict)
-        for entry in entries),
-        *(pl.col(name_mapping[entry]).replace(schema[entry].mapping)
-        for entry in entries if schema[entry].mapping is not None)
+        *(caster(name_mapping[entry], schema[entry]) for entry in entries),
     )
     df = df.drop("column_1")
 

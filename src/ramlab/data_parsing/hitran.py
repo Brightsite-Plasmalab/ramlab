@@ -18,10 +18,13 @@ def full_schema_dict(
     elif general_schema == 'ramlab':
         general_schema = ramlab_schema_dict()
 
-    def set_value(value, quanta_type, endswith):
+    def set_value(value, quanta_type, startswith, endswith):
         if isinstance(value, str):
+            if not value.startswith(startswith):
+                value = startswith + value
             if not value.endswith(endswith):
                 value += endswith
+
             try:
                 return getattr(quanta_type, value)
             except AttributeError:
@@ -30,15 +33,15 @@ def full_schema_dict(
                 raise ValueError(msg)
         return value
 
-    global_quanta_f = set_value(globals_, GlobalQuanta, "_f")
+    global_quanta_f = set_value(globals_, GlobalQuanta, "class", "_f")
     if global_quanta_i is None:
         global_quanta_i = globals_
-    global_quanta_i = set_value(global_quanta_i, GlobalQuanta, "_i")
+    global_quanta_i = set_value(global_quanta_i, GlobalQuanta, "class",  "_i")
 
-    local_quanta_f = set_value(locals_, LocalQuanta, "_f")
+    local_quanta_f = set_value(locals_, LocalQuanta, "group", "_f")
     if local_quanta_i is None:
         local_quanta_i = locals_
-    local_quanta_i = set_value(local_quanta_i, LocalQuanta, "_i")
+    local_quanta_i = set_value(local_quanta_i, LocalQuanta, "group", "_i")
 
     schema = add_subschema(
         general_schema,

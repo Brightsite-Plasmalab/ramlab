@@ -126,31 +126,32 @@ class SpectrumSimulator:
         return out
 
     @classmethod
-    def do_convolution(cls,
-                       simulated_wavelengths: floatNDArray1D,
-                       spectrum_wavelengths: floatNDArray1D,
-                       simulated_intensities: floatNDArray1D,
-                       peak_width: float,
-                       peak_func: Callable[[np.ndarray], floatNDArray1D],
-                       *,
-                       relative_resolution: int = 10) \
-            -> np.ndarray:
+    def do_convolution(
+            cls,
+            simulated_wavelengths: floatNDArray1D,
+            spectrum_wavelengths: floatNDArray1D,
+            simulated_intensities: floatNDArray1D,
+            peak_width: float,
+            peak_func: Callable[[np.ndarray], floatNDArray1D],
+            *,
+            relative_resolution: int = 10
+        ) -> np.ndarray:
 
         simulator = cls(simulated_wavelengths, spectrum_wavelengths, peak_width,
                         relative_resolution=relative_resolution)
         return simulator.convolute(simulated_intensities, peak_func)
 
     @classmethod
-    def do_gaussian_convolution(cls,
-                                simulated_wavelengths: floatNDArray1D,
-                                spectrum_wavelengths: floatNDArray1D,
-                                simulated_intensities: floatNDArray1D,
-                                gaussian_sigma: float,
-                                *,
-                                relative_resolution: int = 10,
-                                relative_width: float = 8,
-                                ) \
-            -> np.ndarray:
+    def do_gaussian_convolution(
+            cls,
+            simulated_wavelengths: floatNDArray1D,
+            spectrum_wavelengths: floatNDArray1D,
+            simulated_intensities: floatNDArray1D,
+            gaussian_sigma: float,
+            *,
+            relative_resolution: int = 10,
+            relative_width: float = 8,
+        ) -> np.ndarray:
 
         func = functools.partial(gaussian, sigma=gaussian_sigma)
         return cls.do_convolution(simulated_wavelengths,

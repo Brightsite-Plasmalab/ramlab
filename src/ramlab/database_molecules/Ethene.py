@@ -10,13 +10,6 @@ c2h4_mecasda_schema = full_schema_dict(
     locals_="group1",
 )
 
-# ch4_ramlab_schema = full_schema_dict(
-#     general_schema="ramlab",
-#     global_quanta="class8",
-#     local_quanta="group3_mecasda",
-# )
-
-
 class Ethene(Molecule):
     """
     A class representing the Ethene/Ethylene (C2H4) molecule.
