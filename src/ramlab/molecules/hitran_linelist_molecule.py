@@ -3,6 +3,7 @@ from ramlab.hitran.parser import parse_hitran_data
 from ramlab.molecules.base import Molecule
 from ramlab.molecules.state import State
 from ramlab.molecules.transitions import Transitions
+from ramlab.molecules.polarisation import Polarisation
 from ramlab.dirs import dir_data
 
 
@@ -86,4 +87,13 @@ class LineListMolecule(Molecule):
     def crosssection(
         cls, transitions: Transitions, lambda_laser: float, polarisation: str
     ) -> float:
-        return transitions.crosssection
+        if type(polarisation) is str:
+            polarisation = Polarisation.str_to_enum(polarisation)
+        if polarisation == Polarisation.COMBINED:
+            return transitions.crosssection
+        elif polarisation == Polarisation.PARALLEL:
+            return transitions.crosssection_parallel
+        elif polarisation == Polarisation.PERPENDICULAR:
+            return transitions.crosssection_perpendicular
+        else:
+            raise ValueError(f"Invalid polarisation: {polarisation}")

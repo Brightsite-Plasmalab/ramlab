@@ -117,7 +117,10 @@ def akp2(k, p, JA, JB, OmegaA, OmegaB):
 
     return akp2_av_i
 
-
+# Where is it from?
+# Shouldn't it be independent of p as suggested by equation 23 from Satija?
+# For k=2, p= +/-2, there is an error: "ValueError: zero-size array to reduction operation maximum which has no identity"
+# 7.70 Lucht or 19 in Satija?
 def akp2_perturbed2(k, p, JA, JB, perturbationA, perturbationB):
     """
     akp2, except we assume that each state is a perturbed state, and we weight the result accordingly.
@@ -125,6 +128,8 @@ def akp2_perturbed2(k, p, JA, JB, perturbationA, perturbationB):
     """
     akp2_av_i = np.zeros(np.size(JA))
 
+    # Is it components of the irreducible polarizability tensor elements in molecule-fixed frame?
+    # Shouldn't these values be molecule-specific?
     akq_values = np.array([1, 0, 0])  # akq for q = 0, 1, 2
 
     Na = len(perturbationA)

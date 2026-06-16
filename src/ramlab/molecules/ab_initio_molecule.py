@@ -133,9 +133,8 @@ class AbInitioMolecule(LineListMolecule):
         if id_invalid.sum() > 0:
             print(f"Discarded {id_invalid.sum()} invalid transitions")
 
-        transitions.crosssection = cls._calc_crosssection(
-            transitions, laser_wavelength, polarisation
-        )
+        transitions.crosssection_perpendicular, transitions.crosssection_parallel = cls._calc_crosssection(transitions, laser_wavelength, polarisation)
+        transitions.crosssection = transitions.crosssection_perpendicular + transitions.crosssection_parallel
         transitions.depolarization_ratio = cls._calc_depolarization_ratio(transitions)
         transitions.molecule_number = cls.molecule_number
         transitions.isotope_number = cls.isotope_number

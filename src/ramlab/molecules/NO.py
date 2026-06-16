@@ -4,6 +4,10 @@ import sys
 import os
 import matplotlib.pyplot as plt
 from itertools import product
+from typing_extensions import override
+#from scipy.constants import k, hbar, c, pi, epsilon_0, fine_structure
+import scipy.constants as cons
+from ramlab.hitran.parser import parse_hitran_data
 
 # # Add the src directory to the PYTHONPATH
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
@@ -13,27 +17,19 @@ from ramlab.molecules.transitions import Transitions
 from ramlab.molecules.ab_initio_molecule import AbInitioMolecule
 from sympy.physics.wigner import wigner_3j
 from ramlab.raman.common import akp2_perturbed2
+from ramlab.molecules.polarisation import Polarisation
+from ramlab.molecules.intensity import Intensity
 
 
 class NO(AbInitioMolecule):
-    def __init__(self):
-        print("Loading NO molecule...")
-
-        # self.states = self._get_all_transition_states()
-
-    # inital,final = self.states
-    # self.transitions = self._make_transitions(laser_wavelength= 532e-9,state_initial=inital, state_final=final)
-    # self.transitions = self._get_all_transitions()
-    #     self._make_transitions(laser_wavelength= 532e-9,state_initial=inital_state, state_final=final_state)
-
     # Molecule properties
     molecule_name = "NO"
     molecule_number = 8
     isotope_number = 1
 
     # Degeneracy constants
-    g_e = 2  # nuclear degeneracy for even J - needs verification
-    g_o = 2  # nuclear degeneracy for odd J - needs verification
+    # Nuclear spin of 16O = 0, nuclear spin of 14N = 1
+    g_nuclear = 3  # nuclear degeneracy for the heteronuclear molecule
 
     # Polarisability tensor operator is molecular fixed reference frame, {\hat a_q^k}
     a_q0 = np.sqrt(9.1e-81)  # C^4 m^4 J^-2 - Source: Satija and Lucht, p16
@@ -59,14 +55,24 @@ class NO(AbInitioMolecule):
     @classmethod
     def parity(cls, J, S):  # Determine parity
         return (-1) ** (J - S)
-
+    '''
     # Intensity and population calculations
     @classmethod
     def _calc_degeneracy(cls, state: State):  # Determine rotational degeneracy
         """Rotational degenarcy - validated in Satija and Lucht"""
         return 2 * (state.J + 1)
-
-    def ayz_sq_perturbed(transitions):
+    '''
+    
+    @classmethod
+    @override
+    # Lambda doubling is supposed to give 2 separated states
+    def _calc_degeneracy(cls, state):
+        degeneracy_nuclear = cls.g_nuclear
+        degeneracy_rotational = 2 * state.J + 1
+        return cls.g_nuclear * degeneracy_rotational
+    
+    # Returns squares of polarizabilities in directions parallel and perpendicula to the laser polarization.
+    def a_sq_perturbed(transitions):
         # terms with k=1 are zero because laser photon energy is far from resonance, Satija eq. 26
         # a21  = akp_sq(2,  1, transitions.initial_J, transitions.final_J, np.abs(transitions.initial_O), np.abs(transitions.final_O))
         # a21  = akp2(2,  1, transitions.initial_J, transitions.final_J, np.abs(transitions.initial_O), np.abs(transitions.final_O))
@@ -87,8 +93,33 @@ class NO(AbInitioMolecule):
         p_tot_f = transitions.final_p * (-1) ** (transitions.final_J - 1 / 2)
 
         temp = np.ones_like(id_F1i)
-
-        a21 = akp2_perturbed2(
+        
+        # ToDo: Check, what akp2_perturbed2 actually calculates.
+        # If I understand correctly, it must be a square of the space-fixed frame irreducible polarizability tensor element.
+        
+        # Now we are concerned by pure rotational transitions and can skip calculation of a2_00
+        a2_00 = 0
+        '''
+        a2_00 = akp2_perturbed2(
+            0,
+            0,
+            transitions.initial_J,
+            transitions.final_J,
+            [  # Omega components of the initial state
+                (np.where(id_F1i, aji, -bji) / np.sqrt(2), temp * 1 / 2),
+                (np.where(id_F1i, aji, -bji) / np.sqrt(2) * p_tot_i, temp * -1 / 2),
+                (np.where(id_F1i, bji, aji) / np.sqrt(2), temp * 3 / 2),
+                (np.where(id_F1i, bji, aji) / np.sqrt(2) * p_tot_i, temp * -3 / 2),
+            ],
+            [  # Omega components of the final state
+                (np.where(id_F1f, ajf, -bjf) / np.sqrt(2), temp * 1 / 2),
+                (np.where(id_F1f, ajf, -bjf) / np.sqrt(2) * p_tot_f, temp * -1 / 2),
+                (np.where(id_F1f, bjf, ajf) / np.sqrt(2), temp * 3 / 2),
+                (np.where(id_F1f, bjf, ajf) / np.sqrt(2) * p_tot_f, temp * -3 / 2),
+            ],
+        )
+        '''
+        a2_21 = akp2_perturbed2(
             2,
             1,
             transitions.initial_J,
@@ -110,18 +141,48 @@ class NO(AbInitioMolecule):
         # a21  = akp2_perturbed2(2, 1, transitions.initial_J, transitions.final_J, \
         #                        [(aji, O_initial_major), (np.where(id_F1i, bji, -bji), O_initial_minor)],
         #                        [(ajf, O_final_major), (np.where(id_F1f, bjf, -bjf), O_final_minor)])
-        return a21 / 2
+        
+        
+        # Rotational part of the polarizability must be multiplied by the vibrational and electronic part, which we don't know.
+        # According to Satija, <v=0 | MFRF a20 | v=0>^2 for NO is 1.5 times larger than for N2.
+        # Taking (without any reasoning) that other elements behave same way,
+        # we can calculate the vibrational part from alpha and gamma N2 values provided by Buldakov.
+        # alpha^2 = 1/3 <v| a00 |v>^2 = 1.5 * (1.78e-24)^2
+        # gamma^2 = 3/2 summa <v| a2i |v>^2 = 15/2 <v| a21 |v>^2 = (0.72e-24)^2
+        # ToDo: determine this values experimentally.
+        # What to do for v != 0?
+        # We aim to present squares of polarizabilities in cm^6
+        a2_00 *= 14.3e-48   # 3 * 1.5 * (1.78e-24)^2
+        a2_21 *= 0.104e-48      # 2/15 * 1.5 * (0.72e-24)^2
+        
+        # See Long table A14.9 and definitions of G0 and G2 (eq. 14.7.6, 14.7.8)
+        a2_xx = a2_00 / 3. + 2 * a2_21 / 3.
+        a2_xy = a2_21 / 2.
+        
+        return a2_xx, a2_xy
 
     @classmethod
     def _calc_crosssection(
-        cls, transitions: Transitions, laser_wavelength, polarisation
+        cls, transitions: Transitions, laser_wavelength=532.083e-9, polarisation=Polarisation.COMBINED
     ):
-        return cls.ayz_sq_perturbed(transitions)
+        Polarisation.validate(polarisation)
+        assert np.all(transitions.dv == 0), "Changes with dV != 0 are not yet implemented"
+        
+        a2xx, a2xy = cls.a_sq_perturbed(transitions)
+        # Now we implement equations 20-21 from Satija.
+        # Those equations are in SI, but we use CGS.
+        # Let's use the equation from diatomic.py
+        # Equations by Satija don't contain Placzek-Teller coefficient, they seems to be included into a2xx and a2xy
+        # I'm not sure if 1/(2Ja + 1) is also included.
+        nu = 1e-2/laser_wavelength - transitions.vacuum_wavenumber  # [cm^-1]
+        
+        # [cm^2/sr]
+        return 16 * np.pi**4 * (nu**4) * a2xx, 16 * np.pi**4 * (nu**4) * a2xy
 
     @classmethod
     def _calc_depolarization_ratio(cls, transitions: Transitions):
         print("Depolarization ratio complete")
-        return 1.0
+        return transitions.crosssection_parallel / transitions.crosssection_perpendicular
 
     @classmethod
     def _rc(
@@ -206,6 +267,12 @@ class NO(AbInitioMolecule):
 
         E[idF1] = E_F1[idF1]
         E[idF2] = E_F2[idF2]
+        
+        # This fit gives negative energies for lower states,
+        # as a result, some Raman transitions are discarded.
+        # Let's add zeroth vibrational energy to prevent it.
+        # Difference of zeroth vibrational energy between F1 and F2 must be already considered in the fit.
+        E += cls.w_e / 2. + cls.w_ex_e / 4.
 
         #  TODO: About time we start to enforce this
         assert np.all(~np.isnan(E))
@@ -250,17 +317,18 @@ class NO(AbInitioMolecule):
 
     @classmethod
     def _get_all_transition_states(cls) -> tuple[State, State]:
-        # Quantum numbers definitions - see Zare - Angular Momentum, P29
+        # Quantum numbers definitions - see Zare - Angular Momentum, P297
 
-        vi = np.arange(0, 1)  # Vibrational quantum number
-        Ji = np.arange(1 / 2, 81 / 2)  # Rotational quantum number
+        vi = np.arange(0, 5)  # Vibrational quantum number
+        Ji = np.arange(0.5, 80)  # Rotational quantum number
         Fi = np.array([1, 2])
-        pi = np.array([1, -1])
+        pi = np.array([1, -1]) # Is it e and f states for the lambda doubling?
 
         # Define transitions for each quantum number
         dv = np.array([0])
         dJ = np.array([-2, -1, 0, 1, 2])
-        dF = np.array([-1, 0, 1])
+        #dF = np.array([-1, 0, 1])
+        dF = np.array([0,]) # electronic transitions are not implemented yet
         dp = np.array([-2, 0, 2])
 
         vi, Ji, Fi, pi, dv, dJ, dF, dp = make_quantum_numbers(
@@ -280,6 +348,9 @@ class NO(AbInitioMolecule):
 
         # J must be at least 1/2
         legal &= (states_initial.J >= 0.5) & (states_final.J >= 0.5)
+        # State F2 J=1/2 corresponds to non-existent state with omega=3/2 and must be excluded
+        legal &= ~((states_initial.J == 0.5) & (states_initial.F == 2))
+        legal &= ~((states_final.J == 0.5) & (states_final.F == 2))
         legal &= np.isin(Ff, [1, 2])  # F is either -1 or +1
         legal &= np.abs(pf) == 1  # p is either -1 or +1
 
@@ -292,26 +363,89 @@ class NO(AbInitioMolecule):
         legal &= ~rayleigh
 
         return states_initial[legal], states_final[legal]
+    
+    # Returns all the states
+    # Neglect hyperfine splitting
+    @override
+    @classmethod
+    def _get_all_states(cls):
+        vi = np.arange(0, 5)  # Vibrational quantum number
+        Ji = np.arange(0.5, 80)  # Rotational quantum number
+        Fi = np.array([1, 2])
+        pi = np.array([1, -1])
+        
+        states = State(J=Ji).add_each(v=vi).add_each(F=Fi).add_each(p=pi)
+        states = states[~((states.J == 0.5) & (states.F == 2))]
+        return states
 
+    @override
+    @classmethod
+    def get_partition_sum(cls, **temperatures) -> float:
+        """Returns the partition sum of the molecule.
+
+        Args:
+            **temperatures: The temperatures in Kelvin.
+
+        Returns:
+            float: The partition sum of the molecule.
+        """
+        if len(temperatures) <= 1:
+            T = temperatures["T"]
+        else:
+            raise NotImplementedError("Non-equilibrium is not implemented for NO.")
+
+        state = cls._get_all_states()
+        E = cls.E(state) * 100
+        g = cls._calc_degeneracy(state)
+        weights = g * np.exp(-cons.h * cons.c * E / (cons.k * T))
+        return np.sum(weights)
+     
     @classmethod
     def _format_quanta_global(cls, state: State):
-        return np.char.mod("%2d", state.v)
+        # According to HITRAN documentation, this field must contain omega.
+        # However, we classify NO state in a different way.
+        # Let's use this field to distinguish F1 and F2 states.
+        F_str = np.char.mod("        %3d", state.F)
+        v_str = np.char.mod("  %2d", state.v)
+        return np.char.add(F_str, v_str)
 
     @classmethod
     def _format_quanta_local(cls, state: State):
-        return np.char.mod("%2d", state.J)
+        # Only one character is reserved for NO symmetry.
+        # It is supposed to be "e" or "f", but I am not 100% sure if it is exactly our p=+/-1 states.
+        # Let's write "0" for "+" states and "1" for "-" states 
+        J_str = np.char.mod("    %5.1f", state.J)
+        p_str = np.char.mod("%1d", np.signbit(state.p))
+        return np.char.add(J_str, p_str)
+
 
     @classmethod
     def process_hitran_data(cls, df: pd.DataFrame) -> pd.DataFrame:
         # Parse the quantum numbers from the HITRAN format for local/global quantum numbers
         # e.g.
         #   df["lower_v"] = df["lower_quanta_global"].str[0:2].astype("Int64")
-        raise NotImplementedError()
+        for state in ["initial", "final"]:
+            # Global quanta
+            df[f"{state}_F"] = df[f"{state}_quanta_global"].str[8:11].astype("Int64")
+            df[f"{state}_v"] = df[f"{state}_quanta_global"].str[13:15].astype("Int64")
+
+            df[f"{state}_J"] = df[f"{state}_quanta_local"].str[4:9].astype("float")
+            df[f"{state}_p"] = (-1) ** df[f"{state}_quanta_local"].str[9].astype("Int64")
+        
+        df['dv'] = df['final_v'] - df['initial_v']
+        df['dJ'] = df['final_J'] - df['initial_J']
+        df['dp'] = df['final_p'] - df['initial_p']
+        df['dF'] = df['final_F'] - df['initial_F']
+        df['depolarization_ratio'] = df['einstein_A_coefficient']
+        df['crosssection'] = df['intensity']
+        df['crosssection_perpendicular'] = df['intensity'] / (1 + df['depolarization_ratio'])
+        df['crosssection_parallel'] = df['depolarization_ratio'] * df['intensity'] / (1 + df['depolarization_ratio'])
+        
+        return df
 
     @classmethod
     def _validate_transitions(cls, transitions: Transitions):
         return super()._validate_transitions(transitions)
-
 
 if __name__ == "__main__":
     NO._get_all_transition_states()
