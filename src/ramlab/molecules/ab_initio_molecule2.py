@@ -34,7 +34,7 @@ class AbInitioMolecule(HitranCompatibleMolecule):
         laser_wavelength: float,
         polarisation: Polarisation = Polarisation.COMBINED,
     ) -> float:
-        print("Calculating cross-section")
+        # print("Calculating cross-section")
         intensity = cls.crosssection_polarised(transitions)
         return intensity.for_polarisation(polarisation)
 

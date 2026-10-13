@@ -31,6 +31,11 @@ class H2(SimpleDiatomicMolecule):
     # D3_e = 0
     # alpha3_e_1 = 0
 
+    @override
+    @classmethod
+    def _get_all_states(cls):
+        return State(J=np.arange(0, 15)).add_each(v=np.arange(0, 7))
+
     @classmethod
     @override
     def _get_all_transition_states(cls) -> tuple[State, State]:
@@ -38,8 +43,8 @@ class H2(SimpleDiatomicMolecule):
 
         # Filter for 0<=v<=4 and 0<=J<=15
         idx_valid = (
-            (state_initial.v <= 4)
-            & (state_final.v <= 4)
+            (state_initial.v <= 7)
+            & (state_final.v <= 7)
             & (state_initial.J <= 15)
             & (state_final.J <= 15)
             & (state_initial.v >= 0)
@@ -56,11 +61,15 @@ class H2(SimpleDiatomicMolecule):
     @classmethod
     @override
     def polarisability_mean(cls, transitions: Transitions) -> np.ndarray:
+        dv_more_than_4 = np.maximum(
+            0, np.maximum(transitions.final_v, transitions.initial_v) - 4
+        )
+
         return h2_rovib_me.compute_batch(
             "H2",
-            transitions.initial_v,
+            transitions.initial_v - dv_more_than_4,
             transitions.initial_J,
-            transitions.final_v,
+            transitions.final_v - dv_more_than_4,
             transitions.final_J,
             532.083,
             "nm",
@@ -70,11 +79,15 @@ class H2(SimpleDiatomicMolecule):
     @classmethod
     @override
     def polarisability_anisotropy(cls, transitions):
+        dv_more_than_4 = np.maximum(
+            0, np.maximum(transitions.final_v, transitions.initial_v) - 4
+        )
+
         return h2_rovib_me.compute_batch(
             "H2",
-            transitions.initial_v,
+            transitions.initial_v - dv_more_than_4,
             transitions.initial_J,
-            transitions.final_v,
+            transitions.final_v - dv_more_than_4,
             transitions.final_J,
             532.083,
             "nm",
